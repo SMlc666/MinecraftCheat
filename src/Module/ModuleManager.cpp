@@ -56,7 +56,7 @@ void drawMenu(MenuType menuType) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   ImGui::Begin(MenuTypeNames[menuType].c_str()); // 使用数组中的字符串作为窗口标题
   for (const auto &pair : modules) {
-    if (pair.second->getMenuType() == menuType) {
+    if (pair.second && pair.second->getMenuType() == menuType) {
       pair.second->onDraw();
     }
   }
