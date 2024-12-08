@@ -4,11 +4,13 @@
 #include <jni.h>
 #include "main.hpp"
 #include "draw.hpp"
+#include "ModuleManager.hpp"
 #include "KittyMemory.hpp"
 JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
 void setup() {
   drawSetup();
+  moduleSetup();
 }
 extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key) {
   g_jvm = vm;

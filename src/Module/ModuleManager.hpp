@@ -44,3 +44,4 @@ void tickAllModules();
 void loadAllModules();
 void drawAllModules();
 } // namespace ModuleManager
+void moduleSetup();
