@@ -5,16 +5,16 @@
 #include "main.hpp"
 #include "draw.hpp"
 #include "KittyMemory.hpp"
-JNIEnv *env = nullptr;
-JavaVM *jvm = nullptr;
+JNIEnv *g_env = nullptr;
+JavaVM *g_jvm = nullptr;
 void setup() {
   drawSetup();
 }
 extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key) {
-  jvm = vm;
+  g_jvm = vm;
   JNIEnv *m_env = nullptr;
   vm->GetEnv((void **)&m_env, JNI_VERSION_1_6);
-  env = m_env;
+  g_env = m_env;
   std::thread(setup).detach();
   return JNI_VERSION_1_6;
 }

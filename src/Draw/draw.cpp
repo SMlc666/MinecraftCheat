@@ -1,7 +1,9 @@
 #include "draw.hpp"
 #include "dobby.h"
 #include "my_imgui.h"
-int g_GlHeight, g_GlWidth = 0;
+int g_GlHeight, g_GlWidth = 0;   //opengl窗口的高度和宽度
+float g_ScHeight, g_ScWidth = 0; //屏幕的高度和宽度
+ANativeWindow *g_Window = nullptr;
 bool is_ImguiSetup = false;
 void imguiSetup() {
   IMGUI_CHECKVERSION();
@@ -45,7 +47,14 @@ void my_Input(void *thiz, void *ex_ab, void *ex_ac) {
 
   return;
 }
-
+ANativeWindow *(*old_ANativeWindow_fromSurface)(JNIEnv *env, jobject surface);
+ANativeWindow *my_ANativeWindow_fromSurface(JNIEnv *env, jobject surface) {
+  // 调用原始函数
+  g_Window = old_ANativeWindow_fromSurface(env, surface);
+  g_ScWidth = ANativeWindow_getWidth(g_Window);
+  g_ScHeight = ANativeWindow_getHeight(g_Window);
+  return g_Window;
+}
 void drawSetup() {
   void *egl_handle = dlopen("libEGL.so", 4);
   void *eglSwapBuffers = dlsym(egl_handle, "eglSwapBuffers");
@@ -55,5 +64,8 @@ void drawSetup() {
       "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
   if (sym_input != nullptr) {
     DobbyHook((void *)sym_input, (void *)my_Input, (void **)&old_Input);
+  }
+  void *ANativeWindow_fromSurface = DobbySymbolResolver(nullptr, "ANativeWindow_fromSurface");
+  if (ANativeWindow_fromSurface != nullptr) {
   }
 }
