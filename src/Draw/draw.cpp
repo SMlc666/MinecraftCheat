@@ -31,7 +31,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplAndroid_NewFrame(g_GlWidth, g_GlHeight);
   ImGui::NewFrame();
-
+  ModuleManager::drawAllModules();
   ImGui::EndFrame();
   ImGui::Render();
   glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
