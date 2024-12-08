@@ -17,6 +17,7 @@ target("cheat")
     local DrawDir = "src/Draw"
     local LogDir = "src/Log"
     local DobbyDir = "src/include/Dobby"
+    local LuaDir = "src/include/Lua"
     local KittyMemoryDir = "src/include/KittyMemory/"
     local KeystoneDir = "src/include/KittyMemory/Deps/Keystone/libs-android"
     local ImguiDir = "src/include/imgui"
@@ -30,8 +31,11 @@ target("cheat")
     add_files("src/main.cpp")--main src file
     add_files(DrawDir.. "/*.cpp")
     add_files(LogDir.. "/*.cpp")
+    add_files(LuaDir.. "/*.c")
+
     add_defines("__ANDROID__")
     add_files(KittyMemoryDir.."/*.cpp")
+
     add_files(ImguiDir.."/*.cpp")--imgui source files
     add_files(ImguiDir.."/backends/imgui_impl_android.cpp")
     add_files(ImguiDir.."/backends/imgui_impl_opengl3.cpp")
@@ -39,6 +43,7 @@ target("cheat")
         "src",
         DrawDir,
         LogDir,
+        LuaDir,
         DobbyDir,
         KittyMemoryDir,
         ImguiDir
