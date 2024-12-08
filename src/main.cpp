@@ -7,7 +7,6 @@
 JNIEnv *env = nullptr;
 JavaVM *jvm = nullptr;
 void setup() {
-  dlopen("libEGL.so", 4);
 }
 extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key) {
   jvm = vm;

@@ -32,8 +32,6 @@ target("cheat")
     add_files(DrawDir.. "/*.cpp")
     add_files(LogDir.. "/*.cpp")
     add_files(LuaDir.. "/*.c")
-
-    add_defines("__ANDROID__")
     add_files(KittyMemoryDir.."/*.cpp")
 
     add_files(ImguiDir.."/*.cpp")--imgui source files
