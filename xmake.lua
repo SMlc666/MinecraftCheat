@@ -5,6 +5,15 @@ local is_x86 = is_arch("x86")
 local is_x86_64 = is_arch("x86_64")
 local is_android = is_plat("android")
 target("cheat")
+    if is_mode("debug") then
+        set_warnings("all")
+        set_optimize("none")
+        set_symbols("debug")   -- 打开调试符号
+    else
+        set_optimize("fastest")  -- 设置快速优化
+        set_symbols("hidden")
+        set_strip("all")
+    end
     local DobbyDir = "src/include/Dobby"
     local KittyMemoryDir = "src/include/KittyMemory/"
     local KeystoneDir = "src/include/KittyMemory/Deps/Keystone/libs-android"
