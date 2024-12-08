@@ -1,0 +1,28 @@
+Language: Cpp
+# 设置代码格式的基于样式
+BasedOnStyle: LLVM
+
+# 设置缩进宽度
+IndentWidth: 2
+# 设置制表符宽度
+TabWidth: 2
+# 是否使用制表符
+UseTab: Never
+# 每行最大字符限制
+ColumnLimit: 100
+
+# 是否修复命名空间注释
+FixNamespaceComments: true
+
+# default is false
+#AlignConsecutiveMacros: true
+#AlignConsecutiveAssignments: true
+#AlignConsecutiveDeclarations: true
+
+# default is true
+# 是否重新格式化注释
+ReflowComments: false
+# 是否对包含的文件进行排序
+SortIncludes : false
+# 是否允许短函数在一行上
+AllowShortFunctionsOnASingleLine: false
