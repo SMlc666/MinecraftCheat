@@ -70,5 +70,7 @@ void drawSetup() {
   }
   void *ANativeWindow_fromSurface = DobbySymbolResolver(nullptr, "ANativeWindow_fromSurface");
   if (ANativeWindow_fromSurface != nullptr) {
+    DobbyHook((void *)ANativeWindow_fromSurface, (void *)my_ANativeWindow_fromSurface,
+              (void **)&old_ANativeWindow_fromSurface);
   }
 }
