@@ -43,7 +43,7 @@ target("cheat")
             raise("not support this platform")
         end
     end)
-    add_links("android","log","EGL","GLESv3")
+    add_links("android","log","EGL","GLESv3","dl")
     if is_arm64_v8a then 
         add_archlinks("arm64-v8a")
     elseif is_armeabi_v7a then 

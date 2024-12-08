@@ -1,17 +1,16 @@
 #include <dobby.h>
 #include <thread>
+#include <dlfcn.h>
 #include <jni.h>
+#include "main.hpp"
 #include "KittyMemory.hpp"
 #include "imgui.h"
 #include "backends/imgui_impl_android.h"
 #include "backends/imgui_impl_opengl3.h"
-JNIEnv *env = nullptr;
-JavaVM *jvm = nullptr;
-void setup() {
-    
-}
-void inject() {
-
+JNIEnv* env = nullptr;
+JavaVM* jvm = nullptr;
+void setup(){
+    dlopen("libEGL.so",4);
 }
 extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM* vm, void *key)
 {
