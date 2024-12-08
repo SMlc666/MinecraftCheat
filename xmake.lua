@@ -14,6 +14,7 @@ target("cheat")
         set_symbols("hidden")
         set_strip("all")
     end
+    local DrawDir = "src/Draw"
     local DobbyDir = "src/include/Dobby"
     local KittyMemoryDir = "src/include/KittyMemory/"
     local KeystoneDir = "src/include/KittyMemory/Deps/Keystone/libs-android"
@@ -26,12 +27,14 @@ target("cheat")
     end
     set_kind("shared")
     add_files("src/main.cpp")--main src file
+    add_files(DrawDir.. "/*.cpp")
     add_defines("__ANDROID__")
     add_files(KittyMemoryDir.."/*.cpp")
     add_files(ImguiDir.."/*.cpp")--imgui source files
     add_files(ImguiDir.."/backends/imgui_impl_android.cpp")
     add_files(ImguiDir.."/backends/imgui_impl_opengl3.cpp")
     add_includedirs(
+        "src",
         DobbyDir,
         KittyMemoryDir,
         ImguiDir

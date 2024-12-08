@@ -4,9 +4,6 @@
 #include <jni.h>
 #include "main.hpp"
 #include "KittyMemory.hpp"
-#include "imgui.h"
-#include "backends/imgui_impl_android.h"
-#include "backends/imgui_impl_opengl3.h"
 JNIEnv *env = nullptr;
 JavaVM *jvm = nullptr;
 void setup() {
