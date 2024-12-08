@@ -58,8 +58,10 @@ ANativeWindow *my_ANativeWindow_fromSurface(JNIEnv *env, jobject surface) {
 }
 void drawSetup() {
   void *egl_handle = dlopen("libEGL.so", 4);
-  void *eglSwapBuffers = dlsym(egl_handle, "eglSwapBuffers");
-  DobbyHook((void *)eglSwapBuffers, (void *)my_eglSwapBuffers, (void **)&old_eglSwapBuffers);
+  if (egl_handle != nullptr) {
+    void *eglSwapBuffers = dlsym(egl_handle, "eglSwapBuffers");
+    DobbyHook((void *)eglSwapBuffers, (void *)my_eglSwapBuffers, (void **)&old_eglSwapBuffers);
+  }
   void *sym_input = DobbySymbolResolver(
       nullptr,
       "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
