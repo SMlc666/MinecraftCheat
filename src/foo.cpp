@@ -19,6 +19,6 @@ extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM* vm, void *key)
     JNIEnv *m_env = nullptr;
     vm->GetEnv((void**)&m_env, JNI_VERSION_1_6);
     env = m_env;
-
+    
     return JNI_VERSION_1_6;
 }
