@@ -32,8 +32,8 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui::End();
   ImGui::EndFrame();
   ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   glViewport(0, 0, g_GlWidth, g_GlHeight);
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   return old_eglSwapBuffers(dpy, surface);
 }
 void (*old_Input)(void *thiz, void *ex_ab, void *ex_ac);
