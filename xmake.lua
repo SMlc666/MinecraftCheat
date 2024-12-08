@@ -19,7 +19,7 @@ target("cheat")
     local ModuleDir = "src/Module"
     local DobbyDir = "src/include/Dobby"
     local LuaDir = "src/include/Lua"
-    local EnttDir = "src/include/Entt"
+    local EnttDir = "src/include/entt"
     local KittyMemoryDir = "src/include/KittyMemory/"
     local KeystoneDir = "src/include/KittyMemory/Deps/Keystone/libs-android"
     local ImguiDir = "src/include/imgui"
