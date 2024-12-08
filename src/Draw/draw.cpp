@@ -1,6 +1,8 @@
 #include "draw.hpp"
 #include "dobby.h"
 #include "my_imgui.h"
+#include "ModuleManager.hpp"
+
 int g_GlHeight, g_GlWidth = 0;   //opengl窗口的高度和宽度
 float g_ScHeight, g_ScWidth = 0; //屏幕的高度和宽度
 ANativeWindow *g_Window = nullptr;
@@ -29,8 +31,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplAndroid_NewFrame(g_GlWidth, g_GlHeight);
   ImGui::NewFrame();
-  ImGui::Begin("Minecraft Cheat");
-  ImGui::End();
+
   ImGui::EndFrame();
   ImGui::Render();
   glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
