@@ -3,10 +3,12 @@
 #include <dlfcn.h>
 #include <jni.h>
 #include "main.hpp"
+#include "draw.hpp"
 #include "KittyMemory.hpp"
 JNIEnv *env = nullptr;
 JavaVM *jvm = nullptr;
 void setup() {
+  drawSetup();
 }
 extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key) {
   jvm = vm;
