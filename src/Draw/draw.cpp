@@ -18,13 +18,13 @@ void imguiSetup() {
 }
 EGLBoolean (*old_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
-
   eglQuerySurface(dpy, surface, EGL_WIDTH, &g_GlWidth);
   eglQuerySurface(dpy, surface, EGL_HEIGHT, &g_GlHeight);
   if (!is_ImguiSetup) {
     imguiSetup();
     is_ImguiSetup = true;
   }
+  ImGuiIO &io = ImGui::GetIO();
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplAndroid_NewFrame(g_GlWidth, g_GlHeight);
   ImGui::NewFrame();
@@ -32,7 +32,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui::End();
   ImGui::EndFrame();
   ImGui::Render();
-  glViewport(0, 0, g_GlWidth, g_GlHeight);
+  glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   return old_eglSwapBuffers(dpy, surface);
 }
