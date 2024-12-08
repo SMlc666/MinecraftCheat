@@ -8,7 +8,6 @@ void imguiSetup() {
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
   io.IniFilename = nullptr;
-  io.DisplaySize = ImVec2(1280, 720);
   io.DisplaySize = ImVec2((float)g_GlWidth, (float)g_GlHeight);
   ImGui_ImplAndroid_Init(nullptr);
   ImGui_ImplOpenGL3_Init("#version 300 es");
@@ -55,6 +54,6 @@ void drawSetup() {
       nullptr,
       "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
   if (sym_input != nullptr) {
-    //DobbyHook((void *)sym_input, (void *)my_Input, (void **)&old_Input);
+    DobbyHook((void *)sym_input, (void *)my_Input, (void **)&old_Input);
   }
 }
