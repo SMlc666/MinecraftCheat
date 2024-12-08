@@ -1,0 +1,32 @@
+name: build
+
+on:
+  push:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: 配置软件环境
+      run: |
+        sudo apt-get install -y aptitude
+        sudo aptitude update
+        curl -fsSL https://xmake.io/shget.text | bash
+        source ~/.xmake/profile
+        sudo aptitude upgrade -y
+    - uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r27c
+        local-cache: true
+    - name: 编译软件
+      run: |
+        xmake f --host=android -m release -a arm64-v8a -p android --ndk_sdkver=21 --ndk_cxxstl=llvmstl_shared 
+        xmake
+    - uses: actions/upload-artifact@v4
+      with:
+        name: cheat
+        path: |
+          build/android
