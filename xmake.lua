@@ -26,6 +26,7 @@ target("cheat")
     end
     set_kind("shared")
     add_files("src/main.cpp")--main src file
+    add_defines("__ANDROID__")
     add_files(KittyMemoryDir.."/*.cpp")
     add_files(ImguiDir.."/*.cpp")--imgui source files
     add_files(ImguiDir.."/backends/imgui_impl_android.cpp")
