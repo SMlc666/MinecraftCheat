@@ -25,7 +25,7 @@ target("cheat")
         add_links("dobby")
     end
     set_kind("shared")
-    add_files("src/foo.cpp")--main src file
+    add_files("src/main.cpp")--main src file
     add_files(KittyMemoryDir.."/*.cpp")
     add_files(ImguiDir.."/*.cpp")--imgui source files
     add_files(ImguiDir.."/backends/imgui_impl_android.cpp")
