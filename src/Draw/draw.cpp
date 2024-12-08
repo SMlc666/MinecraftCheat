@@ -43,8 +43,9 @@ void my_Input(void *thiz, void *ex_ab, void *ex_ac) {
   old_Input(thiz, ex_ab, ex_ac);
 
   // 处理输入事件
-  ImGui_ImplAndroid_HandleInputEvent((AInputEvent *)thiz);
-
+  if (is_ImguiSetup) {
+    ImGui_ImplAndroid_HandleInputEvent((AInputEvent *)thiz);
+  }
   return;
 }
 ANativeWindow *(*old_ANativeWindow_fromSurface)(JNIEnv *env, jobject surface);
