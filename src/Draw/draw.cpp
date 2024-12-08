@@ -55,6 +55,6 @@ void drawSetup() {
       nullptr,
       "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
   if (sym_input != nullptr) {
-    DobbyHook((void *)sym_input, (void *)my_Input, (void **)&old_Input);
+    //DobbyHook((void *)sym_input, (void *)my_Input, (void **)&old_Input);
   }
 }
