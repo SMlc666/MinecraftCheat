@@ -1,4 +1,5 @@
 add_rules("mode.debug", "mode.release")
+add_requires("nlohmann_json 3.11.3")
 local is_arm64_v8a = is_arch("arm64-v8a")
 local is_armeabi_v7a = is_arch("armeabi-v7a")
 local is_x86 = is_arch("x86")
@@ -30,6 +31,7 @@ target("cheat")
         add_links("dobby")
     end
     set_kind("shared")
+    add_packages("nlohmann_json")
     add_files("src/main.cpp")--main src file
     add_files(DrawDir.. "/*.cpp")
     add_files(LogDir.. "/*.cpp")
