@@ -7,8 +7,7 @@ MyModule::MyModule(const std::string &name, MenuType type) : Module(name, type) 
   setOnTick([](Module *self) { std::cout << "Tick " << self->getName() << std::endl; });
 }
 int main() {
-  MyModule module("MyModule", MenuType::MAIN_MENU);
-  ModuleManager::addModule(&module);
+  ModuleManager::addModule(std::make_shared<MyModule>("MyModule", MenuType::MAIN_MENU));
 
   ModuleManager::enableModuleByName("MyModule");
   ModuleManager::tickAllModules();

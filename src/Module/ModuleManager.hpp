@@ -2,6 +2,7 @@
 #include <string>
 #include <functional>
 #include <unordered_map>
+#include <memory>
 #include "menu.hpp"
 
 class Module {
@@ -17,7 +18,6 @@ public:
   void setOnDisable(std::function<void(Module *)> func);
   void setOnLoad(std::function<void(Module *)> func);
   void setOnDraw(std::function<void(Module *)> func);
-
   void onTick();
   void onEnable();
   void onDisable();
@@ -35,11 +35,11 @@ private:
 };
 
 namespace ModuleManager {
-void addModule(Module *module);
+void addModule(std::shared_ptr<Module> module);
 void enableModuleByName(const std::string &name);
 void disableModuleByName(const std::string &name);
-void enableModule(Module *module);
-void disableModule(Module *module);
+void enableModule(std::shared_ptr<Module> module);
+void disableModule(std::shared_ptr<Module> module);
 void tickAllModules();
 void loadAllModules();
 void drawAllModules();

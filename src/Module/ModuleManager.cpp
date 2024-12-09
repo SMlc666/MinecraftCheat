@@ -1,73 +1,9 @@
 #include "ModuleManager.hpp"
-#include <mutex>
 #include "imgui.h"
 #include "menu.hpp"
 #include "cheat/KillAura/KillAura.hpp"
-namespace ModuleManager {
-std::unordered_map<std::string, Module *> modules;
-std::mutex moduleMutex; // 用于线程安全
-
-void addModule(Module *module) {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  modules[module->getName()] = module;
-}
-
-void enableModuleByName(const std::string &name) {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  auto it = modules.find(name);
-  if (it != modules.end()) {
-    it->second->onEnable();
-  }
-}
-
-void disableModuleByName(const std::string &name) {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  auto it = modules.find(name);
-  if (it != modules.end()) {
-    it->second->onDisable();
-  }
-}
-
-void enableModule(Module *module) {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  module->onEnable();
-}
-
-void disableModule(Module *module) {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  module->onDisable();
-}
-
-void tickAllModules() {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  for (auto &pair : modules) {
-    pair.second->onTick();
-  }
-}
-
-void loadAllModules() {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  for (auto &pair : modules) {
-    pair.second->onLoad();
-  }
-}
-
-void drawMenu(MenuType menuType) {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  ImGui::Begin(MenuTypeNames[menuType].c_str()); // 使用数组中的字符串作为窗口标题
-  for (const auto &pair : modules) {
-    if (pair.second && pair.second->getMenuType() == menuType) {
-      pair.second->onDraw();
-    }
-  }
-  ImGui::End();
-}
-// 主绘制函数，根据需要调用
-void drawAllModules() {
-  drawMenu(MAIN_MENU);
-  // 可以继续添加其他菜单类型的调用
-}
-} // namespace ModuleManager
+#include "main.hpp"
+#include <mutex>
 
 Module::Module(const std::string &name, MenuType type)
     : m_name(name), m_type(type), m_onTick(nullptr), m_onEnable(nullptr), m_onDisable(nullptr),
@@ -131,9 +67,83 @@ void Module::onDraw() {
     m_onDraw(this);
   }
 }
-void moduleSetup() {
-  KillAuraModule killaura("KillAura", MenuType::MAIN_MENU);
-  ModuleManager::addModule(&killaura);
+namespace ModuleManager {
+std::unordered_map<std::string, std::shared_ptr<Module>> modules;
+std::mutex moduleMutex; // 用于线程安全
 
+void addModule(std::shared_ptr<Module> module) {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  modules[module->getName()] = module;
+}
+
+void enableModuleByName(const std::string &name) {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  auto it = modules.find(name);
+  if (it != modules.end()) {
+    it->second->onEnable();
+  }
+}
+
+void disableModuleByName(const std::string &name) {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  auto it = modules.find(name);
+  if (it != modules.end()) {
+    it->second->onDisable();
+  }
+}
+
+void enableModule(std::shared_ptr<Module> module) {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  if (module) {
+    module->onEnable();
+  }
+}
+
+void disableModule(std::shared_ptr<Module> module) {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  if (module) {
+    module->onDisable();
+  }
+}
+
+void tickAllModules() {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  for (auto &pair : modules) {
+    if (pair.second) {
+      pair.second->onTick();
+    }
+  }
+}
+
+void loadAllModules() {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  for (auto &pair : modules) {
+    if (pair.second) {
+      pair.second->onLoad();
+    }
+  }
+}
+
+void drawMenu(MenuType menuType) {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  ImGui::Begin(MenuTypeNames[menuType].c_str()); // 使用数组中的字符串作为窗口标题
+  if (menuType == MAIN_MENU) {
+    ImGui::Text("Cheat Version: %s", CheatVersion.c_str());
+  }
+  for (const auto &pair : modules) {
+    if (pair.second && pair.second->getMenuType() == menuType) {
+      pair.second->onDraw();
+    }
+  }
+  ImGui::End();
+}
+// 主绘制函数，根据需要调用
+void drawAllModules() {
+  drawMenu(MAIN_MENU);
+}
+} // namespace ModuleManager
+
+void moduleSetup() {
+  ModuleManager::addModule(std::make_shared<KillAuraModule>("KillAura", MenuType::MAIN_MENU));
   ModuleManager::loadAllModules();
 }

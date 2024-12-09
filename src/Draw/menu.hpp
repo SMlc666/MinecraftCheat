@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+
 enum MenuType {
   MAIN_MENU,
 };
