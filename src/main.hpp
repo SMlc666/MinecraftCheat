@@ -1,6 +1,6 @@
 #pragma once
 #include <jni.h>
 #include <string>
-extern std::string CheatVersion;
+const std::string CheatVersion = "1.0.0";
 extern JNIEnv *g_env;
 extern JavaVM *g_jvm;

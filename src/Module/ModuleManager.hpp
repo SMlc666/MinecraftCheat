@@ -3,7 +3,7 @@
 #include <functional>
 #include <unordered_map>
 #include <memory>
-#include "menu.hpp"
+#include "menu/menu.hpp"
 
 class Module {
 public:

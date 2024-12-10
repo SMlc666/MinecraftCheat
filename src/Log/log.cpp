@@ -3,10 +3,10 @@ void Log::message(LogLevel Level, const std::string &tag, const std::string &mes
   logs.push_back(LogEntry(Level, tag, message));
 }
 
-std::vector<LogEntry> Log::getLogs() const {
+const std::vector<LogEntry> Log::getLogs() const {
   return logs;
 }
-std::vector<LogEntry> Log::getLogs(LogLevel Level) const {
+const std::vector<LogEntry> Log::getLogs(LogLevel Level) const {
   std::vector<LogEntry> result;
   for (const auto &log : logs) { // 使用范围 for 循环
     if (log.level == Level) {
@@ -16,7 +16,7 @@ std::vector<LogEntry> Log::getLogs(LogLevel Level) const {
   return result;
 }
 
-std::vector<LogEntry> Log::getLogs(std::string tag) const {
+const std::vector<LogEntry> Log::getLogs(std::string tag) const {
   std::vector<LogEntry> result;
   for (const auto &log : logs) { // 使用范围 for 循环
     if (log.tag == tag) {

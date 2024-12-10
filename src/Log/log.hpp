@@ -20,9 +20,9 @@ private:
 
 public:
   void message(LogLevel level, const std::string &tag, const std::string &msg);
-  std::vector<LogEntry> getLogs() const;
-  std::vector<LogEntry> getLogs(LogLevel Level) const;
-  std::vector<LogEntry> getLogs(std::string tag) const;
+  const std::vector<LogEntry> getLogs() const;
+  const std::vector<LogEntry> getLogs(LogLevel Level) const;
+  const std::vector<LogEntry> getLogs(std::string tag) const;
   void cleanLogs();
   void cleanLogs(LogLevel Level);
   void cleanLogs(std::string tag);

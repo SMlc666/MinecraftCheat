@@ -8,7 +8,6 @@
 #include "KittyMemory.hpp"
 JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
-std::string CheatVersion = "1.0.0";
 void setup() {
   drawSetup();
   moduleSetup();

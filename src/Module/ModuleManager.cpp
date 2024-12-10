@@ -1,9 +1,10 @@
 #include "ModuleManager.hpp"
 #include "imgui.h"
-#include "menu.hpp"
 #include "cheat/KillAura/KillAura.hpp"
+#include "log.hpp"
 #include "main.hpp"
 #include <mutex>
+#include <stdexcept>
 
 Module::Module(const std::string &name, MenuType type)
     : m_name(name), m_type(type), m_onTick(nullptr), m_onEnable(nullptr), m_onDisable(nullptr),
@@ -126,7 +127,14 @@ void loadAllModules() {
 
 void drawMenu(MenuType menuType) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  ImGui::Begin(MenuTypeNames[menuType].c_str()); // 使用数组中的字符串作为窗口标题
+  std::string MenuName;
+  try {
+    MenuName = MenuNames.at(menuType);
+  } catch (const std::out_of_range &e) {
+    g_log_tool.message(LogLevel::ERROR, "drawMenu", "No such menu type" + std::string(e.what()));
+    return; // 防止崩溃
+  }
+  ImGui::Begin(MenuName.c_str()); // 使用数组中的字符串作为窗口标题
   if (menuType == MAIN_MENU) {
     ImGui::Text("Cheat Version: %s", CheatVersion.c_str());
   }
