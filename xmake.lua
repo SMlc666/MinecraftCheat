@@ -1,5 +1,4 @@
 add_rules("mode.debug", "mode.release")
-add_requires("nlohmann_json 3.11.3")
 local is_arm64_v8a = is_arch("arm64-v8a")
 local is_armeabi_v7a = is_arch("armeabi-v7a")
 local is_x86 = is_arch("x86")
@@ -24,6 +23,7 @@ target("cheat")
     local KittyMemoryDir = "src/include/KittyMemory/"
     local KeystoneDir = "src/include/KittyMemory/Deps/Keystone/libs-android"
     local ImguiDir = "src/include/imgui"
+    local RapidJsonDir = "src/include/rapidjson"
     function add_archlinks(arch) 
         add_linkdirs(KeystoneDir.. "/".. arch)
         add_links("keystone")
@@ -31,7 +31,6 @@ target("cheat")
         add_links("dobby")
     end
     set_kind("shared")
-    add_packages("nlohmann_json")
     add_files("src/main.cpp")--main src file
     add_files(DrawDir.. "/*.cpp")
     add_files(LogDir.. "/*.cpp")
@@ -50,7 +49,8 @@ target("cheat")
         EnttDir,
         DobbyDir,
         KittyMemoryDir,
-        ImguiDir
+        ImguiDir,
+        RapidJsonDir
     )
     on_load(function (target)
         if not is_x86 and not is_x86_64 and not is_armeabi_v7a and not is_arm64_v8a then
