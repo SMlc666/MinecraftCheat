@@ -1,11 +1,9 @@
-#include <dobby.h>
 #include <thread>
-#include <dlfcn.h>
 #include <jni.h>
 #include "main.hpp"
 #include "draw.hpp"
 #include "ModuleManager.hpp"
-#include "KittyMemory.hpp"
+
 JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
 void setup() {

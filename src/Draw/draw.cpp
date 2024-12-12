@@ -1,8 +1,14 @@
 #include "draw.hpp"
-#include "dobby.h"
+#include "Dobby/dobby.h"
 #include "my_imgui.h"
 #include "ModuleManager.hpp"
-
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_android.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+#include <EGL/egl.h>
+#include <GLES3/gl3.h>
+#include <dlfcn.h>
+#include "main.hpp"
 int g_GlHeight, g_GlWidth = 0;   //opengl窗口的高度和宽度
 float g_ScHeight, g_ScWidth = 0; //屏幕的高度和宽度
 ANativeWindow *g_Window = nullptr;

@@ -23,7 +23,7 @@ target("cheat")
     local KittyMemoryDir = "src/include/KittyMemory/"
     local KeystoneDir = "src/include/KittyMemory/Deps/Keystone/libs-android"
     local ImguiDir = "src/include/imgui"
-    local RapidJsonDir = "src/include/rapidjson"
+    local IncludeDir = "src/include"
     function add_archlinks(arch) 
         add_linkdirs(KeystoneDir.. "/".. arch)
         add_links("keystone")
@@ -45,19 +45,16 @@ target("cheat")
         ModuleDir,
         DrawDir,
         LogDir,
-        LuaDir,
-        EnttDir,
-        DobbyDir,
-        KittyMemoryDir,
-        ImguiDir,
-        RapidJsonDir
+        IncludeDir
     )
     on_load(function (target)
-        if not is_x86 and not is_x86_64 and not is_armeabi_v7a and not is_arm64_v8a then
-            raise("not support this arch")
-        end
-        if not is_android then
-            raise("not support this platform")
+        if target:name() == "cheat" then
+            if not is_x86 and not is_x86_64 and not is_armeabi_v7a and not is_arm64_v8a then
+                raise("not support this arch")
+            end
+            if not is_android then
+                raise("not support this platform")
+            end
         end
     end)
     add_links("android","log","EGL","GLESv3","dl")
