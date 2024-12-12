@@ -45,7 +45,7 @@ void Log::SaveToFile(const std::string &filename) const {
     throw std::runtime_error("Failed to open file: " + filename);
   }
   for (const auto &log : logs) {
-    ofs << log.level << " " << log.tag << " " << log.message << std::endl;
+    ofs <<  log.level << " " << log.tag << " " << log.message << std::endl;
   }
   ofs.close();
 }

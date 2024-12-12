@@ -4,13 +4,25 @@
 #include <string>
 #include <fstream>
 #include <exception>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL };
 struct LogEntry {
   LogLevel level;
   std::string tag;
   std::string message;
+  std::chrono::system_clock::time_point time;
   LogEntry(LogLevel lvl, const std::string &t, const std::string &msg)
       : level(lvl), tag(t), message(msg) {
+    time = std::chrono::system_clock::now();
+  }
+  std::string getFormattedTime() const {
+    std::time_t now_time_t = std::chrono::system_clock::to_time_t(time);
+    std::tm now_tm = *std::localtime(&now_time_t);
+    std::ostringstream oss;
+    oss << std::put_time(&now_tm, "%Y-%m-%d %H:%M:%S");
+    return oss.str();
   }
 };
 

@@ -5,6 +5,7 @@ local is_x86 = is_arch("x86")
 local is_x86_64 = is_arch("x86_64")
 local is_android = is_plat("android")
 target("cheat")
+    set_languages("c17", "cxx20")
     if is_mode("debug") then
         set_warnings("all")
         set_optimize("none")
