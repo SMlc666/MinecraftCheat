@@ -10,13 +10,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: 配置软件环境
-      run: |
-        sudo apt-get install -y aptitude
-        sudo aptitude update
-        curl -fsSL https://xmake.io/shget.text | bash
-        source ~/.xmake/profile
-        sudo aptitude upgrade -y
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: '2.7.2'
+        actions-cache-folder: '.xmake-cache'
     - uses: nttld/setup-ndk@v1
       with:
         ndk-version: r27c
