@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
-        xmake-version: '2.7.2'
+        xmake-version: '2.9.6'
         actions-cache-folder: '.xmake-cache'
     - uses: nttld/setup-ndk@v1
       with:
