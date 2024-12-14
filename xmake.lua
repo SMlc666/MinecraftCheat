@@ -1,4 +1,6 @@
 add_rules("mode.debug", "mode.release")
+set_config("runtimes","c++_static")
+set_config("ndk_sdkver","23")
 local is_arm64_v8a = is_arch("arm64-v8a")
 local is_armeabi_v7a = is_arch("armeabi-v7a")
 local is_x86 = is_arch("x86")
@@ -19,6 +21,7 @@ if is_mode("debug") then
     set_warnings("all")
     set_optimize("none")
     set_symbols("debug")   -- 打开调试符号
+    add_defines("__DEBUG__")
 else
     set_optimize("fastest")  -- 设置快速优化
     set_symbols("hidden")
@@ -81,7 +84,8 @@ target("example_Script")
     add_files(ScriptDir.. "/examples/example.cpp")
     add_includedirs(
         LuaDir,
-        DobbyDir
+        DobbyDir,
+        IncludeDir
     )
     if is_arm64_v8a then 
         add_archlinks("arm64-v8a")

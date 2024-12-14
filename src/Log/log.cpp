@@ -1,4 +1,5 @@
 #include "log.hpp"
+
 void Log::message(LogLevel Level, const std::string &tag, const std::string &message) {
   logs.push_back(LogEntry(Level, tag, message));
 }
@@ -45,7 +46,7 @@ void Log::SaveToFile(const std::string &filename) const {
     throw std::runtime_error("Failed to open file: " + filename);
   }
   for (const auto &log : logs) {
-    ofs <<  log.level << " " << log.tag << " " << log.message << std::endl;
+    ofs << log.level << " " << log.tag << " " << log.message << std::endl;
   }
   ofs.close();
 }

@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <sstream>
 enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL };
+static const std::string NormalLogFile = "/sdcard/normal.log";
 struct LogEntry {
   LogLevel level;
   std::string tag;
@@ -38,6 +39,6 @@ public:
   void cleanLogs();
   void cleanLogs(LogLevel Level);
   void cleanLogs(std::string tag);
-  void SaveToFile(const std::string &filename) const;
+  void SaveToFile(const std::string &filename = NormalLogFile) const;
 };
 extern Log g_log_tool;

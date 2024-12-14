@@ -5,6 +5,7 @@ KillAuraModule::KillAuraModule(const std::string &name, MenuType type) : Module(
   setOnDraw([](Module *self) {
     if (ImGui::TreeNodeEx("KillAura")) {
       ImGui::Text("KillAura");
+      ImGui::TreePop();
     }
   });
 }
