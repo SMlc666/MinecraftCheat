@@ -20,9 +20,9 @@ struct LogEntry {
   std::string getFormattedTime() const {
     std::time_t now_time_t = std::chrono::system_clock::to_time_t(time);
     std::tm now_tm = *std::localtime(&now_time_t);
-    std::ostringstream oss;
-    oss << std::put_time(&now_tm, "%Y-%m-%d %H:%M:%S");
-    return oss.str();
+    char buffer[80];
+    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &now_tm);
+    return std::string(buffer);
   }
 };
 
