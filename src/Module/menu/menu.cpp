@@ -1,6 +1,7 @@
 #include "menu.hpp"
 #include "imgui/imgui.h"
 #include "log.hpp"
+#include "ScriptManager.hpp"
 static void drawLog(std::vector<LogEntry> &Logs) {
   for (auto &log : Logs) {
     switch (log.level) {
@@ -62,4 +63,13 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
          ImGui::TreePop();
        }
      }},
-    {MenuType::SCRIPT_MENU, []() { ImGui::Text("Script Menu"); }}};
+    {MenuType::SCRIPT_MENU, []() {
+       auto Scripts = ScriptManager::getScripts();
+       if (ImGui::Button("Reload Scripts"))
+         ScriptManager::reloadScripts();
+       for (auto &script : Scripts) {
+         if (ImGui::TreeNodeEx(script.getName().c_str())) {
+           ImGui::Text("file: %s", script.getFilePath().c_str());
+         }
+       }
+     }}};

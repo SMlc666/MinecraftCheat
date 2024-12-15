@@ -16,6 +16,12 @@ Script::Script(const std::filesystem::path &m_path)
 Script::~Script() {
   lua_close(L);
 }
+std::string Script::getName() const {
+  return name;
+}
+std::string Script::getFilePath() const {
+  return path.string();
+}
 
 namespace ScriptManager {
 std::vector<Script> Scripts = {};
