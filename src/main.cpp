@@ -4,6 +4,7 @@
 #include "main.hpp"
 #include "draw.hpp"
 #include "ModuleManager.hpp"
+#include "ScriptManager.hpp"
 
 JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
@@ -14,6 +15,7 @@ void setup() {
   } //初始化目录
   drawSetup();
   moduleSetup();
+  ScriptSetup();
 }
 extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key) {
   g_jvm = vm;
