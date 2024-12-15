@@ -8,7 +8,7 @@
 #include <iomanip>
 #include <sstream>
 enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL };
-static const std::string NormalLogFile = "/sdcard/normal.log";
+static const std::string NormalLogFile = "/sdcard/MinecraftCheat/normal.log";
 struct LogEntry {
   LogLevel level;
   std::string tag;

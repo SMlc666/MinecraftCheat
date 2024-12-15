@@ -1,5 +1,6 @@
 #include "draw.hpp"
 #include "Dobby/dobby.h"
+#include "log.hpp"
 #include "my_imgui.h"
 #include "ModuleManager.hpp"
 #include "imgui/imgui.h"
@@ -8,10 +9,11 @@
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include <dlfcn.h>
+#include <format>
 #include "main.hpp"
 int g_GlHeight, g_GlWidth = 0; //opengl窗口的高度和宽度
-ANativeWindow *g_Window = nullptr;
 bool is_ImguiSetup = false;
+static const std::string IniFile = "/sdcard/MinecraftCheat/config.ini";
 void imguiSetup() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -56,14 +58,18 @@ void my_Input(void *thiz, void *ex_ab, void *ex_ac) {
 }
 void drawSetup() {
   void *egl_handle = dlopen("libEGL.so", 4);
+  g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("egl_handle: {:p}", egl_handle));
   if (egl_handle != nullptr) {
     void *eglSwapBuffers = dlsym(egl_handle, "eglSwapBuffers");
+    g_log_tool.message(LogLevel::INFO, "drawSetup",
+                       std::format("eglSwapBuffers: {:p}", eglSwapBuffers));
     DobbyHook((void *)eglSwapBuffers, (void *)my_eglSwapBuffers, (void **)&old_eglSwapBuffers);
   }
   void *sym_input = DobbySymbolResolver(
       nullptr,
       "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
   if (sym_input != nullptr) {
+    g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("sym_input: {:p}", sym_input));
     DobbyHook((void *)sym_input, (void *)my_Input, (void **)&old_Input);
   }
 }
