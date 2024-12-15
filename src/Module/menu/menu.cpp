@@ -30,7 +30,8 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
                               log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
            break;
          default:
-           ImGui::Text("%s", log.message.c_str());
+           ImGui::Text("%s %s %s",
+                              log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
          }
        }
      }}};
