@@ -5,7 +5,7 @@
 #include "main.hpp"
 #include <mutex>
 #include <stdexcept>
-static const bool isMainMenuActivated = false;
+static bool isMainMenuActivated = false;
 Module::Module(const std::string &name, MenuType type)
     : m_name(name), m_type(type), m_onTick(nullptr), m_onEnable(nullptr), m_onDisable(nullptr),
       m_onLoad(nullptr), m_onDraw(nullptr) {
@@ -128,7 +128,7 @@ void loadAllModules() {
 void drawMenu(MenuType menuType) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   std::string MenuName;
-  if (!isMainMenuActived && menuType != MAIN_MENU) {
+  if (!isMainMenuActivated && menuType != MAIN_MENU) {
     return; //主菜单未激活，其他菜单不绘制
   }
   try {
