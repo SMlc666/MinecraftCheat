@@ -6,6 +6,11 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
     {MenuType::MAIN_MENU, []() { ImGui::Text("Main Menu"); }},
     {MenuType::COMBAT_MENU, []() { ImGui::Text("Combat Menu"); }},
     {MenuType::LOG_MENU, []() {
+       if (ImGui::Button("Clear"))
+         g_log_tool.cleanLogs();
+       ImGui::SameLine();
+       if (ImGui::Button("Save"))
+         g_log_tool.SaveToFile();
        auto Logs = g_log_tool.getLogs();
        for (auto &log : Logs) {
          switch (log.level) {
@@ -30,8 +35,8 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
                               log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
            break;
          default:
-           ImGui::Text("%s %s %s",
-                              log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
+           ImGui::Text("%s %s %s", log.getFormattedTime().c_str(), log.tag.c_str(),
+                       log.message.c_str());
          }
        }
      }}};
