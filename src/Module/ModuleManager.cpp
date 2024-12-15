@@ -64,6 +64,8 @@ void Module::onLoad() {
 }
 
 void Module::onDraw() {
+  if (m_onEnable || m_onDisable) {
+  }
   if (m_onDraw) {
     m_onDraw(this);
   }

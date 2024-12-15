@@ -7,7 +7,10 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
+#include <unordered_map>
 enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL };
+const std::unordered_map<LogLevel, std::string> LogLevelNames = {
+    {DEBUG, "DEBUG"}, {INFO, "INFO"}, {WARN, "WARN"}, {ERROR, "ERROR"}, {FATAL, "FATAL"}};
 static const std::string NormalLogFile = "/sdcard/MinecraftCheat/normal.log";
 struct LogEntry {
   LogLevel level;

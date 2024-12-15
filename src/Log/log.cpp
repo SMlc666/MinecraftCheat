@@ -1,5 +1,7 @@
 #include "log.hpp"
 #include <unordered_map>
+#include <format>
+
 void Log::message(LogLevel Level, const std::string &tag, const std::string &message) {
   tag_map.insert({tag, true});
   logs.push_back(LogEntry(Level, tag, message));
@@ -50,7 +52,7 @@ void Log::SaveToFile(const std::string &filename) {
     return;
   }
   for (const auto &log : logs) {
-    ofs << log.level << " " << log.tag << " " << log.message << std::endl;
+    
   }
   ofs.close();
 }

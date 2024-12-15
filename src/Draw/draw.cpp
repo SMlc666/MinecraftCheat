@@ -13,12 +13,12 @@
 #include "main.hpp"
 int g_GlHeight, g_GlWidth = 0; //opengl窗口的高度和宽度
 bool is_ImguiSetup = false;
-static const std::string IniFile = "/sdcard/MinecraftCheat/config.ini";
+static const std::string IniFile = "/sdcard/MinecraftCheat/imgui.ini";
 void imguiSetup() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  io.IniFilename = nullptr;
+  io.IniFilename = IniFile.c_str();
   io.DisplaySize = ImVec2((float)g_GlWidth, (float)g_GlHeight);
   ImGui_ImplAndroid_Init(nullptr);
   ImGui_ImplOpenGL3_Init("#version 300 es");

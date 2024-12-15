@@ -5,24 +5,29 @@ static void drawLog(std::vector<LogEntry> &Logs) {
   for (auto &log : Logs) {
     switch (log.level) {
     case LogLevel::DEBUG:
-      ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), "[DEBUG] %s %s %s",
-                         log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
+      ImGui::TextColored(ImVec4(0.0f, 0.0f, 1.0f, 1.0f), "[%s] %s %s %s",
+                         LogLevelNames.at(log.level).c_str(), log.getFormattedTime().c_str(),
+                         log.tag.c_str(), log.message.c_str());
       break;
     case LogLevel::INFO:
-      ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "[INFO] %s %s %s",
-                         log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
+      ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "[%s] %s %s %s",
+                         LogLevelNames.at(log.level).c_str(), log.getFormattedTime().c_str(),
+                         log.tag.c_str(), log.message.c_str());
       break;
     case LogLevel::WARN:
-      ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "[WARN] %s %s %s",
-                         log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
+      ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "[%s] %s %s %s",
+                         LogLevelNames.at(log.level).c_str(), log.getFormattedTime().c_str(),
+                         log.tag.c_str(), log.message.c_str());
       break;
     case LogLevel::ERROR:
-      ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "[ERROR] %s %s %s",
-                         log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
+      ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "[%s] %s %s %s",
+                         LogLevelNames.at(log.level).c_str(), log.getFormattedTime().c_str(),
+                         log.tag.c_str(), log.message.c_str());
       break;
     case LogLevel::FATAL:
-      ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "[FATAL] %s %s %s",
-                         log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
+      ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "[%s] %s %s %s",
+                         LogLevelNames.at(log.level).c_str(), log.getFormattedTime().c_str(),
+                         log.tag.c_str(), log.message.c_str());
       break;
     default:
       ImGui::Text("%s %s %s", log.getFormattedTime().c_str(), log.tag.c_str(), log.message.c_str());
