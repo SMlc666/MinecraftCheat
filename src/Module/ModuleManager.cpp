@@ -157,6 +157,7 @@ void drawMenu(MenuType menuType) {
 // 主绘制函数，根据需要调用
 void drawAllModules() {
   drawMenu(MAIN_MENU);
+  drawMenu(LOG_MENU);
 }
 } // namespace ModuleManager
 
