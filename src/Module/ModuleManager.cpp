@@ -5,7 +5,7 @@
 #include "main.hpp"
 #include <mutex>
 #include <stdexcept>
-static const bool isMainMenuActived = false;
+static const bool isMainMenuActivated = false;
 Module::Module(const std::string &name, MenuType type)
     : m_name(name), m_type(type), m_onTick(nullptr), m_onEnable(nullptr), m_onDisable(nullptr),
       m_onLoad(nullptr), m_onDraw(nullptr) {
@@ -139,7 +139,7 @@ void drawMenu(MenuType menuType) {
   }
   ImGui::Begin(MenuName.c_str()); // 使用数组中的字符串作为窗口标题
   if (menuType == MAIN_MENU)
-    ImGui::IsItemActivated(); // 主菜单激活
+    isMainMenuActivated = ImGui::IsItemActivated(); // 主菜单激活
   try {
     MenuFunctions.at(menuType); // 调用对应菜单的绘制函数
   } catch (const std::out_of_range &e) {
