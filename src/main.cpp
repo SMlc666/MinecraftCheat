@@ -1,5 +1,6 @@
 #include <thread>
 #include <jni.h>
+#include <filesystem>
 #include "main.hpp"
 #include "draw.hpp"
 #include "ModuleManager.hpp"
@@ -7,6 +8,10 @@
 JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
 void setup() {
+  std::filesystem::path path(CheatDir);
+  if (!std::filesystem::exists(path)) {
+    std::filesystem::create_directory(path);
+  }
   drawSetup();
   moduleSetup();
 }
