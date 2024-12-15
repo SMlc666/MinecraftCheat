@@ -60,5 +60,5 @@ void ScriptSetup() {
   if (!std::filesystem::exists(m_path)) {
     std::filesystem::create_directory(m_path);
   }
-  ScriptManager::reloadScripts(NormalScriptPath);
+  //ScriptManager::reloadScripts(NormalScriptPath);
 }
