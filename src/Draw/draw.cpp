@@ -22,7 +22,7 @@ void imguiSetup() {
   io.DisplaySize = ImVec2((float)g_GlWidth, (float)g_GlHeight);
   ImGui_ImplAndroid_Init(nullptr);
   ImGui_ImplOpenGL3_Init("#version 300 es");
-  ImGui::StyleColorsLight();
+  ImGui::StyleColorsDark();
   ImGui::Android_LoadSystemFont(22.0f);
   ImGui::GetStyle().ScaleAllSizes(3.0f);
 }
