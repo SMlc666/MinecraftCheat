@@ -56,6 +56,7 @@ target("cheat")
         ModuleDir,
         DrawDir,
         LogDir,
+        ScriptDir,
         IncludeDir
     )
     on_load(function (target)
