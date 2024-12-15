@@ -139,7 +139,7 @@ void drawMenu(MenuType menuType) {
   }
   isMainMenuActivated = ImGui::Begin(MenuName.c_str()); // 使用数组中的字符串作为窗口标题
   try {
-    MenuFunctions.at(menuType); // 调用对应菜单的绘制函数
+    MenuFunctions.at(menuType)(); // 调用对应菜单的绘制函数
   } catch (const std::out_of_range &e) {
     g_log_tool.message(LogLevel::ERROR, "drawMenu",
                        "No such menu function" + std::string(e.what()));
