@@ -2,6 +2,7 @@
 #include <unordered_map>
 
 void Log::message(LogLevel Level, const std::string &tag, const std::string &message) {
+  tag_map.insert({tag, true});
   logs.push_back(LogEntry(Level, tag, message));
 }
 
