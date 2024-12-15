@@ -128,9 +128,10 @@ void loadAllModules() {
 void drawMenu(MenuType menuType) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   std::string MenuName;
+  /*
   if (!isMainMenuActived || menuType != MAIN_MENU) {
     return; //主菜单未激活，其他菜单不绘制
-  }
+  }*/
   try {
     MenuName = MenuNames.at(menuType);
   } catch (const std::out_of_range &e) {
