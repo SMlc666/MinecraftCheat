@@ -7,14 +7,23 @@
 Script::Script(const std::filesystem::path &m_path)
     : path(m_path), name(m_path.filename().string()) {
   lua_State *L = luaL_newstate();
+  if (!L)
+    throw std::runtime_error("Failed to create Lua state");
   luaL_openlibs(L);
-  luaL_loadfile(L, m_path.string().c_str());
-  if (lua_pcall(L, 0, 0, 0) != 0) {
+  if (luaL_loadfile(L, m_path.string().c_str()) != 0) {
+    lua_close(L);
     throw std::runtime_error(std::format("Failed to load script: {}", m_path.string()));
+  }
+  if (lua_pcall(L, 0, 0, 0) != 0) {
+    std::string errorMsg = lua_tostring(L, -1);
+    lua_close(L);
+    throw std::runtime_error(
+        std::format("Failed to execute Lua script: {} Error: {}", m_path.string(), errorMsg));
   }
 }
 Script::~Script() {
-  lua_close(L);
+  if (L)
+    lua_close(L);
 }
 std::string Script::getName() const {
   return name;

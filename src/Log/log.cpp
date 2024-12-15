@@ -5,6 +5,8 @@
 void Log::message(LogLevel Level, const std::string &tag, const std::string &message) {
   tag_map.insert({tag, true});
   logs.push_back(LogEntry(Level, tag, message));
+  if (Level == LogLevel::ERROR || Level == LogLevel::FATAL)
+    SaveToFile();
 }
 
 const std::vector<LogEntry> Log::getLogs() const {
