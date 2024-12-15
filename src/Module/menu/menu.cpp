@@ -37,13 +37,13 @@ static void drawLog(std::vector<LogEntry> &Logs) {
 const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
     {MenuType::MAIN_MENU, []() { ImGui::Text("Main Menu"); }},
     {MenuType::COMBAT_MENU, []() { ImGui::Text("Combat Menu"); }},
-    {MenuType::LOG_MENU, []() {
+    {MenuType::LOG_MENU,
+     []() {
        if (ImGui::Button("Clear"))
          g_log_tool.cleanLogs();
        ImGui::SameLine();
        if (ImGui::Button("Save"))
          g_log_tool.SaveToFile();
-       ImGui::SameLine();
        if (ImGui::TreeNode("tags")) {
          for (auto &tag : g_log_tool.getTagMap()) {
            if (ImGui::TreeNode(tag.first.c_str())) {
@@ -61,4 +61,5 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
          drawLog(Logs);
          ImGui::TreePop();
        }
-     }}};
+     }},
+    {MenuType::SCRIPT_MENU, []() { ImGui::Text("Script Menu"); }}};

@@ -52,7 +52,7 @@ void Log::SaveToFile(const std::string &filename) {
     return;
   }
   for (const auto &log : logs) {
-    ofs << std::format("[{}] [{}] [{}] [{}]", log.getFormattedTime(), LogLevelNames.at(log.level),
+    ofs << std::format("[{}] [{}] [{}] {}", log.getFormattedTime(), LogLevelNames.at(log.level),
                        log.tag, log.message)
         << std::endl;
   }

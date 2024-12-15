@@ -11,7 +11,7 @@ void setup() {
   std::filesystem::path path(CheatDir);
   if (!std::filesystem::exists(path)) {
     std::filesystem::create_directory(path);
-  }
+  } //初始化目录
   drawSetup();
   moduleSetup();
 }
