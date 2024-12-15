@@ -30,12 +30,14 @@ struct LogEntry {
 class Log {
 private:
   std::vector<LogEntry> logs;
+  std::unordered_map<std::string, bool> tag_map;
 
 public:
   void message(LogLevel level, const std::string &tag, const std::string &msg);
   const std::vector<LogEntry> getLogs() const;
   const std::vector<LogEntry> getLogs(LogLevel Level) const;
   const std::vector<LogEntry> getLogs(std::string tag) const;
+  const std::unordered_map<std::string, bool> getTagMap() const;
   void cleanLogs();
   void cleanLogs(LogLevel Level);
   void cleanLogs(std::string tag);

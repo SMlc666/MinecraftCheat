@@ -1,4 +1,5 @@
 #include "log.hpp"
+#include <unordered_map>
 
 void Log::message(LogLevel Level, const std::string &tag, const std::string &message) {
   logs.push_back(LogEntry(Level, tag, message));
@@ -26,7 +27,9 @@ const std::vector<LogEntry> Log::getLogs(std::string tag) const {
   }
   return result;
 }
-
+const std::unordered_map<std::string, bool> Log::getTagMap() const {
+  return tag_map;
+}
 void Log::cleanLogs() {
   logs.clear();
 }
