@@ -41,6 +41,6 @@ public:
   void cleanLogs();
   void cleanLogs(LogLevel Level);
   void cleanLogs(std::string tag);
-  void SaveToFile(const std::string &filename = NormalLogFile) const;
+  void SaveToFile(const std::string &filename = NormalLogFile);
 };
 extern Log g_log_tool;
