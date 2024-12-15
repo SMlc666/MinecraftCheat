@@ -27,7 +27,6 @@ namespace ScriptManager {
 std::vector<Script> Scripts = {};
 std::mutex ScriptsMutex;
 void addScript(const std::filesystem::path &path) {
-  std::lock_guard<std::mutex> lock(ScriptsMutex);
   try {
     Script newScript(path);
     Scripts.emplace_back(std::move(newScript));
@@ -37,7 +36,6 @@ void addScript(const std::filesystem::path &path) {
   }
 }
 void clearScripts() {
-  std::lock_guard<std::mutex> lock(ScriptsMutex);
   Scripts.clear();
 }
 void reloadScripts(const std::filesystem::path &path) {
@@ -60,5 +58,5 @@ void ScriptSetup() {
   if (!std::filesystem::exists(m_path)) {
     std::filesystem::create_directory(m_path);
   }
-  //ScriptManager::reloadScripts(NormalScriptPath);
+  ScriptManager::reloadScripts(NormalScriptPath);
 }
