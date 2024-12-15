@@ -7,16 +7,20 @@
 Script::Script(const std::filesystem::path &m_path)
     : path(m_path), name(m_path.filename().string()) {
   lua_State *L = luaL_newstate();
-  if (!L)
+  if (!L) {
+    L = nullptr;
     throw std::runtime_error("Failed to create Lua state");
+  }
   luaL_openlibs(L);
   if (luaL_loadfile(L, m_path.string().c_str()) != 0) {
     lua_close(L);
+    L = nullptr;
     throw std::runtime_error(std::format("Failed to load script: {}", m_path.string()));
   }
   if (lua_pcall(L, 0, 0, 0) != 0) {
     std::string errorMsg = lua_tostring(L, -1);
     lua_close(L);
+    L = nullptr;
     throw std::runtime_error(
         std::format("Failed to execute Lua script: {} Error: {}", m_path.string(), errorMsg));
   }
@@ -24,6 +28,7 @@ Script::Script(const std::filesystem::path &m_path)
 Script::~Script() {
   if (L)
     lua_close(L);
+  L = nullptr;
 }
 std::string Script::getName() const {
   return name;
@@ -67,5 +72,5 @@ void ScriptSetup() {
   if (!std::filesystem::exists(m_path)) {
     std::filesystem::create_directory(m_path);
   }
-  //ScriptManager::reloadScripts(NormalScriptPath);
+  ScriptManager::reloadScripts(NormalScriptPath);
 }
