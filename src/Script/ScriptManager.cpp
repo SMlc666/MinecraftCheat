@@ -1,76 +1,60 @@
-#include <filesystem>
 #include "ScriptManager.hpp"
-#include "log.hpp"
-#include <mutex>
-#include <format>
-#include <vector>
-Script::Script(const std::filesystem::path &m_path)
-    : path(m_path), name(m_path.filename().string()) {
-  lua_State *L = luaL_newstate();
-  if (!L) {
-    L = nullptr;
-    throw std::runtime_error("Failed to create Lua state");
-  }
+#include <memory>
+#include <dirent.h>
+#include <sys/stat.h>
+
+Script::Script(std::filesystem::path m_path) : path(m_path) {
+  L = luaL_newstate();
   luaL_openlibs(L);
-  if (luaL_loadfile(L, m_path.string().c_str()) != 0) {
+  if (luaL_loadfile(L, m_path.string().c_str()) != LUA_OK) {
     lua_close(L);
     L = nullptr;
-    throw std::runtime_error(std::format("Failed to load script: {}", m_path.string()));
+    throw std::runtime_error(std::format("Error loading script: {}", m_path.string()));
   }
-  if (lua_pcall(L, 0, 0, 0) != 0) {
+  if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
     std::string errorMsg = lua_tostring(L, -1);
     lua_close(L);
     L = nullptr;
     throw std::runtime_error(
-        std::format("Failed to execute Lua script: {} Error: {}", m_path.string(), errorMsg));
+        std::format("Error running script: {} - {}", m_path.string(), errorMsg));
   }
+  name = path.filename().string();
 }
 Script::~Script() {
   if (L)
     lua_close(L);
-  L = nullptr;
 }
 std::string Script::getName() const {
   return name;
 }
-std::string Script::getFilePath() const {
+std::string Script::getFile() const {
   return path.string();
 }
-
 namespace ScriptManager {
-std::vector<Script> Scripts = {};
-std::mutex ScriptsMutex;
-void addScript(const std::filesystem::path &path) {
-  try {
-    Script newScript(path);
-    Scripts.emplace_back(std::move(newScript));
-  } catch (const std::exception &e) {
-    g_log_tool.message(LogLevel::ERROR, "ScriptManager",
-                       std::format("Exception caught: {}", e.what()));
-  }
+std::vector<std::shared_ptr<Script>> scripts;
+const std::vector<std::shared_ptr<Script>> &getScripts() {
+  return scripts;
+}
+void addScript(std::filesystem::path path) {
+  scripts.emplace_back(std::make_shared<Script>(path));
 }
 void clearScripts() {
-  Scripts.clear();
+  scripts.clear();
 }
-void reloadScripts(const std::filesystem::path &path) {
-  std::lock_guard<std::mutex> lock(ScriptsMutex);
+void reloadScripts(std::string path) {
   clearScripts();
-  for (const auto &entry : std::filesystem::directory_iterator(path)) {
-    if (std::filesystem::is_regular_file(entry.path())) {
+  std::filesystem::path p(path);
+  struct stat statbuf;
+  if (stat(p.string().c_str(), &statbuf) != 0) {
+    throw std::runtime_error(std::format("Error accessing directory: {}", p.string()));
+  } //判断是否是文件夹
+  for (auto &entry : std::filesystem::directory_iterator(p)) {
+    if (entry.is_regular_file() && entry.path().extension() == ".lua") {
       addScript(entry.path());
     }
   }
 }
-const std::vector<Script> &getScripts() {
-  std::lock_guard<std::mutex> lock(ScriptsMutex);
-  return Scripts;
-}
 } // namespace ScriptManager
-
 void ScriptSetup() {
-  std::filesystem::path m_path(NormalScriptPath);
-  if (!std::filesystem::exists(m_path)) {
-    std::filesystem::create_directory(m_path);
-  }
-  ScriptManager::reloadScripts(NormalScriptPath);
+  ScriptManager::reloadScripts();
 }

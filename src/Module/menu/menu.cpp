@@ -68,8 +68,9 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
        if (ImGui::Button("Reload Scripts"))
          ScriptManager::reloadScripts();
        for (auto &script : Scripts) {
-         if (ImGui::TreeNodeEx(script.getName().c_str())) {
-           ImGui::Text("file: %s", script.getFilePath().c_str());
+         if (ImGui::TreeNodeEx(script->getName().c_str())) {
+           ImGui::Text("file: %s", script->getFile().c_str());
+           ImGui::TreePop();
          }
        }
      }}};
