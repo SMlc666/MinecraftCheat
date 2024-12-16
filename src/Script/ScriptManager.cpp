@@ -56,5 +56,9 @@ void reloadScripts(std::string path) {
 }
 } // namespace ScriptManager
 void ScriptSetup() {
+  std::filesystem::path p(NormalScriptPath);
+  if (!std::filesystem::exists(p)) {
+    std::filesystem::create_directory(p);
+  }
   ScriptManager::reloadScripts();
 }
