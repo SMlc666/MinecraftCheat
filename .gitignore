@@ -1,4 +1,5 @@
 .vscode/
+.cache/
 # Xmake cache
 .xmake/
 build/
@@ -7,3 +8,4 @@ build/
 .DS_Store
 
 
+/compile_commands.json

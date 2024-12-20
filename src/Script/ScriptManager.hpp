@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <mutex>
 #include <filesystem>
 #include <memory>
 #include "Lua/lua.hpp"

@@ -17,7 +17,7 @@ void setup() {
   moduleSetup();
   ScriptSetup();
 }
-extern "C" jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *key) {
+extern "C" auto JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) -> jint {//NOLINT
   g_jvm = vm;
   JNIEnv *m_env = nullptr;
   vm->GetEnv((void **)&m_env, JNI_VERSION_1_6);

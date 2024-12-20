@@ -2,7 +2,6 @@
 #include "imgui/imgui.h"
 #include "cheat/KillAura/KillAura.hpp"
 #include "log.hpp"
-#include "main.hpp"
 #include <mutex>
 #include <stdexcept>
 static bool isMainMenuActivated = false;
