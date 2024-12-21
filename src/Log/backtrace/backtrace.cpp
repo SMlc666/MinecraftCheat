@@ -1,4 +1,5 @@
 #include "log.hpp"
+#include "backtrace.hpp"
 #include <dlfcn.h>
 #include <format>
 #include <unwind.h>
