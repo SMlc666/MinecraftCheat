@@ -5,7 +5,9 @@
 #include <fstream>
 namespace Config {
 rapidjson::Document config;
+void saveConfig() {
 }
+} // namespace Config
 void configSetup() {
   std::ifstream configFile(NormalConfigPath, std::ios::out | std::ios::in | std::ios::app);
   if (!configFile.is_open()) {
