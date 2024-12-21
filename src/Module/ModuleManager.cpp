@@ -127,7 +127,6 @@ void loadAllModules() {
     }
   }
 }
-
 void drawMenu(MenuType menuType) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   std::string MenuName;
@@ -140,7 +139,14 @@ void drawMenu(MenuType menuType) {
     g_log_tool.message(LogLevel::ERROR, "drawMenu", "No such menu type" + std::string(e.what()));
     return; // 防止崩溃
   }
-  isMainMenuActivated = ImGui::Begin(MenuName.c_str()); // 使用数组中的字符串作为窗口标题
+  bool menuActive = ImGui::Begin(MenuName.c_str()); // 使用数组中的字符串作为窗口标题
+  if (menuType == MAIN_MENU) {
+    isMainMenuActivated = menuActive;
+  }
+  if (!menuActive) {
+    ImGui::End();
+    return;
+  }
   try {
     MenuFunctions.at(menuType)(); // 调用对应菜单的绘制函数
   } catch (const std::out_of_range &e) {
