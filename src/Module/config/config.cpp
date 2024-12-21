@@ -2,7 +2,6 @@
 #include "log.hpp"
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
-#include "rapidjson/filewritestream.h"
 #include "rapidjson/error/en.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
