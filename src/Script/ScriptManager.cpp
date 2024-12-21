@@ -1,7 +1,7 @@
 #include "ScriptManager.hpp"
 #include "API/print/print.hpp"
 #include <LuaBridge/LuaBridge.h>
-#include "Lua/lua.h"
+#include "Lua/lua.hpp"
 #include "LuaBridge/detail/Namespace.h"
 #include <memory>
 #include <dirent.h>
