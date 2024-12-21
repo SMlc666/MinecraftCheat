@@ -80,4 +80,8 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
        if (ImGui::Button("Save")) {
          Config::saveConfig();
        }
+       ImGui::SameLine();
+       if (ImGui::Button("Load")) {
+         Config::loadConfig();
+       }
      }}};
