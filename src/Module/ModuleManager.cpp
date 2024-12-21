@@ -167,6 +167,7 @@ void drawAllModules() {
   drawMenu(LOG_MENU);
   drawMenu(SCRIPT_MENU);
   drawMenu(CONFIG_MENU);
+  drawMenu(DEBUG_MENU);
 }
 } // namespace ModuleManager
 

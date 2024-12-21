@@ -3,6 +3,7 @@
 #include "log.hpp"
 #include "ScriptManager.hpp"
 #include "config/config.hpp"
+#include <cstdlib>
 #include <thread>
 #include <unwind.h>
 static void drawLog(std::vector<LogEntry> &Logs) {
@@ -82,7 +83,8 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
          }
        }
      }},
-    {MenuType::CONFIG_MENU, []() {
+    {MenuType::CONFIG_MENU,
+     []() {
        if (ImGui::Button("Save")) {
          try {
            Config::saveConfig();
@@ -108,6 +110,27 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
        }
        if (ImGui::TreeNode("config")) {
          ImGui::Text("config: %s", Config::getString(true).c_str());
+         ImGui::TreePop();
+       }
+     }},
+    {MenuType::DEBUG_MENU, []() {
+       if (ImGui::TreeNode("Crash Test")) {
+         if (ImGui::Button("Test Crash Abort")) {
+           std::abort();
+         }
+         ImGui::SameLine();
+         if (ImGui::Button("Test Crash Throw")) {
+           throw std::runtime_error("Test Crash Throw");
+         }
+         ImGui::SameLine();
+         if (ImGui::Button("Test Crash Null Pointer")) {
+           int *ptr = nullptr;
+           *ptr = 0;
+         }
+         ImGui::SameLine();
+         if (ImGui::Button("Test Crash SIGSEGV")) {
+           *(int *)0 = 0; //NOLINT
+         }
          ImGui::TreePop();
        }
      }}};
