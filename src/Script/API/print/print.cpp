@@ -1,4 +1,4 @@
-#include "Lua/lua.h"
+#include "Lua/lua.hpp"
 #include "log.hpp"
 #include <sstream>
 #include "print.hpp"
