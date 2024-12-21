@@ -84,4 +84,8 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
        if (ImGui::Button("Load")) {
          Config::loadConfig();
        }
+       ImGui::SameLine();
+       if (ImGui::Button("Reset")) {
+         Config::initConfig();
+       }
      }}};

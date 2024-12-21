@@ -12,6 +12,10 @@
 #include <stdexcept>
 namespace Config {
 rapidjson::Document config;
+void initConfig() {
+  config = rapidjson::Document();
+  config.SetObject();
+}
 void saveConfig() {
   std::ofstream configFile(NormalConfigPath, std::ios::out);
   if (!configFile.is_open()) {
@@ -33,7 +37,7 @@ void loadConfig() {
   rapidjson::IStreamWrapper isw(configFile);
   Config::config.ParseStream(isw);
   if (Config::config.HasParseError()) {
-    Config::config = rapidjson::Document();
+    initConfig();
     configFile.close();
     throw std::runtime_error(
         std::format("Failed to parse config file: {}",
