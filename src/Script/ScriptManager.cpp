@@ -2,8 +2,8 @@
 #include <memory>
 #include <dirent.h>
 #include <sys/stat.h>
-
-Script::Script(std::filesystem::path m_path) : path(m_path) {
+namespace ScriptManager {
+Script::Script(std::filesystem::path &m_path) : path(m_path) {
   L = luaL_newstate();
   luaL_openlibs(L);
   if (luaL_loadfile(L, m_path.string().c_str()) != LUA_OK) {
@@ -21,8 +21,9 @@ Script::Script(std::filesystem::path m_path) : path(m_path) {
   name = path.filename().string();
 }
 Script::~Script() {
-  if (L)
+  if (L != nullptr) {
     lua_close(L);
+  }
 }
 std::string Script::getName() const {
   return name;
@@ -30,7 +31,6 @@ std::string Script::getName() const {
 std::string Script::getFile() const {
   return path.string();
 }
-namespace ScriptManager {
 std::vector<std::shared_ptr<Script>> scripts;
 const std::vector<std::shared_ptr<Script>> &getScripts() {
   return scripts;
@@ -41,14 +41,14 @@ void addScript(std::filesystem::path path) {
 void clearScripts() {
   scripts.clear();
 }
-void reloadScripts(std::string path) {
+void reloadScripts(const std::string &path) {
   clearScripts();
-  std::filesystem::path p(path);
+  std::filesystem::path scriptPath(path);
   struct stat statbuf;
-  if (stat(p.string().c_str(), &statbuf) != 0) {
-    throw std::runtime_error(std::format("Error accessing directory: {}", p.string()));
+  if (stat(scriptPath.string().c_str(), &statbuf) != 0) {
+    throw std::runtime_error(std::format("Error accessing directory: {}", scriptPath.string()));
   } //判断是否是文件夹
-  for (auto &entry : std::filesystem::directory_iterator(p)) {
+  for (const auto &entry : std::filesystem::directory_iterator(scriptPath)) {
     if (entry.is_regular_file() && entry.path().extension() == ".lua") {
       addScript(entry.path());
     }
@@ -56,9 +56,9 @@ void reloadScripts(std::string path) {
 }
 } // namespace ScriptManager
 void ScriptSetup() {
-  std::filesystem::path p(NormalScriptPath);
-  if (!std::filesystem::exists(p)) {
-    std::filesystem::create_directory(p);
+  std::filesystem::path scriptsPath(NormalScriptPath);
+  if (!std::filesystem::exists(scriptsPath)) {
+    std::filesystem::create_directory(scriptsPath);
   }
   ScriptManager::reloadScripts();
 }

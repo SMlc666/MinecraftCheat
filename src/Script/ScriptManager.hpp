@@ -5,9 +5,11 @@
 #include <memory>
 #include "Lua/lua.hpp"
 static const std::string NormalScriptPath = "/sdcard/MinecraftCheat/Scripts";
+
+namespace ScriptManager {
 class Script {
 public:
-  Script(std::filesystem::path m_path);
+  Script(std::filesystem::path &m_path);
   ~Script();
   std::string getName() const;
   std::string getFile() const;
@@ -17,9 +19,8 @@ private:
   std::filesystem::path path;
   lua_State *L;
 };
-namespace ScriptManager {
 const std::vector<std::shared_ptr<Script>> &getScripts();
-void reloadScripts(std::string path = NormalScriptPath);
+void reloadScripts(const std::string &path = NormalScriptPath);
 } // namespace ScriptManager
 
 void ScriptSetup();
