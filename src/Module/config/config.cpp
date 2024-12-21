@@ -35,7 +35,7 @@ void configSetup() {
     g_log_tool.message(LogLevel::ERROR, "Config",
                        std::format("Failed to parse config file: {}",
                                    rapidjson::GetParseError_En(Config::config.GetParseError())));
-    Config::config.Clear();
+    Config::config = rapidjson::Document();
     return;
   }
   configFile.close();
