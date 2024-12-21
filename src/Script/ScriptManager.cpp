@@ -1,6 +1,8 @@
 #include "ScriptManager.hpp"
 #include "API/print/print.hpp"
+#include <LuaBridge/LuaBridge.h>
 #include "Lua/lua.h"
+#include "LuaBridge/detail/Namespace.h"
 #include <memory>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -8,7 +10,7 @@ namespace ScriptManager {
 Script::Script(std::filesystem::path &m_path) : path(m_path) {
   L = luaL_newstate();
   luaL_openlibs(L);
-
+  luabridge::getGlobalNamespace(L).addFunction("print", ScriptAPI::print);
   if (luaL_loadfile(L, m_path.string().c_str()) != LUA_OK) {
     lua_close(L);
     L = nullptr;
