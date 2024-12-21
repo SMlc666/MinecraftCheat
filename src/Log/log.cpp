@@ -1,7 +1,7 @@
 #include "log.hpp"
 #include <unordered_map>
 #include <format>
-
+#include <fstream>
 void Log::message(LogLevel Level, const std::string &tag, const std::string &message) {
   tag_map.insert({tag, true});
   logs.push_back(LogEntry(Level, tag, message));

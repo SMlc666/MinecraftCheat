@@ -1,12 +1,7 @@
 #pragma once
 #include <vector>
-#include <algorithm>
 #include <string>
-#include <fstream>
-#include <exception>
 #include <chrono>
-#include <iomanip>
-#include <sstream>
 #include <unordered_map>
 enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL };
 const std::unordered_map<LogLevel, std::string> LogLevelNames = {

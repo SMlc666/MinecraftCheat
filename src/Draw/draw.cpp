@@ -10,7 +10,6 @@
 #include <GLES3/gl3.h>
 #include <dlfcn.h>
 #include <format>
-#include "main.hpp"
 int g_GlHeight, g_GlWidth = 0; //opengl窗口的高度和宽度
 bool is_ImguiSetup = false;
 static const std::string IniFile = "/sdcard/MinecraftCheat/imgui.ini";

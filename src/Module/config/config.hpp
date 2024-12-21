@@ -1,2 +1,6 @@
 #pragma once
-#include "rapidjson/rapidjson.h"
+#include <string>
+
+static const std::string NormalConfigPath = "/sdcard/MinecraftCheat/config.json";
+
+extern void configSetup();
