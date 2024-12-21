@@ -1,1 +1,1 @@
-Checks: "modernize-*,readability-*,performance-*,clang-analyzer-*,bugprone-*"
+Checks: "modernize-*,readability-*,performance-*,clang-analyzer-*,bugprone-*","-modernize-use-trailing-return-type"

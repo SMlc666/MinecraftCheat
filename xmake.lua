@@ -43,6 +43,7 @@ target("cheat")
     set_kind("shared")
     add_files("src/main.cpp")--main src file
     add_files(ScriptDir.. "/*.cpp")
+    add_files(ScriptDir.."/API/**.cpp")
     add_files(DrawDir.. "/*.cpp")
     add_files(LogDir.. "/*.cpp")
     add_files(ModuleDir.. "/**.cpp|examples/example.cpp")

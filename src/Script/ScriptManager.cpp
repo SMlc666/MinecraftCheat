@@ -1,4 +1,6 @@
 #include "ScriptManager.hpp"
+#include "API/print/print.hpp"
+#include "Lua/lua.h"
 #include <memory>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -6,6 +8,7 @@ namespace ScriptManager {
 Script::Script(std::filesystem::path &m_path) : path(m_path) {
   L = luaL_newstate();
   luaL_openlibs(L);
+  lua_register(L, "print", ScriptAPI::print);
   if (luaL_loadfile(L, m_path.string().c_str()) != LUA_OK) {
     lua_close(L);
     L = nullptr;
