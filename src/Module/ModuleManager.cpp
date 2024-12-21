@@ -2,6 +2,7 @@
 #include "imgui/imgui.h"
 #include "cheat/KillAura/KillAura.hpp"
 #include "log.hpp"
+#include "menu/menu.hpp"
 #include <mutex>
 #include <stdexcept>
 static bool isMainMenuActivated = false;
@@ -158,6 +159,7 @@ void drawAllModules() {
   drawMenu(MAIN_MENU);
   drawMenu(LOG_MENU);
   drawMenu(SCRIPT_MENU);
+  drawMenu(CONFIG_MENU);
 }
 } // namespace ModuleManager
 
