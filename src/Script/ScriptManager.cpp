@@ -3,6 +3,7 @@
 #include <LuaBridge/LuaBridge.h>
 #include "Lua/lua.hpp"
 #include "LuaBridge/detail/Namespace.h"
+#include "log.hpp"
 #include <memory>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -41,7 +42,11 @@ const std::vector<std::shared_ptr<Script>> &getScripts() {
   return scripts;
 }
 void addScript(std::filesystem::path path) {
-  scripts.emplace_back(std::make_shared<Script>(path));
+  try {
+    scripts.emplace_back(std::make_shared<Script>(path));
+  } catch (const std::exception &e) {
+    g_log_tool.message(LogLevel::ERROR, "Script", std::string(e.what()));
+  }
 }
 void clearScripts() {
   scripts.clear();
