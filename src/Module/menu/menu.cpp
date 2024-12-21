@@ -78,14 +78,30 @@ const std::unordered_map<MenuType, std::function<void()>> MenuFunctions = {
      }},
     {MenuType::CONFIG_MENU, []() {
        if (ImGui::Button("Save")) {
-         Config::saveConfig();
+         try {
+           Config::saveConfig();
+         } catch (const std::exception &e) {
+           g_log_tool.message(LogLevel::ERROR, "Config", e.what());
+         }
        }
        ImGui::SameLine();
        if (ImGui::Button("Load")) {
-         Config::loadConfig();
+         try {
+           Config::loadConfig();
+         } catch (const std::exception &e) {
+           g_log_tool.message(LogLevel::ERROR, "Config", e.what());
+         }
        }
        ImGui::SameLine();
        if (ImGui::Button("Reset")) {
-         Config::initConfig();
+         try {
+           Config::initConfig();
+         } catch (const std::exception &e) {
+           g_log_tool.message(LogLevel::ERROR, "Config", e.what());
+         }
+       }
+       if (ImGui::TreeNode("config")) {
+         ImGui::Text("config: %s", Config::getString(true).c_str());
+         ImGui::TreePop();
        }
      }}};

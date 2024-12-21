@@ -12,6 +12,18 @@
 #include <stdexcept>
 namespace Config {
 rapidjson::Document config;
+std::string getString(bool is_pretty) {
+  if (!config.IsObject()) {
+    return "";
+  }
+  if (is_pretty) {
+    rapidjson::StringBuffer buffer;
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+    config.Accept(writer);
+    return buffer.GetString();
+  }
+  return config.GetString();
+}
 void initConfig() {
   config = rapidjson::Document();
   config.SetObject();
