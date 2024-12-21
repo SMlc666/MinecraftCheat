@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <functional>
-#include <unordered_map>
 #include <memory>
 #include "menu/menu.hpp"
 
@@ -38,8 +37,8 @@ namespace ModuleManager {
 void addModule(std::shared_ptr<Module> module);
 void enableModuleByName(const std::string &name);
 void disableModuleByName(const std::string &name);
-void enableModule(std::shared_ptr<Module> module);
-void disableModule(std::shared_ptr<Module> module);
+void enableModule(std::shared_ptr<Module> &module);
+void disableModule(std::shared_ptr<Module> &module);
 void tickAllModules();
 void loadAllModules();
 void drawAllModules();

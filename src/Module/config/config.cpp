@@ -42,7 +42,7 @@ void saveConfig() {
   rapidjson::StringBuffer buffer;
   rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
   Config::config.Accept(writer);
-  configFile.write(buffer.GetString(), buffer.GetSize());
+  configFile.write(buffer.GetString(), static_cast<std::streamsize>(buffer.GetSize()));
   configFile.close();
 }
 void loadConfig() {

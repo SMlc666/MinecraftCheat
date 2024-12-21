@@ -5,6 +5,7 @@
 #include "menu/menu.hpp"
 #include <mutex>
 #include <stdexcept>
+#include <utility>
 static bool isMainMenuActivated = false;
 Module::Module(const std::string &name, MenuType type)
     : m_name(name), m_type(type), m_onTick(nullptr), m_onEnable(nullptr), m_onDisable(nullptr),
@@ -20,23 +21,23 @@ MenuType Module::getMenuType() const {
 }
 
 void Module::setOnTick(std::function<void(Module *)> func) {
-  m_onTick = func;
+  m_onTick = std::move(func);
 }
 
 void Module::setOnEnable(std::function<void(Module *)> func) {
-  m_onEnable = func;
+  m_onEnable = std::move(func);
 }
 
 void Module::setOnDisable(std::function<void(Module *)> func) {
-  m_onDisable = func;
+  m_onDisable = std::move(func);
 }
 
 void Module::setOnLoad(std::function<void(Module *)> func) {
-  m_onLoad = func;
+  m_onLoad = std::move(func);
 }
 
 void Module::setOnDraw(std::function<void(Module *)> func) {
-  m_onDraw = func;
+  m_onDraw = std::move(func);
 }
 
 void Module::onTick() {
@@ -74,35 +75,35 @@ namespace ModuleManager {
 std::unordered_map<std::string, std::shared_ptr<Module>> modules;
 std::mutex moduleMutex; // 用于线程安全
 
-void addModule(std::shared_ptr<Module> module) {
+void addModule(std::shared_ptr<Module> module) { //NOLINT
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   modules[module->getName()] = module;
 }
 
 void enableModuleByName(const std::string &name) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  auto it = modules.find(name);
-  if (it != modules.end()) {
-    it->second->onEnable();
+  auto moduleIterator = modules.find(name);
+  if (moduleIterator != modules.end()) {
+    moduleIterator->second->onEnable();
   }
 }
 
 void disableModuleByName(const std::string &name) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  auto it = modules.find(name);
-  if (it != modules.end()) {
-    it->second->onDisable();
+  auto moduleIterator = modules.find(name);
+  if (moduleIterator != modules.end()) {
+    moduleIterator->second->onDisable();
   }
 }
 
-void enableModule(std::shared_ptr<Module> module) {
+void enableModule(std::shared_ptr<Module> &module) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   if (module) {
     module->onEnable();
   }
 }
 
-void disableModule(std::shared_ptr<Module> module) {
+void disableModule(std::shared_ptr<Module> &module) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   if (module) {
     module->onDisable();

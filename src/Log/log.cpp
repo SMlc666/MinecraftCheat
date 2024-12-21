@@ -7,15 +7,16 @@ void Log::message(LogLevel Level, const std::string &tag, const std::string &mes
   std::lock_guard<std::mutex> lock(mtx);
   tag_map.insert({tag, true});
   logs.push_back(LogEntry(Level, tag, message));
-  if (Level == LogLevel::ERROR || Level == LogLevel::FATAL)
+  if (Level == LogLevel::ERROR || Level == LogLevel::FATAL) {
     SaveToFile();
+  }
 }
 
-const std::vector<LogEntry> Log::getLogs() const {
+std::vector<LogEntry> Log::getLogs() const {
   std::lock_guard<std::mutex> lock(mtx);
   return logs;
 }
-const std::vector<LogEntry> Log::getLogs(LogLevel Level) const {
+std::vector<LogEntry> Log::getLogs(LogLevel Level) const {
   std::lock_guard<std::mutex> lock(mtx);
   std::vector<LogEntry> result;
   for (const auto &log : logs) { // 使用范围 for 循环
@@ -25,8 +26,7 @@ const std::vector<LogEntry> Log::getLogs(LogLevel Level) const {
   }
   return result;
 }
-
-const std::vector<LogEntry> Log::getLogs(std::string tag) const {
+std::vector<LogEntry> Log::getLogs(const std::string &tag) const {
   std::lock_guard<std::mutex> lock(mtx);
   std::vector<LogEntry> result;
   for (const auto &log : logs) { // 使用范围 for 循环
@@ -36,7 +36,7 @@ const std::vector<LogEntry> Log::getLogs(std::string tag) const {
   }
   return result;
 }
-const std::unordered_map<std::string, bool> Log::getTagMap() const {
+std::unordered_map<std::string, bool> Log::getTagMap() const {
   std::lock_guard<std::mutex> lock(mtx);
   return tag_map;
 }

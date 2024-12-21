@@ -1,5 +1,6 @@
 #pragma once
 #include <mutex>
+#include <utility>
 #include <vector>
 #include <string>
 #include <chrono>
@@ -8,19 +9,20 @@ enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL };
 const std::unordered_map<LogLevel, std::string> LogLevelNames = {
     {DEBUG, "DEBUG"}, {INFO, "INFO"}, {WARN, "WARN"}, {ERROR, "ERROR"}, {FATAL, "FATAL"}};
 static const std::string NormalLogFile = "/sdcard/MinecraftCheat/normal.log";
+static const int MAX_TIME_LENGTH = 80;
 struct LogEntry {
   LogLevel level;
   std::string tag;
   std::string message;
   std::chrono::system_clock::time_point time;
-  LogEntry(LogLevel lvl, const std::string &t, const std::string &msg)
-      : level(lvl), tag(t), message(msg) {
+  LogEntry(LogLevel lvl, std::string timestamp, std::string msg)
+      : level(lvl), tag(std::move(timestamp)), message(std::move(msg)) {
     time = std::chrono::system_clock::now();
   }
   std::string getFormattedTime() const {
     std::time_t now_time_t = std::chrono::system_clock::to_time_t(time);
     std::tm now_tm = *std::localtime(&now_time_t);
-    char buffer[80];
+    char buffer[MAX_TIME_LENGTH];
     std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &now_tm);
     return std::string(buffer);
   }
@@ -33,11 +35,11 @@ private:
   mutable std::mutex mtx;
 
 public:
-  void message(LogLevel level, const std::string &tag, const std::string &msg);
-  const std::vector<LogEntry> getLogs() const;
-  const std::vector<LogEntry> getLogs(LogLevel Level) const;
-  const std::vector<LogEntry> getLogs(std::string tag) const;
-  const std::unordered_map<std::string, bool> getTagMap() const;
+  void message(LogLevel Level, const std::string &tag, const std::string &message);
+  std::vector<LogEntry> getLogs() const;
+  std::vector<LogEntry> getLogs(LogLevel Level) const;
+  std::vector<LogEntry> getLogs(const std::string &tag) const;
+  std::unordered_map<std::string, bool> getTagMap() const;
   void cleanLogs();
   void cleanLogs(LogLevel Level);
   void cleanLogs(std::string tag);
