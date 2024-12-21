@@ -1,4 +1,5 @@
 #pragma once
+#include <mutex>
 #include <vector>
 #include <string>
 #include <chrono>
@@ -29,6 +30,7 @@ class Log {
 private:
   std::vector<LogEntry> logs;
   std::unordered_map<std::string, bool> tag_map;
+  mutable std::mutex mtx;
 
 public:
   void message(LogLevel level, const std::string &tag, const std::string &msg);

@@ -9,10 +9,13 @@
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <mutex>
 #include <stdexcept>
 namespace Config {
+std::mutex config_mutex;
 rapidjson::Document config;
 std::string getString(bool is_pretty) {
+  std::lock_guard<std::mutex> lock(config_mutex);
   if (!config.IsObject()) {
     return "";
   }
@@ -25,10 +28,12 @@ std::string getString(bool is_pretty) {
   return config.GetString();
 }
 void initConfig() {
+  std::lock_guard<std::mutex> lock(config_mutex);
   config = rapidjson::Document();
   config.SetObject();
 }
 void saveConfig() {
+  std::lock_guard<std::mutex> lock(config_mutex);
   std::ofstream configFile(NormalConfigPath, std::ios::out);
   if (!configFile.is_open()) {
     throw std::runtime_error(
@@ -41,6 +46,7 @@ void saveConfig() {
   configFile.close();
 }
 void loadConfig() {
+  std::lock_guard<std::mutex> lock(config_mutex);
   std::ifstream configFile(NormalConfigPath, std::ios::in);
   if (!configFile.is_open()) {
     throw std::runtime_error(

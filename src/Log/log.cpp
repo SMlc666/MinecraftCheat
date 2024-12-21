@@ -1,8 +1,10 @@
 #include "log.hpp"
+#include <mutex>
 #include <unordered_map>
 #include <format>
 #include <fstream>
 void Log::message(LogLevel Level, const std::string &tag, const std::string &message) {
+  std::lock_guard<std::mutex> lock(mtx);
   tag_map.insert({tag, true});
   logs.push_back(LogEntry(Level, tag, message));
   if (Level == LogLevel::ERROR || Level == LogLevel::FATAL)
@@ -10,9 +12,11 @@ void Log::message(LogLevel Level, const std::string &tag, const std::string &mes
 }
 
 const std::vector<LogEntry> Log::getLogs() const {
+  std::lock_guard<std::mutex> lock(mtx);
   return logs;
 }
 const std::vector<LogEntry> Log::getLogs(LogLevel Level) const {
+  std::lock_guard<std::mutex> lock(mtx);
   std::vector<LogEntry> result;
   for (const auto &log : logs) { // 使用范围 for 循环
     if (log.level == Level) {
@@ -23,6 +27,7 @@ const std::vector<LogEntry> Log::getLogs(LogLevel Level) const {
 }
 
 const std::vector<LogEntry> Log::getLogs(std::string tag) const {
+  std::lock_guard<std::mutex> lock(mtx);
   std::vector<LogEntry> result;
   for (const auto &log : logs) { // 使用范围 for 循环
     if (log.tag == tag) {
@@ -32,22 +37,27 @@ const std::vector<LogEntry> Log::getLogs(std::string tag) const {
   return result;
 }
 const std::unordered_map<std::string, bool> Log::getTagMap() const {
+  std::lock_guard<std::mutex> lock(mtx);
   return tag_map;
 }
 void Log::cleanLogs() {
+  std::lock_guard<std::mutex> lock(mtx);
   logs.clear();
 }
 void Log::cleanLogs(LogLevel Level) {
+  std::lock_guard<std::mutex> lock(mtx);
   logs.erase(std::remove_if(logs.begin(), logs.end(),
                             [&](const LogEntry &log) { return log.level == Level; }),
              logs.end());
 }
 void Log::cleanLogs(std::string tag) {
+  std::lock_guard<std::mutex> lock(mtx);
   logs.erase(
       std::remove_if(logs.begin(), logs.end(), [&](const LogEntry &log) { return log.tag == tag; }),
       logs.end());
 }
 void Log::SaveToFile(const std::string &filename) {
+  std::lock_guard<std::mutex> lock(mtx);
   std::ofstream ofs(filename, std::ios::out);
   if (!ofs.is_open()) {
     message(LogLevel::ERROR, "SaveToFile", "Failed to open file " + filename);
