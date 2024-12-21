@@ -6,6 +6,7 @@
 #include "ModuleManager.hpp"
 #include "ScriptManager.hpp"
 #include "config/config.hpp"
+#include "backtrace/backtrace.hpp"
 JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
 void setup() {
@@ -13,6 +14,7 @@ void setup() {
   if (!std::filesystem::exists(path)) {
     std::filesystem::create_directory(path);
   } //初始化目录
+  backtraceInit();
   configSetup();
   drawSetup();
   moduleSetup();

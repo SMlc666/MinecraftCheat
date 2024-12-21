@@ -4,6 +4,7 @@
 #include "ScriptManager.hpp"
 #include "config/config.hpp"
 #include <thread>
+#include <unwind.h>
 static void drawLog(std::vector<LogEntry> &Logs) {
   for (auto &log : Logs) {
     switch (log.level) {
