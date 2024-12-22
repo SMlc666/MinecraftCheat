@@ -2,6 +2,7 @@
 #include "API/print/print.hpp"
 #include <LuaBridge/LuaBridge.h>
 #include "Lua/lua.hpp"
+#include "LuaBridge/detail/LuaRef.h"
 #include "LuaBridge/detail/Namespace.h"
 #include "log.hpp"
 #include <memory>
@@ -36,6 +37,15 @@ std::string Script::getName() const {
 }
 std::string Script::getFile() const {
   return path.string();
+}
+void Script::onDraw() const {
+  if (L != nullptr) {
+    luabridge::LuaRef m_onDraw = luabridge::getGlobal(L, "onDraw");
+    if (!m_onDraw.isFunction()) {
+      throw std::runtime_error(std::format("onDraw is not a function in script: {}", name));
+    }
+    m_onDraw();
+  }
 }
 std::vector<std::shared_ptr<Script>> scripts;
 const std::vector<std::shared_ptr<Script>> &getScripts() {

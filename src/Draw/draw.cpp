@@ -22,8 +22,8 @@ void imguiSetup() {
   ImGui_ImplAndroid_Init(nullptr);
   ImGui_ImplOpenGL3_Init("#version 300 es");
   ImGui::StyleColorsDark();
-  ImGui::Android_LoadSystemFont(22.0f);
-  ImGui::GetStyle().ScaleAllSizes(3.0f);
+  ImGui::Android_LoadSystemFont(22.0F);
+  ImGui::GetStyle().ScaleAllSizes(3.0F);
 }
 EGLBoolean (*old_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
@@ -53,7 +53,6 @@ void my_Input(void *thiz, void *ex_ab, void *ex_ac) {
   if (is_ImguiSetup) {
     ImGui_ImplAndroid_HandleInputEvent((AInputEvent *)thiz);
   }
-  return;
 }
 void drawSetup() {
   void *egl_handle = dlopen("libEGL.so", 4);

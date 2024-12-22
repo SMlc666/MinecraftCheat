@@ -11,8 +11,9 @@ class Script {
 public:
   Script(std::filesystem::path &m_path);
   ~Script();
-  std::string getName() const;
-  std::string getFile() const;
+  [[nodiscard]] std::string getName() const;
+  [[nodiscard]] std::string getFile() const;
+  void onDraw() const;
 
 private:
   std::string name;
