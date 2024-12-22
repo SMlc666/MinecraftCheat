@@ -1,18 +1,16 @@
 #include "ScriptManager.hpp"
-#include "API/print/print.hpp"
-#include <LuaBridge/LuaBridge.h>
 #include "Lua/lua.hpp"
-#include "LuaBridge/detail/LuaRef.h"
-#include "LuaBridge/detail/Namespace.h"
 #include "log.hpp"
 #include <memory>
 #include <dirent.h>
 #include <sys/stat.h>
+#include "LuaBridge/LuaBridge.h"
+#include "API/API_lib.hpp"
 namespace ScriptManager {
 Script::Script(std::filesystem::path &m_path) : path(m_path) {
   L = luaL_newstate();
   luaL_openlibs(L);
-  luabridge::getGlobalNamespace(L).addFunction("print", ScriptAPI::print);
+  ScriptAPI::init(L); //加载库
   if (luaL_loadfile(L, m_path.string().c_str()) != LUA_OK) {
     lua_close(L);
     L = nullptr;

@@ -2,6 +2,7 @@
 #include "Dobby/dobby.h"
 #include "log.hpp"
 #include "my_imgui.h"
+#include "API/draw/draw.hpp"
 #include "ModuleManager.hpp"
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_android.h"
@@ -37,8 +38,10 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplAndroid_NewFrame(g_GlWidth, g_GlHeight);
   ImGui::NewFrame();
+  ImGui_ImplScript_NewFrame();
   ModuleManager::drawAllModules();
   ImGui::EndFrame();
+  ImGui_ImplScript_NewFrame();
   ImGui::Render();
   glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
