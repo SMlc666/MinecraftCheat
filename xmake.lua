@@ -10,6 +10,7 @@ local DrawDir = "src/Draw"
 local LogDir = "src/Log"
 local ModuleDir = "src/Module"
 local ScriptDir = "src/Script"
+local MemToolDir = "src/MemTool"
 local DobbyDir = "src/include/Dobby"
 local LuaDir = "src/include/Lua"
 local EnttDir = "src/include/entt"
@@ -48,6 +49,7 @@ target("cheat")
     add_files(LogDir.. "/*.cpp")
     add_files(LogDir.."/backtrace/*.cpp")
     add_files(ModuleDir.. "/**.cpp|examples/example.cpp")
+    add_files(MemToolDir.. "/**.cpp")
     add_files(LuaDir.. "/*.c")
     add_files(KittyMemoryDir.."/*.cpp")
     add_files(ImguiDir.."/*.cpp")--imgui source files
@@ -58,6 +60,7 @@ target("cheat")
         ModuleDir,
         DrawDir,
         LogDir,
+        MemToolDir,
         ScriptDir,
         IncludeDir
     )
