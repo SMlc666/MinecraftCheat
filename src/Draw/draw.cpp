@@ -14,17 +14,19 @@
 int g_GlHeight, g_GlWidth = 0; //opengl窗口的高度和宽度
 bool is_ImguiSetup = false;
 static const std::string IniFile = "/sdcard/MinecraftCheat/imgui.ini";
+static const float FontSize = 22.0F;
+static const float ScaleFactor = 3.0F;
 void imguiSetup() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
-  ImGuiIO &io = ImGui::GetIO();
-  io.IniFilename = IniFile.c_str();
-  io.DisplaySize = ImVec2((float)g_GlWidth, (float)g_GlHeight);
+  ImGuiIO &ioData = ImGui::GetIO();
+  ioData.IniFilename = IniFile.c_str();
+  ioData.DisplaySize = ImVec2((float)g_GlWidth, (float)g_GlHeight);
   ImGui_ImplAndroid_Init(nullptr);
   ImGui_ImplOpenGL3_Init("#version 300 es");
   ImGui::StyleColorsDark();
-  ImGui::Android_LoadSystemFont(22.0F);
-  ImGui::GetStyle().ScaleAllSizes(3.0F);
+  ImGui::Android_LoadSystemFont(FontSize);
+  ImGui::GetStyle().ScaleAllSizes(ScaleFactor);
 }
 EGLBoolean (*old_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
@@ -34,7 +36,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     imguiSetup();
     is_ImguiSetup = true;
   }
-  ImGuiIO &io = ImGui::GetIO();
+  ImGuiIO &ioData = ImGui::GetIO();
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplAndroid_NewFrame(g_GlWidth, g_GlHeight);
   ImGui::NewFrame();
@@ -43,7 +45,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui::EndFrame();
   ImGui_ImplScript_NewFrame();
   ImGui::Render();
-  glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+  glViewport(0, 0, (int)ioData.DisplaySize.x, (int)ioData.DisplaySize.y);
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   return old_eglSwapBuffers(dpy, surface);
 }
@@ -62,9 +64,15 @@ void drawSetup() {
   g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("egl_handle: {:p}", egl_handle));
   if (egl_handle != nullptr) {
     void *eglSwapBuffers = dlsym(egl_handle, "eglSwapBuffers");
+    if (eglSwapBuffers == nullptr) {
+      g_log_tool.message(LogLevel::ERROR, "drawSetup", "eglSwapBuffers is null");
+      return;
+    }
     g_log_tool.message(LogLevel::INFO, "drawSetup",
                        std::format("eglSwapBuffers: {:p}", eglSwapBuffers));
     DobbyHook((void *)eglSwapBuffers, (void *)my_eglSwapBuffers, (void **)&old_eglSwapBuffers);
+  } else {
+    g_log_tool.message(LogLevel::ERROR, "drawSetup", "egl_handle is null");
   }
   void *sym_input = DobbySymbolResolver(
       nullptr,
@@ -72,5 +80,7 @@ void drawSetup() {
   if (sym_input != nullptr) {
     g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("sym_input: {:p}", sym_input));
     DobbyHook((void *)sym_input, (void *)my_Input, (void **)&old_Input);
+  } else {
+    g_log_tool.message(LogLevel::ERROR, "drawSetup", "sym_input is null");
   }
 }
