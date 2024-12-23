@@ -10,7 +10,7 @@ void ImGui_ImplScript_NewFrame() {
 void ImGui_ImplScript_EndFrame() {
   ScriptFrame = false;
 }
-void ScriptAPI::draw::Text(std::string &text) {
+void ScriptAPI::draw::Text(std::string text) { //NOLINT
   if (!ScriptFrame) {
     throw std::runtime_error("Cannot call draw::Text outside of a script frame");
   }
