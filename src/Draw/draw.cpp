@@ -1,5 +1,6 @@
 #include "draw.hpp"
 #include "Dobby/dobby.h"
+#include "iMsgCapture/iMsgCapture.h"
 #include "log.hpp"
 #include "my_imgui.h"
 #include "API/draw/draw.hpp"
@@ -14,8 +15,9 @@
 int g_GlHeight, g_GlWidth = 0; //opengl窗口的高度和宽度
 bool is_ImguiSetup = false;
 static const std::string IniFile = "/sdcard/MinecraftCheat/imgui.ini";
-static const float FontSize = 22.0F;
-static const float ScaleFactor = 3.0F;
+static const float NormalFontSize = 22.0F;
+static const float NormalScaleFactor = 3.0F;
+static const int NormalInputUpdateInterval = 1000;
 void imguiSetup() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -25,8 +27,8 @@ void imguiSetup() {
   ImGui_ImplAndroid_Init(nullptr);
   ImGui_ImplOpenGL3_Init("#version 300 es");
   ImGui::StyleColorsDark();
-  ImGui::Android_LoadSystemFont(FontSize);
-  ImGui::GetStyle().ScaleAllSizes(ScaleFactor);
+  ImGui::Android_LoadSystemFont(NormalFontSize);
+  ImGui::GetStyle().ScaleAllSizes(NormalScaleFactor);
 }
 EGLBoolean (*old_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
@@ -59,6 +61,12 @@ void my_Input(void *thiz, void *ex_ab, void *ex_ac) {
     ImGui_ImplAndroid_HandleInputEvent((AInputEvent *)thiz);
   }
 }
+void CaptureInput(iMsgEvent *iMsg) {
+  if (is_ImguiSetup) {
+    ImGui_ImplAndroid_HandleInputMsg(iMsg);
+  }
+}
+
 void drawSetup() {
   void *egl_handle = dlopen("libEGL.so", 4);
   g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("egl_handle: {:p}", egl_handle));
@@ -82,5 +90,7 @@ void drawSetup() {
     DobbyHook((void *)sym_input, (void *)my_Input, (void **)&old_Input);
   } else {
     g_log_tool.message(LogLevel::ERROR, "drawSetup", "sym_input is null");
+    iMsgCapture::instance().setCallback(CaptureInput);
+    iMsgCapture::instance().setUpdateInterval(NormalInputUpdateInterval);
   }
 }

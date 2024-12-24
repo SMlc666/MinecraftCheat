@@ -9,3 +9,4 @@ extern void ImGui_ImplScript_EndFrame();
 namespace ScriptAPI::draw {
 void Text(std::string text); //绘制文本,不提供format参数
 }
+namespace ScriptAPI::draw::native {}

@@ -11,6 +11,7 @@ local LogDir = "src/Log"
 local ModuleDir = "src/Module"
 local ScriptDir = "src/Script"
 local MemToolDir = "src/MemTool"
+local iMsgCaptureDir= "src/include/iMsgCapture"
 local DobbyDir = "src/include/Dobby"
 local LuaDir = "src/include/Lua"
 local EnttDir = "src/include/entt"
@@ -48,6 +49,7 @@ target("cheat")
     add_files(DrawDir.. "/*.cpp")
     add_files(LogDir.. "/*.cpp")
     add_files(LogDir.."/backtrace/*.cpp")
+    add_files(iMsgCaptureDir.. "/**.cpp")
     add_files(ModuleDir.. "/**.cpp|examples/example.cpp")
     add_files(MemToolDir.. "/**.cpp")
     add_files(LuaDir.. "/*.c")
