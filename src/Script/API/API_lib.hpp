@@ -1,5 +1,5 @@
 #pragma once
 #include "Lua/lua.h"
 namespace ScriptAPI {
-void init(lua_State *LuaState);
+void init(lua_State *LuaState, int version);
 }

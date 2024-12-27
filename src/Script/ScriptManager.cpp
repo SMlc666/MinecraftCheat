@@ -1,16 +1,16 @@
 #include "ScriptManager.hpp"
+#include "Lua/lua.h"
 #include "Lua/lua.hpp"
+#include "LuaBridge/detail/LuaRef.h"
 #include "log.hpp"
 #include <memory>
 #include <dirent.h>
 #include <sys/stat.h>
 #include "LuaBridge/LuaBridge.h"
 #include "API/API_lib.hpp"
-namespace ScriptManager {
-Script::Script(std::filesystem::path &m_path) : path(m_path) {
+ScriptManager::Script::Script(std::filesystem::path &m_path) : path(m_path) {
   L = luaL_newstate();
   luaL_openlibs(L);
-  ScriptAPI::init(L); //加载库
   if (luaL_loadfile(L, m_path.string().c_str()) != LUA_OK) {
     lua_close(L);
     L = nullptr;
@@ -23,20 +23,35 @@ Script::Script(std::filesystem::path &m_path) : path(m_path) {
     throw std::runtime_error(
         std::format("Error running script: {} - {}", m_path.string(), errorMsg));
   }
-  name = path.filename().string();
+  luabridge::LuaRef LuaName = luabridge::getGlobal(L, "Name");
+  luabridge::LuaRef LuaAPIVersion = luabridge::getGlobal(L, "APIVersion");
+  luabridge::LuaRef LuaMenuType = luabridge::getGlobal(L, "MenuType");
+  if (!LuaAPIVersion.isNumber()) {
+    throw std::runtime_error(std::format("APIVersion is not a number in script: {}", name));
+  }
+  try {
+    ScriptAPI::init(L, LuaAPIVersion.cast<int>());
+  } catch (const std::exception &e) {
+    throw std::runtime_error(e.what());
+  }
+  if (!LuaName.isString()) {
+    name = path.filename().string();
+  } else {
+    name = LuaName.cast<std::string>();
+  }
 }
-Script::~Script() {
+ScriptManager::Script::~Script() {
   if (L != nullptr) {
     lua_close(L);
   }
 }
-std::string Script::getName() const {
+std::string ScriptManager::Script::getName() const {
   return name;
 }
-std::string Script::getFile() const {
+std::string ScriptManager::Script::getFile() const {
   return path.string();
 }
-void Script::onDraw() const {
+void ScriptManager::Script::onDraw() const {
   if (L != nullptr) {
     luabridge::LuaRef m_onDraw = luabridge::getGlobal(L, "onDraw");
     if (!m_onDraw.isFunction()) {
@@ -45,6 +60,7 @@ void Script::onDraw() const {
     m_onDraw();
   }
 }
+namespace ScriptManager {
 std::vector<std::shared_ptr<Script>> scripts;
 const std::vector<std::shared_ptr<Script>> &getScripts() {
   return scripts;

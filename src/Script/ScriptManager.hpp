@@ -4,8 +4,8 @@
 #include <filesystem>
 #include <memory>
 #include "Lua/lua.hpp"
+#include "menu/menu.hpp"
 static const std::string NormalScriptPath = "/sdcard/MinecraftCheat/Scripts";
-
 namespace ScriptManager {
 class Script {
 public:
@@ -16,6 +16,7 @@ public:
   void onDraw() const;
 
 private:
+  MenuType menu;
   std::string name;
   std::filesystem::path path;
   lua_State *L;
