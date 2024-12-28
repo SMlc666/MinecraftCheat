@@ -6,17 +6,18 @@
 #include "print/print.hpp"
 #include <functional>
 #include <unordered_map>
-std::unordered_map<int, std::function<void(lua_State *LuaState)>> APIinit{
+static std::unordered_map<int, std::function<void(lua_State *LuaState)>> APIinit{
     {1,
      [](lua_State *LuaState) {
-       luabridge::getGlobalNamespace(LuaState).addFunction("print", ScriptAPI::print);
-       luabridge::getGlobalNamespace(LuaState)
-           .beginNamespace("draw")
-           .addFunction("text", ScriptAPI::draw::Text)
-           .endNamespace();
+
      }},
 };
 void ScriptAPI::init(lua_State *LuaState, int version) {
+  luabridge::getGlobalNamespace(LuaState).addFunction("print", ScriptAPI::print);
+  luabridge::getGlobalNamespace(LuaState)
+      .beginNamespace("draw")
+      .addFunction("text", ScriptAPI::draw::Text)
+      .endNamespace();
   try {
     APIinit.at(version)(LuaState);
   } catch (const std::out_of_range &e) {

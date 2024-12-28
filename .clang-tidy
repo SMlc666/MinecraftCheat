@@ -1,1 +1,1 @@
-Checks: "modernize-*,readability-*,performance-*,clang-analyzer-*,bugprone-*,-modernize-use-trailing-return-type"
+Checks: "modernize-*, readability-*, performance-*, clang-analyzer-*, bugprone-*, -modernize-use-trailing-return-type, safety-*, cppcoreguidelines-*, -cppcoreguidelines-pro-type-vararg,-cppcoreguidelines-interfaces-global-init,-cppcoreguidelines-avoid-non-const-global-variables"

@@ -8,9 +8,12 @@ class Module {
 public:
   Module(const std::string &name, MenuType type);
   ~Module() = default;
-
-  std::string getName() const;
-  MenuType getMenuType() const;
+  Module(const Module &) = default;
+  Module &operator=(const Module &) = default;
+  Module(Module &&) noexcept = default;
+  Module &operator=(Module &&) noexcept = default;
+  [[nodiscard]] std::string getName() const;
+  [[nodiscard]] MenuType getMenuType() const;
 
   void setOnTick(std::function<void(Module *)> func);
   void setOnEnable(std::function<void(Module *)> func);
@@ -34,6 +37,7 @@ private:
 };
 
 namespace ModuleManager {
+std::unordered_map<std::string, std::shared_ptr<Module>> &getModules();
 void addModule(std::shared_ptr<Module> module);
 void enableModuleByName(const std::string &name);
 void disableModuleByName(const std::string &name);

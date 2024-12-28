@@ -1,15 +1,14 @@
 #include "ScriptManager.hpp"
-#include "Lua/lua.h"
 #include "Lua/lua.hpp"
-#include "LuaBridge/detail/LuaRef.h"
 #include "log.hpp"
 #include <memory>
 #include <dirent.h>
 #include <sys/stat.h>
 #include "LuaBridge/LuaBridge.h"
 #include "API/API_lib.hpp"
-ScriptManager::Script::Script(std::filesystem::path &m_path) : path(m_path) {
-  L = luaL_newstate();
+#include "menu/menu.hpp"
+ScriptManager::Script::Script(std::filesystem::path &m_path) : path(m_path), L(luaL_newstate()) {
+
   luaL_openlibs(L);
   if (luaL_loadfile(L, m_path.string().c_str()) != LUA_OK) {
     lua_close(L);
@@ -29,16 +28,20 @@ ScriptManager::Script::Script(std::filesystem::path &m_path) : path(m_path) {
   if (!LuaAPIVersion.isNumber()) {
     throw std::runtime_error(std::format("APIVersion is not a number in script: {}", name));
   }
-  try {
-    ScriptAPI::init(L, LuaAPIVersion.cast<int>());
-  } catch (const std::exception &e) {
-    throw std::runtime_error(e.what());
+  if (!LuaMenuType.isNumber() && !LuaMenuType.isNil()) {
+    throw std::runtime_error(std::format("MenuType is not a number or nil in script: {}", name));
   }
   if (!LuaName.isString()) {
     name = path.filename().string();
   } else {
     name = LuaName.cast<std::string>();
   }
+  try {
+    ScriptAPI::init(L, LuaAPIVersion.cast<int>());
+  } catch (const std::exception &e) {
+    throw std::runtime_error(e.what());
+  }
+  menu = static_cast<MenuType>(LuaMenuType.cast<int>());
 }
 ScriptManager::Script::~Script() {
   if (L != nullptr) {
@@ -78,7 +81,7 @@ void clearScripts() {
 void reloadScripts(const std::string &path) {
   clearScripts();
   std::filesystem::path scriptPath(path);
-  struct stat statbuf;
+  struct stat statbuf {};
   if (stat(scriptPath.string().c_str(), &statbuf) != 0) {
     throw std::runtime_error(std::format("Error accessing directory: {}", scriptPath.string()));
   } //判断是否是文件夹

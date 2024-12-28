@@ -1,12 +1,12 @@
 #include "ModuleManager.hpp"
-#include "imgui/imgui.h"
 #include "cheat/KillAura/KillAura.hpp"
-#include "log.hpp"
 #include "menu/menu.hpp"
+#include <memory>
 #include <mutex>
-#include <stdexcept>
+#include <string>
+#include <unordered_map>
 #include <utility>
-static bool isMainMenuActivated = false;
+
 Module::Module(const std::string &name, MenuType type)
     : m_name(name), m_type(type), m_onTick(nullptr), m_onEnable(nullptr), m_onDisable(nullptr),
       m_onLoad(nullptr), m_onDraw(nullptr) {
@@ -127,47 +127,8 @@ void loadAllModules() {
     }
   }
 }
-void drawMenu(MenuType menuType) {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  std::string MenuName;
-  if (!isMainMenuActivated && menuType != MAIN_MENU) {
-    return; //主菜单未激活，其他菜单不绘制
-  }
-  try {
-    MenuName = MenuNames.at(menuType);
-  } catch (const std::out_of_range &e) {
-    g_log_tool.message(LogLevel::ERROR, "drawMenu", "No such menu type" + std::string(e.what()));
-    return; // 防止崩溃
-  }
-  bool menuActive = ImGui::Begin(MenuName.c_str()); // 使用数组中的字符串作为窗口标题
-  if (menuType == MAIN_MENU) {
-    isMainMenuActivated = menuActive;
-  }
-  if (!menuActive) {
-    ImGui::End();
-    return;
-  }
-  try {
-    MenuFunctions.at(menuType)(); // 调用对应菜单的绘制函数
-  } catch (const std::out_of_range &e) {
-    g_log_tool.message(LogLevel::ERROR, "drawMenu",
-                       "No such menu function" + std::string(e.what()));
-    return; // 防止崩溃
-  }
-  for (const auto &pair : modules) {
-    if (pair.second && pair.second->getMenuType() == menuType) {
-      pair.second->onDraw();
-    }
-  }
-  ImGui::End();
-}
-// 主绘制函数，根据需要调用
-void drawAllModules() {
-  drawMenu(MAIN_MENU);
-  drawMenu(LOG_MENU);
-  drawMenu(SCRIPT_MENU);
-  drawMenu(CONFIG_MENU);
-  drawMenu(DEBUG_MENU);
+std::unordered_map<std::string, std::shared_ptr<Module>> &getModules() {
+  return modules;
 }
 } // namespace ModuleManager
 

@@ -11,6 +11,10 @@ class Script {
 public:
   Script(std::filesystem::path &m_path);
   ~Script();
+  Script(const Script &other) = default;
+  Script &operator=(const Script &other) = default;
+  Script(Script &&other) noexcept = default;
+  Script &operator=(Script &&other) noexcept = default;
   [[nodiscard]] std::string getName() const;
   [[nodiscard]] std::string getFile() const;
   void onDraw() const;
