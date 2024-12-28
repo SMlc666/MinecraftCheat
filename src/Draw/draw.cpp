@@ -1,5 +1,6 @@
 #include "draw.hpp"
 #include "Dobby/dobby.h"
+#include "ScriptManager.hpp"
 #include "iMsgCapture/iMsgCapture.h"
 #include "log.hpp"
 #include "my_imgui.h"
@@ -44,7 +45,16 @@ void drawMenu(MenuType menuType) {
       pair.second->onDraw();
     }
   }
-  ImGui::End();
+  for (const auto &pair : ScriptManager::getScripts()) {
+    if (pair && pair->getMenu() == menuType) {
+      try {
+        pair->onDraw();
+      } catch (const std::exception &e) {
+        g_log_tool.message(LogLevel::ERROR, "drawMenu", e.what());
+      }
+    }
+    ImGui::End();
+  }
 }
 // 主绘制函数，根据需要调用
 void drawAllModules() {

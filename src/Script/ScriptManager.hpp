@@ -17,6 +17,7 @@ public:
   Script &operator=(Script &&other) noexcept = default;
   [[nodiscard]] std::string getName() const;
   [[nodiscard]] std::string getFile() const;
+  [[nodiscard]] MenuType getMenu() const;
   void onDraw() const;
 
 private:

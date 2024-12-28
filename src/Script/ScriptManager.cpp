@@ -3,6 +3,7 @@
 #include "log.hpp"
 #include <memory>
 #include <dirent.h>
+#include <stdexcept>
 #include <sys/stat.h>
 #include "LuaBridge/LuaBridge.h"
 #include "API/API_lib.hpp"
@@ -60,8 +61,16 @@ void ScriptManager::Script::onDraw() const {
     if (!m_onDraw.isFunction()) {
       throw std::runtime_error(std::format("onDraw is not a function in script: {}", name));
     }
-    m_onDraw();
+    try {
+      m_onDraw();
+    } catch (const luabridge::LuaException &e) {
+      throw std::runtime_error(
+          std::format("Error running onDraw function in script: {} - {}", name, e.what()));
+    }
   }
+}
+MenuType ScriptManager::Script::getMenu() const {
+  return menu;
 }
 namespace ScriptManager {
 std::vector<std::shared_ptr<Script>> scripts;
