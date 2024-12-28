@@ -9,8 +9,8 @@
 #include "API/API_lib.hpp"
 #include "menu/menu.hpp"
 ScriptManager::Script::Script(std::filesystem::path &m_path) : path(m_path), L(luaL_newstate()) {
-
   luaL_openlibs(L);
+  ScriptAPI::initDefaultAPI(L);
   if (luaL_loadfile(L, m_path.string().c_str()) != LUA_OK) {
     lua_close(L);
     L = nullptr;
@@ -38,7 +38,7 @@ ScriptManager::Script::Script(std::filesystem::path &m_path) : path(m_path), L(l
     name = LuaName.cast<std::string>();
   }
   try {
-    ScriptAPI::init(L, LuaAPIVersion.cast<int>());
+    ScriptAPI::initByVersionAPI(L, LuaAPIVersion.cast<int>());
   } catch (const std::exception &e) {
     throw std::runtime_error(e.what());
   }
