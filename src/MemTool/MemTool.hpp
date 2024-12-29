@@ -10,7 +10,7 @@ namespace MemTool {
 // 获取指定模块的进程映射
 KittyMemory::ProcMap getModuleMap(const std::string &moduleName);
 // 写入数据到指定地址
-template <typename T> bool write(T address, const void *data, size_t size) {
+template <typename T> inline bool write(T address, const void *data, size_t size) {
   return KittyMemory::memWrite(reinterpret_cast<void *>(address), data, size);
 }
 // 从指定地址读取数据
@@ -18,7 +18,7 @@ template <typename T> bool read(T address, void *data, size_t size) {
   return KittyMemory::memRead(reinterpret_cast<void *>(address), data, size);
 }
 // 从地址读取特定类型的数据
-template <typename T, typename U> T read(U address) {
+template <typename T, typename U> inline T read(U address) {
   T value;
   if (read(address, &value, sizeof(T))) {
     return value;
@@ -26,11 +26,11 @@ template <typename T, typename U> T read(U address) {
   return {};
 }
 // 写入特定类型的数据到地址
-template <typename T, typename U> bool write(T address, U value) {
+template <typename T, typename U> inline bool write(T address, U value) {
   return write(address, &value, sizeof(U));
 }
 // 获取指定模块的基地址
-template <typename T> T getModuleBase(const std::string &moduleName) {
+template <typename T> inline T getModuleBase(const std::string &moduleName) {
   KittyMemory::ProcMap Module = KittyMemory::getElfBaseMap(moduleName);
   if (Module.isUnknown()) {
     return {};
@@ -38,7 +38,7 @@ template <typename T> T getModuleBase(const std::string &moduleName) {
   return reinterpret_cast<T>(Module.startAddress);
 }
 // 获取指定模块的结束地址
-template <typename T> T getModuleEnd(const std::string &moduleName) {
+template <typename T> T inline getModuleEnd(const std::string &moduleName) {
   KittyMemory::ProcMap Module = KittyMemory::getElfBaseMap(moduleName);
   if (Module.isUnknown()) {
     return {};
@@ -47,7 +47,7 @@ template <typename T> T getModuleEnd(const std::string &moduleName) {
 }
 // 查找模块中第一个匹配的模式
 template <typename T>
-T findIdaPatternFirst(const std::string &moduleName, const std::string &pattern) {
+inline T findIdaPatternFirst(const std::string &moduleName, const std::string &pattern) {
   KittyMemory::ProcMap Module = getModuleMap(moduleName);
   if (Module.isUnknown()) {
     return {};
@@ -57,7 +57,8 @@ T findIdaPatternFirst(const std::string &moduleName, const std::string &pattern)
 }
 
 // 根据符号名称查找模块地址
-template <typename T> T findSymbol(const std::string &moduleName, const std::string &symbol) {
+template <typename T>
+inline T findSymbol(const std::string &moduleName, const std::string &symbol) {
   if (moduleName.empty()) {
     return reinterpret_cast<T>(DobbySymbolResolver(nullptr, symbol.c_str()));
   }
@@ -67,7 +68,7 @@ template <typename T> T findSymbol(const std::string &moduleName, const std::str
 // 获取当前进程的名称
 std::string getProcessName();
 // 销毁指定地址的 Hook
-template <typename T> void destoryHookByAddress(T address) {
+template <typename T> inline void destoryHookByAddress(T address) {
   if (g_hooked_funcs.find(reinterpret_cast<void *>(address)) != g_hooked_funcs.end()) {
     DobbyDestroy(reinterpret_cast<void *>(address));
     g_hooked_funcs.erase(reinterpret_cast<void *>(address));
@@ -78,7 +79,7 @@ class Hook {
 public:
   // Hook 构造函数
   template <typename T>
-  Hook(T address, void *func, void **m_orig_func, bool m_auto_destroy = true)
+  inline Hook(T address, void *func, void **m_orig_func, bool m_auto_destroy = true)
       : hook_func(reinterpret_cast<void *>(func)), auto_destroy(m_auto_destroy) {
     if (g_hooked_funcs.find(reinterpret_cast<void *>(address)) != g_hooked_funcs.end()) {
       throw std::runtime_error("Address already hooked");
