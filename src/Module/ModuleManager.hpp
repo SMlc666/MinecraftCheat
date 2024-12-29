@@ -45,6 +45,5 @@ void enableModule(std::shared_ptr<Module> &module);
 void disableModule(std::shared_ptr<Module> &module);
 void tickAllModules();
 void loadAllModules();
-void drawAllModules();
 } // namespace ModuleManager
 void moduleSetup();

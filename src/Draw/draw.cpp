@@ -57,7 +57,7 @@ void drawMenu(MenuType menuType) {
   }
 }
 // 主绘制函数，根据需要调用
-void drawAllModules() {
+void drawAllMenus() {
   drawMenu(MAIN_MENU);
   drawMenu(LOG_MENU);
   drawMenu(SCRIPT_MENU);
@@ -95,7 +95,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui_ImplAndroid_NewFrame(g_GlWidth, g_GlHeight);
   ImGui::NewFrame();
   ImGui_ImplScript_NewFrame();
-  ModuleManager::drawAllModules();
+  drawAllMenus();
   ImGui::EndFrame();
   ImGui_ImplScript_NewFrame();
   ImGui::Render();
