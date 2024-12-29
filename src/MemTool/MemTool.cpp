@@ -91,7 +91,8 @@ T MemTool::findIdaPatternFirst(const std::string &moduleName, const std::string 
 /**
  * 查找指定模块中的符号地址。
  */
-template <typename T> T findSymbol(const std::string &moduleName, const std::string &symbol) {
+template <typename T>
+T MemTool::findSymbol(const std::string &moduleName, const std::string &symbol) {
   if (moduleName.empty()) {
     return reinterpret_cast<T>(DobbySymbolResolver(nullptr, symbol.c_str()));
   }
