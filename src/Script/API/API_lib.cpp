@@ -1,5 +1,4 @@
 #include "API_lib.hpp"
-#include "Lua/lua.h"
 #include "Lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 #include "print/print.hpp"
