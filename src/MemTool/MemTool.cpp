@@ -3,7 +3,8 @@
 #include "KittyMemory/KittyMemory.hpp"
 #include "KittyMemory/KittyScanner.hpp"
 #include <string>
-
+#include <unordered_map>
+static std::unordered_map<void *, bool> g_hooked_funcs;
 //NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
 template <typename T> bool MemTool::write(T address, const void *data, size_t size) {
   return KittyMemory::memWrite(reinterpret_cast<void *>(address), data, size);
@@ -53,13 +54,18 @@ T MemTool::findIdaPatternFirst(const std::string &moduleName, const std::string 
 }
 template <typename T>
 MemTool::Hook::Hook(T address, void *func) : hook_func(reinterpret_cast<void *>(func)) {
+  if (g_hooked_funcs.find(reinterpret_cast<void *>(address)) != g_hooked_funcs.end()) {
+    throw std::runtime_error("Address already hooked");
+  }
   DobbyHook(reinterpret_cast<void *>(address), func, orig_func);
+  g_hooked_funcs[reinterpret_cast<void *>(address)] = true;
 }
 void MemTool::Hook::destroy() {
-  if (orig_func != nullptr || is_destoryed || (hook_func != nullptr)) {
+  if ((orig_func != nullptr) || is_destoryed || (hook_func != nullptr)) {
     return;
   }
   DobbyDestroy(hook_func);
+  g_hooked_funcs.erase(hook_func);
   is_destoryed = true;
 }
 MemTool::Hook::~Hook() {
