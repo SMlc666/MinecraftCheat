@@ -53,6 +53,10 @@ T MemTool::findIdaPatternFirst(const std::string &moduleName, const std::string 
       KittyScanner::findIdaPatternFirst(Module.startAddress, Module.endAddress, pattern));
 }
 template <typename T>
+T MemTool::findSymbol(const std::string *moduleName, const std::string &symbol) {
+  return reinterpret_cast<T>(DobbySymbolResolver(moduleName->c_str(), symbol.c_str()));
+}
+template <typename T>
 MemTool::Hook::Hook(T address, void *func) : hook_func(reinterpret_cast<void *>(func)) {
   if (g_hooked_funcs.find(reinterpret_cast<void *>(address)) != g_hooked_funcs.end()) {
     throw std::runtime_error("Address already hooked");

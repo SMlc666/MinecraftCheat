@@ -11,6 +11,7 @@ template <typename T> T getModuleBase(const std::string &moduleName);
 template <typename T> T getModuleEnd(const std::string &moduleName);
 template <typename T>
 T findIdaPatternFirst(const std::string &moduleName, const std::string &pattern);
+template <typename T> T findSymbol(const std::string *moduleName, const std::string &symbol);
 KittyMemory::ProcMap getModuleMap(const std::string &moduleName);
 std::string getProcessName();
 class Hook {
