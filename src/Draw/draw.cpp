@@ -53,8 +53,8 @@ void drawMenu(MenuType menuType) {
         g_log_tool.message(LogLevel::ERROR, "drawMenu", e.what());
       }
     }
-    ImGui::End();
   }
+  ImGui::End();
 }
 // 主绘制函数，根据需要调用
 void drawAllMenus() {
