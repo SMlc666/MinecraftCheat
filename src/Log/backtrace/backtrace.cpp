@@ -20,11 +20,11 @@ static _Unwind_Reason_Code backtrace_callback(struct _Unwind_Context *context, v
     if ((dladdr(reinterpret_cast<void *>(instructionPointer), &info) != 0) &&
         (info.dli_sname != nullptr)) {
       g_log_tool.message(
-          LogLevel::DEBUG, "backtrace",
+          LogLevel::FATAL, "backtrace",
           std::format("#{} 0x{:x} {} + {}", frame_count, instructionPointer, info.dli_sname,
                       instructionPointer - reinterpret_cast<std::uintptr_t>(info.dli_saddr)));
     } else {
-      g_log_tool.message(LogLevel::DEBUG, "backtrace",
+      g_log_tool.message(LogLevel::FATAL, "backtrace",
                          std::format("#{} 0x{:x} <unknown>", frame_count, instructionPointer));
     }
     frame_count++;
