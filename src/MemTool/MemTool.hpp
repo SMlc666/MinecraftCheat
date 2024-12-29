@@ -13,4 +13,19 @@ template <typename T>
 T findIdaPatternFirst(const std::string &moduleName, const std::string &pattern);
 KittyMemory::ProcMap getModuleMap(const std::string &moduleName);
 std::string getProcessName();
+class Hook {
+public:
+  template <typename T> Hook(T address, void *func);
+  Hook(const Hook &) = delete;
+  Hook &operator=(const Hook &) = delete;
+  Hook(Hook &&) = delete;
+  Hook &operator=(Hook &&) = delete;
+  ~Hook();
+  void destroy();
+
+private:
+  bool is_destoryed = false;
+  void **orig_func = nullptr;
+  void *hook_func = nullptr;
+};
 }; // namespace MemTool

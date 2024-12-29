@@ -1,4 +1,5 @@
 #include "MemTool.hpp"
+#include "Dobby/dobby.h"
 #include "KittyMemory/KittyMemory.hpp"
 #include "KittyMemory/KittyScanner.hpp"
 #include <string>
@@ -50,5 +51,18 @@ T MemTool::findIdaPatternFirst(const std::string &moduleName, const std::string 
   return reinterpret_cast<T>(
       KittyScanner::findIdaPatternFirst(Module.startAddress, Module.endAddress, pattern));
 }
-
+template <typename T>
+MemTool::Hook::Hook(T address, void *func) : hook_func(reinterpret_cast<void *>(func)) {
+  DobbyHook(reinterpret_cast<void *>(address), func, orig_func);
+}
+void MemTool::Hook::destroy() {
+  if (orig_func != nullptr || is_destoryed || (hook_func != nullptr)) {
+    return;
+  }
+  DobbyDestroy(hook_func);
+  is_destoryed = true;
+}
+MemTool::Hook::~Hook() {
+  destroy();
+}
 //NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
