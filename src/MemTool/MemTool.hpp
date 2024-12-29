@@ -19,7 +19,7 @@ template <typename T> T getModuleEnd(const std::string &moduleName);
 template <typename T>
 T findIdaPatternFirst(const std::string &moduleName, const std::string &pattern);
 // 根据符号名称查找模块地址
-template <typename T> T findSymbol(const std::string *moduleName, const std::string &symbol);
+template <typename T> T findSymbol(const std::string &moduleName, const std::string &symbol);
 // 获取指定模块的进程映射
 KittyMemory::ProcMap getModuleMap(const std::string &moduleName);
 // 获取当前进程的名称

@@ -1,5 +1,5 @@
 #include "touch.hpp"
-#include "Dobby/dobby.h"
+#include "MemTool.hpp"
 #include "imgui/backends/imgui_impl_android.h"
 #include "draw.hpp"
 #include "log.hpp"
@@ -26,13 +26,14 @@ static void CaptureInput(iMsgEvent *iMsg) {
 }
 
 void touchSetup() {
-  void *sym_input = DobbySymbolResolver(
-      nullptr,
+  void *sym_input = MemTool::findSymbol<void *>(
+      "",
       "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
   if (sym_input != nullptr) {
     g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("sym_input: {:p}", sym_input));
     //NOLINTBEGIN
-    DobbyHook(sym_input, reinterpret_cast<void *>(my_Input), reinterpret_cast<void **>(&old_Input));
+    MemTool::Hook(sym_input, reinterpret_cast<void *>(my_Input),
+                  reinterpret_cast<void **>(&old_Input), false);
     //NOLINTEND
   } else {
     g_log_tool.message(LogLevel::ERROR, "drawSetup", "sym_input is null");

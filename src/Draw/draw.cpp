@@ -1,5 +1,5 @@
 #include "draw.hpp"
-#include "Dobby/dobby.h"
+#include "MemTool.hpp"
 #include "ScriptManager.hpp"
 #include "Touch/touch.hpp"
 #include "log.hpp"
@@ -104,22 +104,16 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
 }
 
 void drawSetup() {
-  void *egl_handle = dlopen("libEGL.so", 4);
-  g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("egl_handle: {:p}", egl_handle));
-  if (egl_handle != nullptr) {
-    void *eglSwapBuffers = dlsym(egl_handle, "eglSwapBuffers");
-    if (eglSwapBuffers == nullptr) {
-      g_log_tool.message(LogLevel::ERROR, "drawSetup", "eglSwapBuffers is null");
-      return;
-    }
-    g_log_tool.message(LogLevel::INFO, "drawSetup",
-                       std::format("eglSwapBuffers: {:p}", eglSwapBuffers));
-    //NOLINTBEGIN
-    DobbyHook(eglSwapBuffers, reinterpret_cast<void *>(my_eglSwapBuffers),
-              reinterpret_cast<void **>(&old_eglSwapBuffers));
-    //NOLINTEND
-  } else {
-    g_log_tool.message(LogLevel::ERROR, "drawSetup", "egl_handle is null");
+  void *eglSwapBuffers = MemTool::findSymbol<void *>("libEGL.so", "eglSwapBuffers");
+  if (eglSwapBuffers == nullptr) {
+    g_log_tool.message(LogLevel::ERROR, "drawSetup", "eglSwapBuffers is null");
+    return;
   }
+  g_log_tool.message(LogLevel::INFO, "drawSetup",
+                     std::format("eglSwapBuffers: {:p}", eglSwapBuffers));
+  //NOLINTBEGIN
+  MemTool::Hook(eglSwapBuffers, reinterpret_cast<void *>(my_eglSwapBuffers),
+                reinterpret_cast<void **>(&old_eglSwapBuffers), false);
+  //NOLINTEND
   touchSetup();
 }
