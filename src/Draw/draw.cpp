@@ -148,5 +148,7 @@ void drawSetup() {
     g_log_tool.message(LogLevel::ERROR, "drawSetup", "sym_input is null");
     iMsgCapture::instance().setCallback(CaptureInput);
     iMsgCapture::instance().setUpdateInterval(NormalInputUpdateInterval);
+    iMsgCapture::instance().runThread(/* activity */ {"com.mojang.minecraftpe.MainActivity"},
+                                      /* retry on failure */ true, /* retry timer in seconds */ 1);
   }
 }
