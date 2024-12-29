@@ -1,7 +1,7 @@
 #include "draw.hpp"
 #include "Dobby/dobby.h"
 #include "ScriptManager.hpp"
-#include "iMsgCapture/iMsgCapture.h"
+#include "Touch/touch.hpp"
 #include "log.hpp"
 #include "my_imgui.h"
 #include "API/draw/draw.hpp"
@@ -69,7 +69,6 @@ bool is_ImguiSetup = false;
 static const std::string IniFile = "/sdcard/MinecraftCheat/imgui.ini";
 static const float NormalFontSize = 22.0F;
 static const float NormalScaleFactor = 3.0F;
-static const int NormalInputUpdateInterval = 1000;
 void imguiSetup() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
@@ -103,21 +102,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   return old_eglSwapBuffers(dpy, surface);
 }
-void (*old_Input)(void *thiz, void *ex_ab, void *ex_ac);
-void my_Input(void *thiz, void *ex_ab, void *ex_ac) {
-  // 调用原始函数
-  old_Input(thiz, ex_ab, ex_ac);
 
-  // 处理输入事件
-  if (is_ImguiSetup) {
-    ImGui_ImplAndroid_HandleInputEvent(static_cast<AInputEvent *>(thiz));
-  }
-}
-void CaptureInput(iMsgEvent *iMsg) {
-  if (is_ImguiSetup) {
-    ImGui_ImplAndroid_HandleInputMsg(iMsg);
-  }
-}
 void drawSetup() {
   void *egl_handle = dlopen("libEGL.so", 4);
   g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("egl_handle: {:p}", egl_handle));
@@ -136,19 +121,5 @@ void drawSetup() {
   } else {
     g_log_tool.message(LogLevel::ERROR, "drawSetup", "egl_handle is null");
   }
-  void *sym_input = DobbySymbolResolver(
-      nullptr,
-      "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
-  if (sym_input != nullptr) {
-    g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("sym_input: {:p}", sym_input));
-    //NOLINTBEGIN
-    DobbyHook(sym_input, reinterpret_cast<void *>(my_Input), reinterpret_cast<void **>(&old_Input));
-    //NOLINTEND
-  } else {
-    g_log_tool.message(LogLevel::ERROR, "drawSetup", "sym_input is null");
-    iMsgCapture::instance().setCallback(CaptureInput);
-    iMsgCapture::instance().setUpdateInterval(NormalInputUpdateInterval);
-    iMsgCapture::instance().runThread(/* activity */ {"com.mojang.minecraftpe.MainActivity"},
-                                      /* retry on failure */ true, /* retry timer in seconds */ 1);
-  }
+  touchSetup();
 }
