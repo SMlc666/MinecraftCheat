@@ -31,6 +31,9 @@ void MemTool::Hook::destroy() {
   is_destoryed = true;
 }
 void *MemTool::findSymbol(const char *moduleName, const char *symbolName) {
+  if (symbolName == nullptr) {
+    throw std::invalid_argument("symbolName is null");
+  }
   return DobbySymbolResolver(moduleName, symbolName);
 }
 /**
