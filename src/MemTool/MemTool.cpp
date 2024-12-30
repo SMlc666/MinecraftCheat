@@ -1,4 +1,5 @@
 #include "MemTool.hpp"
+#include "Dobby/dobby.h"
 #include "KittyMemory/KittyMemory.hpp"
 #include <string>
 #include <unordered_map>
@@ -29,7 +30,9 @@ void MemTool::Hook::destroy() {
   MemTool::destoryHookByAddress(hook_func);
   is_destoryed = true;
 }
-
+void *MemTool::findSymbol(const char *moduleName, const char *symbolName) {
+  return DobbySymbolResolver(moduleName, symbolName);
+}
 /**
  * Hook类的析构函数，自动销毁钩子（如果启用）。
  */

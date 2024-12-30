@@ -104,7 +104,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
 }
 
 void drawSetup() {
-  void *eglSwapBuffers = MemTool::findSymbol<void *>("libEGL.so", "eglSwapBuffers");
+  void *eglSwapBuffers = MemTool::findSymbol("libEGL.so", "eglSwapBuffers");
   if (eglSwapBuffers == nullptr) {
     g_log_tool.message(LogLevel::ERROR, "drawSetup", "eglSwapBuffers is null");
     return;

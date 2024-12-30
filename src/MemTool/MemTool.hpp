@@ -3,6 +3,7 @@
 #include "KittyMemory/KittyMemory.hpp"
 #include "KittyMemory/KittyScanner.hpp"
 #include <cstddef>
+#include <cstdio>
 #include <string>
 //NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
 extern std::unordered_map<void *, bool> g_hooked_funcs;
@@ -57,13 +58,7 @@ inline T findIdaPatternFirst(const std::string &moduleName, const std::string &p
 }
 
 // 根据符号名称查找模块地址
-template <typename T>
-inline T findSymbol(const std::string &moduleName, const std::string &symbol) {
-  if (moduleName.empty()) {
-    return reinterpret_cast<T>(DobbySymbolResolver(nullptr, symbol.c_str()));
-  }
-  return reinterpret_cast<T>(DobbySymbolResolver(moduleName.c_str(), symbol.c_str()));
-};
+void *findSymbol(const char *moduleName, const char *symbolName);
 
 // 获取当前进程的名称
 std::string getProcessName();

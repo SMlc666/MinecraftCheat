@@ -26,8 +26,8 @@ static void CaptureInput(iMsgEvent *iMsg) {
 }
 
 void touchSetup() {
-  void *sym_input = MemTool::findSymbol<void *>(
-      "",
+  void *sym_input = MemTool::findSymbol(
+      "libinput.so",
       "_ZN7android13InputConsumer21initializeMotionEventEPNS_11MotionEventEPKNS_12InputMessageE");
   if (sym_input != nullptr) {
     g_log_tool.message(LogLevel::INFO, "drawSetup", std::format("sym_input: {:p}", sym_input));
