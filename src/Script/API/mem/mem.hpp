@@ -1,5 +1,4 @@
 #pragma once
-#include "Lua/lua.h"
 #include "Lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
 #include "LuaBridge/detail/LuaRef.h"
