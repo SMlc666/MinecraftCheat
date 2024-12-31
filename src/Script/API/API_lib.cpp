@@ -7,7 +7,7 @@
 #include "print/print.hpp"
 #include <functional>
 #include <unordered_map>
-static std::unordered_map<int, std::function<void(lua_State *LuaState)>> APIinit{
+static const std::unordered_map<int, std::function<void(lua_State *LuaState)>> APIinit{
     {1,
      [](lua_State *LuaState) {
        luabridge::getGlobalNamespace(LuaState)
