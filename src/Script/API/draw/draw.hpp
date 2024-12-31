@@ -9,4 +9,6 @@ extern void ImGui_ImplScript_EndFrame();
 namespace ScriptAPI::draw {
 void Text(std::string text); //绘制文本,不提供format参数
 }
-namespace ScriptAPI::draw::native {}
+namespace ScriptAPI::draw::native {
+bool is_inFrame(); //用于给Script判断是否在ImGui_ImplScript_NewFrame()之后调用
+}

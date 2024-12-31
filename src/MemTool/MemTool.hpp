@@ -75,7 +75,7 @@ public:
   // Hook 构造函数
   template <typename T>
   inline Hook(T address, void *func, void **m_orig_func, bool m_auto_destroy = true)
-      : hook_func(reinterpret_cast<void *>(func)), auto_destroy(m_auto_destroy) {
+      : auto_destroy(m_auto_destroy), hook_func(reinterpret_cast<void *>(func)) {
     if (g_hooked_funcs.find(reinterpret_cast<void *>(address)) != g_hooked_funcs.end()) {
       throw std::runtime_error("Address already hooked");
     }
