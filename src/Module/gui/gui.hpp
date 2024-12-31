@@ -7,9 +7,11 @@ class GUI {
 public:
   GUI(std::shared_ptr<Module> &m_module, const std::unordered_map<std::string, std::any> &m_GUIMap);
   bool SliderInt(std::string &second, std::string &text, int min, int max);
+  bool CheckBox(std::string &second, std::string &text);
+  template <typename T> T Get(std::string &second);
 
 private:
-  std::unordered_map<std::string, std::any> GUIMap;
+  std::unordered_map<std::string, std::any> GUIMap_orig;
   std::shared_ptr<Module> module;
   std::string first;
 };
