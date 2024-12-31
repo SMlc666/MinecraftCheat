@@ -18,12 +18,14 @@ GUI::GUI(std::shared_ptr<Module> &m_module,
 }
 bool GUI::SliderInt(std::string &second, std::string &text, int min, int max) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-
+  if (GUIMap.find(second) == GUIMap.end()) {
+    throw std::runtime_error("GUIMap does not have " + second);
+  }
   if (!config.HasMember(second.c_str())) {
     config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
-                     rapidjson::Value(0).Move(), Config::getDocument().GetAllocator());
+                     rapidjson::Value(any_cast<int>(GUIMap.at(second))).Move(),
+                     Config::getDocument().GetAllocator());
   }
-
   int v = config[second.c_str()].GetInt();
   bool active = ImGui::SliderInt(text.c_str(), &v, min, max);
   if (active) {
