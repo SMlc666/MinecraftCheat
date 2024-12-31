@@ -5,6 +5,9 @@
 GUI::GUI(std::shared_ptr<Module> &m_module,
          const std::unordered_map<std::string, std::any> &m_GUIMap)
     : GUIMap(m_GUIMap), module(m_module), first(m_module->getName()) {
+  if (GUIMap.find("enabled") == GUIMap.end()) {
+    GUIMap.insert(std::make_pair("enabled", false));
+  }
   if ((!Config::getDocument().HasMember(first.c_str())) ||
       (!Config::getDocument()[first.c_str()].IsObject())) {
     rapidjson::Document doc;
