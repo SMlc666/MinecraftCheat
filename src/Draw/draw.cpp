@@ -1,7 +1,6 @@
 #include "draw.hpp"
 #include "MemTool.hpp"
 #include "ScriptManager.hpp"
-#include "Touch/touch.hpp"
 #include "log.hpp"
 #include "my_imgui.h"
 #include "API/draw/draw.hpp"
@@ -115,5 +114,4 @@ void drawSetup() {
   MemTool::Hook(eglSwapBuffers, reinterpret_cast<void *>(my_eglSwapBuffers),
                 reinterpret_cast<void **>(&old_eglSwapBuffers), false);
   //NOLINTEND
-  touchSetup();
 }
