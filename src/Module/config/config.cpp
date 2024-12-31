@@ -32,6 +32,10 @@ void initConfig() {
   config = rapidjson::Document();
   config.SetObject();
 }
+rapidjson::Document &getDocument() {
+  std::lock_guard<std::mutex> lock(config_mutex);
+  return config;
+}
 void saveConfig() {
   std::lock_guard<std::mutex> lock(config_mutex);
   std::ofstream configFile(NormalConfigPath, std::ios::out);
