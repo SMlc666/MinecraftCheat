@@ -111,7 +111,7 @@ void disableModule(std::shared_ptr<Module> &module) {
 }
 
 void tickAllModules() {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  cc std::lock_guard<std::mutex> lockGuard(moduleMutex);
   for (auto &pair : modules) {
     if (pair.second) {
       pair.second->onTick();
