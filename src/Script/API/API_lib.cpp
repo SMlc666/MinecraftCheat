@@ -17,9 +17,15 @@ static std::unordered_map<int, std::function<void(lua_State *LuaState)>> APIinit
            .addFunction("is_inFrame", ScriptAPI::draw::native::is_inFrame)
            .endNamespace()
            .endNamespace();
-       luabridge::getGlobalNamespace(LuaState)
-           .beginNamespace("Mem")
-           .addFunction("getProcessName", ScriptAPI::Mem::getProcessName)
+       auto MemNamespace = luabridge::getGlobalNamespace(LuaState).beginNamespace("Mem");
+       for (const auto &pair : ScriptAPI::Mem::TypeNamesOnLua) {
+         MemNamespace.addConstant(pair.second.c_str(), static_cast<int>(pair.first));
+       }
+       MemNamespace.addFunction("getProcessName", ScriptAPI::Mem::getProcessName)
+           .addFunction("getValue", ScriptAPI::Mem::getValue)
+           .addFunction("setValue", ScriptAPI::Mem::setValue)
+           .addFunction("getModuleBase", ScriptAPI::Mem::getModuleBase)
+           .addFunction("getModuleEnd", ScriptAPI::Mem::getModuleEnd)
            .endNamespace();
      }},
 };
