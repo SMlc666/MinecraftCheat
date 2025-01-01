@@ -1,18 +1,14 @@
 #include "ModuleManager.hpp"
-#include "cheat/KillAura/KillAura.hpp"
-#include "menu/menu.hpp"
-#include <memory>
 #include <mutex>
 #include <string>
 #include <unordered_map>
 #include <utility>
 
-
 namespace ModuleManager {
-std::unordered_map<std::string, std::shared_ptr<Module>> modules;
+std::unordered_map<std::string, Module *> modules;
 std::mutex moduleMutex; // 用于线程安全
 
-void addModule(std::shared_ptr<Module> module) { //NOLINT
+void addModule(Module *module) { //NOLINT
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   modules[module->getName()] = module;
 }
@@ -33,16 +29,16 @@ void disableModuleByName(const std::string &name) {
   }
 }
 
-void enableModule(std::shared_ptr<Module> &module) {
+void enableModule(Module *&module) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  if (module) {
+  if (module != nullptr) {
     module->onEnable();
   }
 }
 
-void disableModule(std::shared_ptr<Module> &module) {
+void disableModule(Module *&module) {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
-  if (module) {
+  if (module != nullptr) {
     module->onDisable();
   }
 }
@@ -50,7 +46,7 @@ void disableModule(std::shared_ptr<Module> &module) {
 void tickAllModules() {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   for (auto &pair : modules) {
-    if (pair.second) {
+    if (pair.second != nullptr) {
       pair.second->onTick();
     }
   }
@@ -59,17 +55,15 @@ void tickAllModules() {
 void loadAllModules() {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   for (auto &pair : modules) {
-    if (pair.second) {
+    if (pair.second != nullptr) {
       pair.second->onLoad();
     }
   }
 }
-std::unordered_map<std::string, std::shared_ptr<Module>> &getModules() {
+std::unordered_map<std::string, Module *> &getModules() {
   return modules;
 }
 } // namespace ModuleManager
 
 void moduleSetup() {
-  ModuleManager::addModule(std::make_shared<KillAuraModule>("KillAura", MenuType::MAIN_MENU));
-  ModuleManager::loadAllModules();
 }

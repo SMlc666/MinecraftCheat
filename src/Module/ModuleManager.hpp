@@ -3,12 +3,12 @@
 #include "Module.hpp"
 
 namespace ModuleManager {
-std::unordered_map<std::string, std::shared_ptr<Module>> &getModules();
-void addModule(std::shared_ptr<Module> module);
+std::unordered_map<std::string, Module *> &getModules();
+void addModule(Module *module);
 void enableModuleByName(const std::string &name);
 void disableModuleByName(const std::string &name);
-void enableModule(std::shared_ptr<Module> &module);
-void disableModule(std::shared_ptr<Module> &module);
+void enableModule(Module *&module);
+void disableModule(Module *&module);
 void tickAllModules();
 void loadAllModules();
 } // namespace ModuleManager
