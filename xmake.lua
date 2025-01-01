@@ -42,6 +42,7 @@ function add_archlinks(arch)
 end
 target("cheat")
     set_default(true)
+    add_defines("__AVX2__")
     set_languages("c17", "cxx20")
     set_kind("shared")
     add_files("src/main.cpp")--main src file
