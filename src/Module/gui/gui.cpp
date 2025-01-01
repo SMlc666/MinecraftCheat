@@ -1,4 +1,5 @@
 #include "gui.hpp"
+#include "Module.hpp"
 #include "config/config.hpp"
 #include "imgui/imgui.h"
 #include "rapidjson/document.h"

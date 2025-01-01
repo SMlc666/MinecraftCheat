@@ -2,7 +2,7 @@
 #include <any>
 #include <string>
 #include <unordered_map>
-#include "ModuleManager.hpp"
+class Module;
 
 class GUI {
 public:
