@@ -35,6 +35,7 @@ static _Unwind_Reason_Code backtrace_callback(struct _Unwind_Context *context, v
 static void signalhandler(int sig) {
   // 打印栈回溯
   _Unwind_Backtrace(backtrace_callback, nullptr);
+  g_log_tool.SaveToFile();
   std::terminate();
 }
 
