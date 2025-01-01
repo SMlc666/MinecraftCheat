@@ -1,8 +1,12 @@
 #pragma once
 #include "menu/menu.hpp"
+#include <any>
+#include <unordered_map>
+
 class Module {
 public:
-  Module(const std::string &name, MenuType type);
+  Module(const std::string &name, MenuType type,
+         std::unordered_map<std::string, std::any> configMap);
   ~Module() = default;
   Module(const Module &) = default;
   Module &operator=(const Module &) = default;
@@ -25,6 +29,7 @@ public:
 private:
   std::string m_name;
   MenuType m_type;
+  std::unordered_map<std::string, std::any> m_configMap;
   std::function<void(Module *)> m_onTick;
   std::function<void(Module *)> m_onEnable;
   std::function<void(Module *)> m_onDisable;

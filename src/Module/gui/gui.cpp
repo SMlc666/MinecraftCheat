@@ -6,7 +6,7 @@
 GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GUIMap)
     : GUIMap_orig(m_GUIMap), module(m_module), first(m_module->getName()) {
   if (GUIMap_orig.find("enabled") == GUIMap_orig.end()) {
-    GUIMap_orig.insert(std::make_pair("enabled", false));
+    throw std::runtime_error("GUIMap does not have enabled");
   }
   if ((!Config::getDocument().HasMember(first.c_str())) ||
       (!Config::getDocument()[first.c_str()].IsObject())) {
