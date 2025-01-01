@@ -2,8 +2,7 @@
 #include "config/config.hpp"
 #include "imgui/imgui.h"
 #include "rapidjson/document.h"
-GUI::GUI(std::shared_ptr<Module> &m_module,
-         const std::unordered_map<std::string, std::any> &m_GUIMap)
+GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GUIMap)
     : GUIMap_orig(m_GUIMap), module(m_module), first(m_module->getName()) {
   if (GUIMap_orig.find("enabled") == GUIMap_orig.end()) {
     GUIMap_orig.insert(std::make_pair("enabled", false));
