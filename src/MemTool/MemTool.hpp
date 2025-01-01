@@ -5,7 +5,6 @@
 #include <cstddef>
 #include <cstdio>
 #include <string>
-#include <type_traits>
 //NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
 extern std::unordered_map<void *, bool> g_hooked_funcs;
 namespace MemTool {
@@ -33,37 +32,28 @@ template <typename T, typename U> inline bool write(T address, U value) {
 }
 // 获取指定模块的基地址
 template <typename T> inline T getModuleBase(const std::string &moduleName) {
-  KittyMemory::ProcMap Module = KittyMemory::getElfBaseMap(moduleName);
-  if (Module.isUnknown()) {
+  KittyScanner::ElfScanner Module = KittyScanner::ElfScanner::createWithPath(moduleName);
+  if (Module.isValid()) {
     return {};
   }
-  if constexpr (std::is_same<decltype(Module.startAddress), unsigned long long>::value) {
-    return static_cast<T>(Module.startAddress);
-  } else {
-    return reinterpret_cast<T>(Module.startAddress);
-  }
+  return reinterpret_cast<T>(Module.base());
 }
 // 获取指定模块的结束地址
 template <typename T> T inline getModuleEnd(const std::string &moduleName) {
-  KittyMemory::ProcMap Module = KittyMemory::getElfBaseMap(moduleName);
-  if (Module.isUnknown()) {
+  KittyScanner::ElfScanner Module = KittyScanner::ElfScanner::createWithPath(moduleName);
+  if (Module.isValid()) {
     return {};
   }
-  if constexpr (std::is_same<decltype(Module.endAddress), unsigned long long>::value) {
-    return static_cast<T>(Module.endAddress);
-  } else {
-    return reinterpret_cast<T>(Module.endAddress);
-  }
+  return reinterpret_cast<T>(Module.end());
 }
 // 查找模块中第一个匹配的模式
 template <typename T>
 inline T findIdaPatternFirst(const std::string &moduleName, const std::string &pattern) {
-  KittyMemory::ProcMap Module = getModuleMap(moduleName);
-  if (Module.isUnknown()) {
+  KittyScanner::ElfScanner Module = KittyScanner::ElfScanner::createWithPath(moduleName);
+  if (Module.isValid()) {
     return {};
   }
-  uintptr_t buf =
-      KittyScanner::findIdaPatternFirst(Module.startAddress, Module.endAddress, pattern);
+  uintptr_t buf = KittyScanner::findIdaPatternFirst(Module.base(), Module.end(), pattern);
   if (buf == 0) {
     return {};
   }
