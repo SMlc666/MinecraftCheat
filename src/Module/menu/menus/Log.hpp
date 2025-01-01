@@ -42,7 +42,13 @@ void drawLogMenu() {
   }
   ImGui::SameLine();
   if (ImGui::Button("Save")) {
-    std::thread([]() { g_log_tool.SaveToFile(); }).detach(); //线程分离
+    std::thread([]() {
+      try {
+        g_log_tool.SaveToFile();
+      } catch (const std::exception &e) {
+        g_log_tool.message(LogLevel::ERROR, "SaveToFile", e.what());
+      }
+    }).detach(); //线程分离
   }
   if (ImGui::TreeNode("tags")) {
     for (const auto &tag : g_log_tool.getTagMap()) {
