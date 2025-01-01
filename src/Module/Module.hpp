@@ -2,7 +2,7 @@
 #include "menu/menu.hpp"
 #include <any>
 #include <unordered_map>
-
+#include "gui/gui.hpp"
 class Module {
 public:
   Module(std::string name, MenuType type, std::unordered_map<std::string, std::any> configMap);
@@ -28,6 +28,7 @@ public:
 private:
   std::string m_name;
   MenuType m_type;
+  GUI m_gui;
   std::unordered_map<std::string, std::any> m_configMap;
   std::function<void(Module *)> m_onTick;
   std::function<void(Module *)> m_onEnable;
