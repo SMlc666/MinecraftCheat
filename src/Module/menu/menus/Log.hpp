@@ -1,6 +1,7 @@
 #pragma once
 #include "imgui/imgui.h"
 #include "log.hpp"
+#include <android/log.h>
 #include <thread>
 #include <vector>
 static void drawLog(std::vector<LogEntry> &Logs) {
@@ -49,6 +50,12 @@ void drawLogMenu() {
         g_log_tool.message(LogLevel::ERROR, "SaveToFile", e.what());
       }
     }).detach(); //线程分离
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("To Android")) {
+    for (auto &log : g_log_tool.getLogs()) {
+      __android_log_print(ANDROID_LOG_INFO, log.tag.c_str(), "%s", log.message.c_str());
+    }
   }
   if (ImGui::TreeNode("tags")) {
     for (const auto &tag : g_log_tool.getTagMap()) {
