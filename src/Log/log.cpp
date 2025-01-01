@@ -7,9 +7,6 @@ void Log::message(LogLevel Level, const std::string &tag, const std::string &mes
   std::lock_guard<std::mutex> lock(mtx);
   tag_map.insert({tag, true});
   logs.push_back(LogEntry(Level, tag, message));
-  if (Level == LogLevel::ERROR || Level == LogLevel::FATAL) {
-    SaveToFile();
-  }
 }
 
 std::vector<LogEntry> Log::getLogs() const {
