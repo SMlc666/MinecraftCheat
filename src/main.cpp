@@ -8,7 +8,7 @@
 #include "ModuleManager.hpp"
 #include "ScriptManager.hpp"
 #include "config/config.hpp"
-#include "backtrace/backtrace.hpp"
+#include "sighandle/sighandle.hpp"
 #include "log.hpp"
 #define KittyInjector
 JNIEnv *g_env = nullptr;
