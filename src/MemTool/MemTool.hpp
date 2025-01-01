@@ -46,9 +46,6 @@ template <typename T> T inline getModuleEnd(const std::string &moduleName) {
 template <typename T>
 inline T findIdaPatternFirst(const std::string &moduleName, const std::string &pattern) {
   KittyScanner::ElfScanner Module = KittyScanner::ElfScanner::createWithPath(moduleName);
-  if (Module.isValid()) {
-    return {};
-  }
   uintptr_t buf = KittyScanner::findIdaPatternFirst(Module.baseSegment().startAddress,
                                                     Module.baseSegment().endAddress, pattern);
   return reinterpret_cast<T>(buf);
