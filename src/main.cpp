@@ -10,9 +10,10 @@
 #include "config/config.hpp"
 #include "backtrace/backtrace.hpp"
 #include "log.hpp"
+#define KittyInjector
 JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
-const static int MAX_JAVAVM_BUFFER = 1;
+
 void setup() {
   std::filesystem::path path(CheatDir);
   if (!std::filesystem::exists(path)) {
@@ -39,6 +40,8 @@ extern "C" auto JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) -> jint { //NOL
   std::thread(setup).detach();
   return JNI_VERSION_1_6;
 }
+#ifndef KittyInjector
+const static int MAX_JAVAVM_BUFFER = 1;
 __attribute__((constructor)) void OnLoad() {
   std::array<JavaVM *, MAX_JAVAVM_BUFFER> jvmBuffer{};
   jsize nVms = 0;
@@ -50,3 +53,4 @@ __attribute__((constructor)) void OnLoad() {
   g_log_tool.message(LogLevel::INFO, "OnLoad", std::format("nVms: {}", nVms));
   JNI_OnLoad(jvmBuffer[0], nullptr);
 }
+#endif
