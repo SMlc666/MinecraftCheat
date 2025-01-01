@@ -90,7 +90,7 @@ public:
 
     [[nodiscard]] constexpr reference operator[](const difference_type value) const noexcept {
         const auto pos = index() - value;
-        constexpr auto page_size = component_traits<value_type>::page_size;
+        constexpr auto page_size = component_traits<typename Container::value_type>::page_size;
         return (*payload)[pos / page_size][fast_mod(static_cast<std::size_t>(pos), page_size)];
     }
 
@@ -99,7 +99,7 @@ public:
     }
 
     [[nodiscard]] constexpr reference operator*() const noexcept {
-        return operator[](0);
+        return *operator->();
     }
 
     [[nodiscard]] constexpr difference_type index() const noexcept {
@@ -266,8 +266,8 @@ class basic_storage: public basic_sparse_set<Entity, typename std::allocator_tra
         const auto it = base_type::try_emplace(entt, force_back);
 
         ENTT_TRY {
-            auto *elem = to_address(assure_at_least(static_cast<size_type>(it.index())));
-            entt::uninitialized_construct_using_allocator(elem, get_allocator(), std::forward<Args>(args)...);
+            auto elem = assure_at_least(static_cast<size_type>(it.index()));
+            entt::uninitialized_construct_using_allocator(to_address(elem), get_allocator(), std::forward<Args>(args)...);
         }
         ENTT_CATCH {
             base_type::pop(it, it + 1u);
@@ -374,7 +374,7 @@ protected:
      * @return Iterator pointing to the emplaced element.
      */
     underlying_iterator try_emplace([[maybe_unused]] const Entity entt, [[maybe_unused]] const bool force_back, const void *value) override {
-        if(value != nullptr) {
+        if(value) {
             if constexpr(std::is_copy_constructible_v<element_type>) {
                 return emplace_element(entt, force_back, *static_cast<const element_type *>(value));
             } else {
@@ -456,13 +456,11 @@ public:
     basic_storage(basic_storage &&other, const allocator_type &allocator)
         : base_type{std::move(other), allocator},
           payload{std::move(other.payload), allocator} {
-        // NOLINTNEXTLINE(bugprone-use-after-move)
         ENTT_ASSERT(alloc_traits::is_always_equal::value || get_allocator() == other.get_allocator(), "Copying a storage is not allowed");
     }
 
     /*! @brief Default destructor. */
-    // NOLINTNEXTLINE(bugprone-exception-escape)
-    ~basic_storage() override {
+    ~basic_storage() noexcept override {
         shrink_to_size(0u);
     }
 
@@ -479,7 +477,9 @@ public:
      */
     basic_storage &operator=(basic_storage &&other) noexcept {
         ENTT_ASSERT(alloc_traits::is_always_equal::value || get_allocator() == other.get_allocator(), "Copying a storage is not allowed");
-        swap(other);
+        shrink_to_size(0u);
+        payload = std::move(other.payload);
+        base_type::operator=(std::move(other));
         return *this;
     }
 
@@ -487,7 +487,7 @@ public:
      * @brief Exchanges the contents with those of a given storage.
      * @param other Storage to exchange the content with.
      */
-    void swap(basic_storage &other) noexcept {
+    void swap(basic_storage &other) {
         using std::swap;
         swap(payload, other.payload);
         base_type::swap(other);
@@ -795,7 +795,7 @@ public:
     /*! @brief Element type. */
     using element_type = Type;
     /*! @brief Type of the objects assigned to entities. */
-    using value_type = void;
+    using value_type = element_type;
     /*! @brief Underlying entity identifier. */
     using entity_type = Entity;
     /*! @brief Unsigned integer type. */
@@ -840,7 +840,7 @@ public:
         : base_type{std::move(other), allocator} {}
 
     /*! @brief Default destructor. */
-    ~basic_storage() override = default;
+    ~basic_storage() noexcept override = default;
 
     /**
      * @brief Default copy assignment operator, deleted on purpose.
@@ -878,7 +878,7 @@ public:
      * @param entt A valid identifier.
      */
     void get([[maybe_unused]] const entity_type entt) const noexcept {
-        ENTT_ASSERT(base_type::contains(entt), "Invalid entity");
+        ENTT_ASSERT(base_type::contains(entt), "Storage does not contain entity");
     }
 
     /**
@@ -887,7 +887,7 @@ public:
      * @return Returns an empty tuple.
      */
     [[nodiscard]] std::tuple<> get_as_tuple([[maybe_unused]] const entity_type entt) const noexcept {
-        ENTT_ASSERT(base_type::contains(entt), "Invalid entity");
+        ENTT_ASSERT(base_type::contains(entt), "Storage does not contain entity");
         return std::tuple{};
     }
 
@@ -914,7 +914,7 @@ public:
      */
     template<typename... Func>
     void patch([[maybe_unused]] const entity_type entt, Func &&...func) {
-        ENTT_ASSERT(base_type::contains(entt), "Invalid entity");
+        ENTT_ASSERT(base_type::contains(entt), "Storage does not contain entity");
         (std::forward<Func>(func)(), ...);
     }
 
@@ -1012,8 +1012,6 @@ public:
     using base_type = basic_sparse_set<Entity, Allocator>;
     /*! @brief Element type. */
     using element_type = Entity;
-    /*! @brief Type of the objects assigned to entities. */
-    using value_type = void;
     /*! @brief Underlying entity identifier. */
     using entity_type = Entity;
     /*! @brief Unsigned integer type. */
@@ -1062,7 +1060,7 @@ public:
           placeholder{other.placeholder} {}
 
     /*! @brief Default destructor. */
-    ~basic_storage() override = default;
+    ~basic_storage() noexcept override = default;
 
     /**
      * @brief Default copy assignment operator, deleted on purpose.

@@ -30,7 +30,6 @@ public:
 
     constexpr edge_iterator() noexcept = default;
 
-    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     constexpr edge_iterator(It base, const size_type vertices, const size_type from, const size_type to, const size_type step) noexcept
         : it{std::move(base)},
           vert{vertices},
@@ -161,7 +160,7 @@ public:
           vert{other.vert} {}
 
     /*! @brief Default destructor. */
-    ~adjacency_matrix() = default;
+    ~adjacency_matrix() noexcept = default;
 
     /**
      * @brief Default copy assignment operator.
@@ -193,7 +192,7 @@ public:
      * @brief Exchanges the contents with those of a given adjacency matrix.
      * @param other Adjacency matrix to exchange the content with.
      */
-    void swap(adjacency_matrix &other) noexcept {
+    void swap(adjacency_matrix &other) {
         using std::swap;
         swap(matrix, other.matrix);
         swap(vert, other.vert);

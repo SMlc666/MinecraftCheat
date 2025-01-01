@@ -38,7 +38,6 @@ public:
           it{},
           tombstone_check{} {}
 
-    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     runtime_view_iterator(const std::vector<Set *> &cpools, const std::vector<Set *> &ignore, iterator_type curr) noexcept
         : pools{&cpools},
           filter{&ignore},
@@ -163,7 +162,7 @@ public:
           filter{other.filter, allocator} {}
 
     /*! @brief Default move constructor. */
-    basic_runtime_view(basic_runtime_view &&) noexcept = default;
+    basic_runtime_view(basic_runtime_view &&) noexcept(std::is_nothrow_move_constructible_v<container_type>) = default;
 
     /**
      * @brief Allocator-extended move constructor.
@@ -175,7 +174,7 @@ public:
           filter{std::move(other.filter), allocator} {}
 
     /*! @brief Default destructor. */
-    ~basic_runtime_view() = default;
+    ~basic_runtime_view() noexcept = default;
 
     /**
      * @brief Default copy assignment operator.
@@ -187,13 +186,13 @@ public:
      * @brief Default move assignment operator.
      * @return This runtime view.
      */
-    basic_runtime_view &operator=(basic_runtime_view &&) noexcept = default;
+    basic_runtime_view &operator=(basic_runtime_view &&) noexcept(std::is_nothrow_move_assignable_v<container_type>) = default;
 
     /**
      * @brief Exchanges the contents with those of a given view.
      * @param other View to exchange the content with.
      */
-    void swap(basic_runtime_view &other) noexcept {
+    void swap(basic_runtime_view &other) {
         using std::swap;
         swap(pools, other.pools);
         swap(filter, other.filter);

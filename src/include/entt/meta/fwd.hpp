@@ -13,8 +13,6 @@ struct meta_handle;
 
 struct meta_prop;
 
-struct meta_custom;
-
 struct meta_data;
 
 struct meta_func;

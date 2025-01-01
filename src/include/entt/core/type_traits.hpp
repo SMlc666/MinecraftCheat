@@ -769,7 +769,6 @@ template<typename Type>
 
 template<typename Type>
 [[nodiscard]] constexpr bool dispatch_is_equality_comparable() {
-    // NOLINTBEGIN(modernize-use-transparent-functors)
     if constexpr(std::is_array_v<Type>) {
         return false;
     } else if constexpr(!is_iterator_v<Type> && has_value_type<Type>::value) {
@@ -787,7 +786,6 @@ template<typename Type>
     } else {
         return maybe_equality_comparable<Type>(0);
     }
-    // NOLINTEND(modernize-use-transparent-functors)
 }
 
 } // namespace internal

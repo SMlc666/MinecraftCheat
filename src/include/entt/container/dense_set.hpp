@@ -89,7 +89,7 @@ public:
     }
 
     [[nodiscard]] constexpr reference operator*() const noexcept {
-        return operator[](0);
+        return *operator->();
     }
 
     template<typename Lhs, typename Rhs>
@@ -370,7 +370,7 @@ public:
           threshold{other.threshold} {}
 
     /*! @brief Default move constructor. */
-    dense_set(dense_set &&) noexcept = default;
+    dense_set(dense_set &&) noexcept(std::is_nothrow_move_constructible_v<compressed_pair<sparse_container_type, hasher>> && std::is_nothrow_move_constructible_v<compressed_pair<packed_container_type, key_equal>>) = default;
 
     /**
      * @brief Allocator-extended move constructor.
@@ -383,7 +383,7 @@ public:
           threshold{other.threshold} {}
 
     /*! @brief Default destructor. */
-    ~dense_set() = default;
+    ~dense_set() noexcept = default;
 
     /**
      * @brief Default copy assignment operator.
@@ -395,7 +395,7 @@ public:
      * @brief Default move assignment operator.
      * @return This container.
      */
-    dense_set &operator=(dense_set &&) noexcept = default;
+    dense_set &operator=(dense_set &&) noexcept(std::is_nothrow_move_assignable_v<compressed_pair<sparse_container_type, hasher>> && std::is_nothrow_move_assignable_v<compressed_pair<packed_container_type, key_equal>>) = default;
 
     /**
      * @brief Returns the associated allocator.
@@ -627,7 +627,7 @@ public:
      * @brief Exchanges the contents with those of a given container.
      * @param other Container to exchange the content with.
      */
-    void swap(dense_set &other) noexcept {
+    void swap(dense_set &other) {
         using std::swap;
         swap(sparse, other.sparse);
         swap(packed, other.packed);

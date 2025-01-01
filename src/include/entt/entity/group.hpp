@@ -13,6 +13,7 @@
 #include "../core/iterator.hpp"
 #include "../core/type_info.hpp"
 #include "../core/type_traits.hpp"
+#include "component.hpp"
 #include "entity.hpp"
 #include "fwd.hpp"
 
@@ -28,7 +29,7 @@ template<typename It, typename... Owned, typename... Get>
 class extended_group_iterator<It, owned_t<Owned...>, get_t<Get...>> {
     template<typename Type>
     [[nodiscard]] auto index_to_element([[maybe_unused]] Type &cpool) const {
-        if constexpr(std::is_void_v<typename Type::value_type>) {
+        if constexpr(component_traits<typename Type::value_type>::page_size == 0u) {
             return std::make_tuple();
         } else {
             return std::forward_as_tuple(cpool.rbegin()[it.index()]);
@@ -93,9 +94,9 @@ template<typename... Lhs, typename... Rhs>
 
 struct group_descriptor {
     using size_type = std::size_t;
-    virtual ~group_descriptor() = default;
-    [[nodiscard]] virtual bool owned(const id_type) const noexcept {
-        return false;
+    virtual ~group_descriptor() noexcept = default;
+    virtual size_type owned(const id_type *, const size_type) const noexcept {
+        return 0u;
     }
 };
 
@@ -104,8 +105,8 @@ class group_handler final: public group_descriptor {
     using entity_type = typename Type::entity_type;
 
     void swap_elements(const std::size_t pos, const entity_type entt) {
-        for(size_type next{}; next < Owned; ++next) {
-            pools[next]->swap_elements((*pools[next])[pos], entt);
+        for(auto first = pools.begin(), last = first + Owned; first != last; ++first) {
+            (*first)->swap_elements((**first)[pos], entt);
         }
     }
 
@@ -149,14 +150,16 @@ public:
         common_setup();
     }
 
-    [[nodiscard]] bool owned(const id_type hash) const noexcept override {
-        for(size_type pos{}; pos < Owned; ++pos) {
-            if(pools[pos]->type().hash() == hash) {
-                return true;
+    size_type owned(const id_type *elem, const size_type length) const noexcept final {
+        size_type cnt = 0u;
+
+        for(auto pos = 0u; pos < length; ++pos) {
+            for(auto next = 0u; next < Owned; ++next) {
+                cnt += (elem[pos] == pools[next]->type().hash());
             }
         }
 
-        return false;
+        return cnt;
     }
 
     [[nodiscard]] size_type length() const noexcept {
@@ -692,7 +695,7 @@ private:
  */
 template<typename... Owned, typename... Get, typename... Exclude>
 class basic_group<owned_t<Owned...>, get_t<Get...>, exclude_t<Exclude...>> {
-    static_assert(((Owned::storage_policy != deletion_policy::in_place) && ...), "Groups do not support in-place delete");
+    static_assert((!component_traits<typename Owned::value_type>::in_place_delete && ...), "Groups do not support in-place delete");
 
     using base_type = std::common_type_t<typename Owned::base_type..., typename Get::base_type..., typename Exclude::base_type...>;
     using underlying_type = typename base_type::entity_type;

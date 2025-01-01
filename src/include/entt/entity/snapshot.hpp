@@ -68,7 +68,7 @@ public:
     basic_snapshot(basic_snapshot &&) noexcept = default;
 
     /*! @brief Default destructor. */
-    ~basic_snapshot() = default;
+    ~basic_snapshot() noexcept = default;
 
     /**
      * @brief Default copy assignment operator, deleted on purpose.
@@ -93,17 +93,17 @@ public:
     template<typename Type, typename Archive>
     const basic_snapshot &get(Archive &archive, const id_type id = type_hash<Type>::value()) const {
         if(const auto *storage = reg->template storage<Type>(id); storage) {
-            const typename registry_type::common_type &base = *storage;
-
             archive(static_cast<typename traits_type::entity_type>(storage->size()));
 
             if constexpr(std::is_same_v<Type, entity_type>) {
                 archive(static_cast<typename traits_type::entity_type>(storage->free_list()));
 
-                for(auto first = base.rbegin(), last = base.rend(); first != last; ++first) {
+                for(auto first = storage->data(), last = first + storage->size(); first != last; ++first) {
                     archive(*first);
                 }
-            } else if constexpr(registry_type::template storage_for_type<Type>::storage_policy == deletion_policy::in_place) {
+            } else if constexpr(component_traits<Type>::in_place_delete) {
+                const typename registry_type::common_type &base = *storage;
+
                 for(auto it = base.rbegin(), last = base.rend(); it != last; ++it) {
                     if(const auto entt = *it; entt == tombstone) {
                         archive(static_cast<entity_type>(null));
@@ -200,7 +200,7 @@ public:
     basic_snapshot_loader(basic_snapshot_loader &&) noexcept = default;
 
     /*! @brief Default destructor. */
-    ~basic_snapshot_loader() = default;
+    ~basic_snapshot_loader() noexcept = default;
 
     /**
      * @brief Default copy assignment operator, deleted on purpose.
@@ -380,7 +380,7 @@ public:
     basic_continuous_loader(basic_continuous_loader &&) noexcept = default;
 
     /*! @brief Default destructor. */
-    ~basic_continuous_loader() = default;
+    ~basic_continuous_loader() noexcept = default;
 
     /**
      * @brief Default copy assignment operator, deleted on purpose.

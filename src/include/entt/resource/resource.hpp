@@ -78,7 +78,7 @@ public:
         : value{std::move(other.value)} {}
 
     /*! @brief Default destructor. */
-    ~resource() = default;
+    ~resource() noexcept = default;
 
     /**
      * @brief Default copy assignment operator.
@@ -114,15 +114,6 @@ public:
     resource &operator=(resource<Other> &&other) noexcept {
         value = std::move(other.value);
         return *this;
-    }
-
-    /**
-     * @brief Exchanges the content with that of a given resource.
-     * @param other Resource to exchange the content with.
-     */
-    void swap(resource &other) noexcept {
-        using std::swap;
-        swap(value, other.value);
     }
 
     /**

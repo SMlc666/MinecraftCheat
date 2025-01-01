@@ -188,7 +188,7 @@ public:
     process &operator=(process &&) noexcept = default;
 
     /*! @brief Default destructor. */
-    virtual ~process() {
+    virtual ~process() noexcept {
         static_assert(std::is_base_of_v<process, Derived>, "Incorrect use of the class template");
     }
 

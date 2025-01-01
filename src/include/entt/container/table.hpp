@@ -82,7 +82,7 @@ public:
     }
 
     [[nodiscard]] constexpr reference operator*() const noexcept {
-        return operator[](0);
+        return *operator->();
     }
 
     template<typename... Lhs, typename... Rhs>
@@ -238,7 +238,7 @@ public:
         : payload{Container{std::move(std::get<Container>(other.payload)), allocator}...} {}
 
     /*! @brief Default destructor. */
-    ~basic_table() = default;
+    ~basic_table() noexcept = default;
 
     /**
      * @brief Default copy assignment operator, deleted on purpose.
@@ -252,7 +252,7 @@ public:
      * @return This container.
      */
     basic_table &operator=(basic_table &&other) noexcept {
-        swap(other);
+        payload = std::move(other.payload);
         return *this;
     }
 
@@ -260,7 +260,7 @@ public:
      * @brief Exchanges the contents with those of a given table.
      * @param other Table to exchange the content with.
      */
-    void swap(basic_table &other) noexcept {
+    void swap(basic_table &other) {
         using std::swap;
         swap(payload, other.payload);
     }

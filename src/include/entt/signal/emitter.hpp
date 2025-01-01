@@ -79,7 +79,7 @@ public:
     }
 
     /*! @brief Default destructor. */
-    virtual ~emitter() {
+    virtual ~emitter() noexcept {
         static_assert(std::is_base_of_v<emitter<Derived, Allocator>, Derived>, "Invalid emitter type");
     }
 
@@ -96,7 +96,7 @@ public:
      */
     emitter &operator=(emitter &&other) noexcept {
         ENTT_ASSERT(alloc_traits::is_always_equal::value || handlers.second() == other.handlers.second(), "Copying an emitter is not allowed");
-        swap(other);
+        handlers = std::move(other.handlers);
         return *this;
     }
 
@@ -104,7 +104,7 @@ public:
      * @brief Exchanges the contents with those of a given emitter.
      * @param other Emitter to exchange the content with.
      */
-    void swap(emitter &other) noexcept {
+    void swap(emitter &other) {
         using std::swap;
         swap(handlers, other.handlers);
     }

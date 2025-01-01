@@ -67,21 +67,21 @@ public:
     using sink_type = sink<sigh<Ret(Args...), Allocator>>;
 
     /*! @brief Default constructor. */
-    sigh() noexcept(noexcept(allocator_type{}))
+    sigh() noexcept(std::is_nothrow_default_constructible_v<allocator_type> && std::is_nothrow_constructible_v<container_type, const allocator_type &>)
         : sigh{allocator_type{}} {}
 
     /**
      * @brief Constructs a signal handler with a given allocator.
      * @param allocator The allocator to use.
      */
-    explicit sigh(const allocator_type &allocator) noexcept
+    explicit sigh(const allocator_type &allocator) noexcept(std::is_nothrow_constructible_v<container_type, const allocator_type &>)
         : calls{allocator} {}
 
     /**
      * @brief Copy constructor.
      * @param other The instance to copy from.
      */
-    sigh(const sigh &other)
+    sigh(const sigh &other) noexcept(std::is_nothrow_copy_constructible_v<container_type>)
         : calls{other.calls} {}
 
     /**
@@ -89,14 +89,14 @@ public:
      * @param other The instance to copy from.
      * @param allocator The allocator to use.
      */
-    sigh(const sigh &other, const allocator_type &allocator)
+    sigh(const sigh &other, const allocator_type &allocator) noexcept(std::is_nothrow_constructible_v<container_type, const container_type &, const allocator_type &>)
         : calls{other.calls, allocator} {}
 
     /**
      * @brief Move constructor.
      * @param other The instance to move from.
      */
-    sigh(sigh &&other) noexcept
+    sigh(sigh &&other) noexcept(std::is_nothrow_move_constructible_v<container_type>)
         : calls{std::move(other.calls)} {}
 
     /**
@@ -104,18 +104,18 @@ public:
      * @param other The instance to move from.
      * @param allocator The allocator to use.
      */
-    sigh(sigh &&other, const allocator_type &allocator)
+    sigh(sigh &&other, const allocator_type &allocator) noexcept(std::is_nothrow_constructible_v<container_type, container_type &&, const allocator_type &>)
         : calls{std::move(other.calls), allocator} {}
 
     /*! @brief Default destructor. */
-    ~sigh() = default;
+    ~sigh() noexcept = default;
 
     /**
      * @brief Copy assignment operator.
      * @param other The instance to copy from.
      * @return This signal handler.
      */
-    sigh &operator=(const sigh &other) {
+    sigh &operator=(const sigh &other) noexcept(std::is_nothrow_copy_assignable_v<container_type>) {
         calls = other.calls;
         return *this;
     }
@@ -125,8 +125,8 @@ public:
      * @param other The instance to move from.
      * @return This signal handler.
      */
-    sigh &operator=(sigh &&other) noexcept {
-        swap(other);
+    sigh &operator=(sigh &&other) noexcept(std::is_nothrow_move_assignable_v<container_type>) {
+        calls = std::move(other.calls);
         return *this;
     }
 
@@ -134,7 +134,7 @@ public:
      * @brief Exchanges the contents with those of a given signal handler.
      * @param other Signal handler to exchange the content with.
      */
-    void swap(sigh &other) noexcept {
+    void swap(sigh &other) noexcept(std::is_nothrow_swappable_v<container_type>) {
         using std::swap;
         swap(calls, other.calls);
     }
@@ -236,7 +236,8 @@ class connection {
 public:
     /*! @brief Default constructor. */
     connection()
-        : signal{} {}
+        : disconnect{},
+          signal{} {}
 
     /**
      * @brief Checks whether a connection is properly initialized.
@@ -290,7 +291,7 @@ struct scoped_connection {
         : conn{std::exchange(other.conn, {})} {}
 
     /*! @brief Automatically breaks the link on destruction. */
-    ~scoped_connection() {
+    ~scoped_connection() noexcept {
         conn.release();
     }
 
@@ -439,8 +440,9 @@ public:
      * @param value_or_instance A valid object that fits the purpose.
      */
     void disconnect(const void *value_or_instance) {
-        ENTT_ASSERT(value_or_instance != nullptr, "Invalid value or instance");
-        disconnect_if([value_or_instance](const auto &elem) { return elem.data() == value_or_instance; });
+        if(value_or_instance) {
+            disconnect_if([value_or_instance](const auto &elem) { return elem.data() == value_or_instance; });
+        }
     }
 
     /*! @brief Disconnects all the listeners from a signal. */
