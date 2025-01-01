@@ -1,5 +1,5 @@
 #pragma once
-#include "ModuleManager.hpp"
+#include "Module.hpp"
 
 class KillAuraModule : public Module {
 public:
