@@ -40,7 +40,7 @@ void drawMenu(MenuType menuType) {
     return; // 防止崩溃
   }
   for (const auto &pair : ModuleManager::getModules()) {
-    if (pair.second && pair.second->getMenuType() == menuType) {
+    if ((pair.second != nullptr) && pair.second->getMenuType() == menuType) {
       pair.second->onDraw();
     }
   }
