@@ -12,47 +12,33 @@ ScriptManager::Script::Script(std::filesystem::path &m_path) : path(m_path), L(l
   luaL_openlibs(L);
   ScriptAPI::initDefaultAPI(L);
   if (luaL_loadfile(L, m_path.string().c_str()) != LUA_OK) {
-    lua_close(L);
-    L = nullptr;
-    throw std::runtime_error(std::format("Error loading script: {}", m_path.string()));
+    throw ScriptException(std::format("Error loading script: {}", m_path.string()), L);
   }
   if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-    std::string errorMsg = lua_tostring(L, -1);
-    lua_close(L);
-    L = nullptr;
-    throw std::runtime_error(
-        std::format("Error running script: {} - {}", m_path.string(), errorMsg));
+    throw ScriptException(
+        std::format("Error running script: {} - {}", m_path.string(), lua_tostring(L, -1)), L);
   }
   luabridge::LuaRef LuaName = luabridge::getGlobal(L, "Name");
   luabridge::LuaRef LuaAPIVersion = luabridge::getGlobal(L, "APIVersion");
   luabridge::LuaRef LuaMenuType = luabridge::getGlobal(L, "MenuType");
-  if ((!LuaAPIVersion.isNil()) && (!LuaAPIVersion.isNumber())) {
-    lua_close(L);
-    L = nullptr;
-    throw std::runtime_error(std::format("APIVersion is not a number in script: {}", name));
+  if (LuaAPIVersion.isNumber()) {
+    try {
+      ScriptAPI::initByVersionAPI(L, LuaAPIVersion.cast<int>());
+    } catch (const std::exception &e) {
+      throw ScriptException(e.what(), L);
+    }
   }
-  if ((!LuaMenuType.isNumber()) && (!LuaMenuType.isNil())) {
-    lua_close(L);
-    L = nullptr;
-    throw std::runtime_error(std::format("MenuType is not a number or nil in script: {}", name));
+  if (LuaMenuType.isNumber()) {
+    menu = static_cast<MenuType>(LuaMenuType.cast<int>());
+  } else if (!LuaMenuType.isNil()) {
+    throw ScriptException(
+        std::format("MenuType is not a number or nil in script: {}", path.filename().string()), L);
   }
-  if (!LuaName.isString()) {
-    name = path.filename().string();
-  } else if (LuaName.isNil()) {
+  if (LuaName.isString()) {
     name = LuaName.cast<std::string>();
   } else {
-    lua_close(L);
-    L = nullptr;
-    throw std::runtime_error(std::format("Name is not a string in script: {}", name));
+    name = path.filename().string();
   }
-  try {
-    ScriptAPI::initByVersionAPI(L, LuaAPIVersion.cast<int>());
-  } catch (const std::exception &e) {
-    lua_close(L);
-    L = nullptr;
-    throw std::runtime_error(e.what());
-  }
-  menu = static_cast<MenuType>(LuaMenuType.cast<int>());
 }
 ScriptManager::Script::~Script() {
   if (L != nullptr) {

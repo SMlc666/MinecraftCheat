@@ -7,6 +7,12 @@
 #include "menu/menu.hpp"
 static const std::string NormalScriptPath = "/sdcard/MinecraftCheat/Scripts";
 namespace ScriptManager {
+class ScriptException : public std::runtime_error {
+public:
+  ScriptException(const std::string &message, lua_State *L) : std::runtime_error(message) {
+    lua_close(L);
+  }
+};
 class Script {
 public:
   Script(std::filesystem::path &m_path);
