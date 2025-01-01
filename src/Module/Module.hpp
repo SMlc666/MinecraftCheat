@@ -5,8 +5,7 @@
 
 class Module {
 public:
-  Module(const std::string &name, MenuType type,
-         std::unordered_map<std::string, std::any> configMap);
+  Module(std::string name, MenuType type, std::unordered_map<std::string, std::any> configMap);
   ~Module() = default;
   Module(const Module &) = default;
   Module &operator=(const Module &) = default;

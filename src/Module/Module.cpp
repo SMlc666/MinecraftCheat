@@ -1,9 +1,8 @@
 #include "Module.hpp"
 #include <unordered_map>
 #include <utility>
-Module::Module(const std::string &name, MenuType type,
-               std::unordered_map<std::string, std::any> configMap)
-    : m_name(name), m_type(type), m_configMap(std::move(configMap)), m_onTick(nullptr),
+Module::Module(std::string name, MenuType type, std::unordered_map<std::string, std::any> configMap)
+    : m_name(std::move(name)), m_type(type), m_configMap(std::move(configMap)), m_onTick(nullptr),
       m_onEnable(nullptr), m_onDisable(nullptr), m_onLoad(nullptr), m_onDraw(nullptr) {
 }
 
