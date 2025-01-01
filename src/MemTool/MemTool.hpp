@@ -34,18 +34,12 @@ template <typename T, typename U> inline bool write(T address, U value) {
 template <typename T> inline T getModuleBase(const std::string &moduleName) {
   KittyScanner::ElfScanner Module = KittyScanner::ElfScanner::createWithPath(moduleName);
   uintptr_t base = Module.baseSegment().startAddress;
-  if (Module.isValid()) {
-    return {};
-  }
   return reinterpret_cast<T>(base);
 }
 // 获取指定模块的结束地址
 template <typename T> T inline getModuleEnd(const std::string &moduleName) {
   KittyScanner::ElfScanner Module = KittyScanner::ElfScanner::createWithPath(moduleName);
   uintptr_t end = Module.baseSegment().endAddress;
-  if (Module.isValid()) {
-    return {};
-  }
   return reinterpret_cast<T>(end);
 }
 // 查找模块中第一个匹配的模式
@@ -57,9 +51,6 @@ inline T findIdaPatternFirst(const std::string &moduleName, const std::string &p
   }
   uintptr_t buf = KittyScanner::findIdaPatternFirst(Module.baseSegment().startAddress,
                                                     Module.baseSegment().endAddress, pattern);
-  if (buf == 0) {
-    return {};
-  }
   return reinterpret_cast<T>(buf);
 }
 
