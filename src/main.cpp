@@ -10,6 +10,8 @@
 #include "config/config.hpp"
 #include "sighandle/sighandle.hpp"
 #include "log.hpp"
+#include "signature.hpp"
+
 #define KittyInjector
 JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
@@ -20,6 +22,7 @@ void setup() {
     std::filesystem::create_directory(path);
   } //初始化目录
   sighandleInit();
+  signaturesInit();
   configSetup();
   drawSetup();
   touchSetup();

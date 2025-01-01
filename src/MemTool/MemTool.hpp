@@ -62,8 +62,12 @@ inline T findIdaPatternFirst(const std::string &moduleName, const std::string &p
   if (Module.isUnknown()) {
     return {};
   }
-  return reinterpret_cast<T>(
-      KittyScanner::findIdaPatternFirst(Module.startAddress, Module.endAddress, pattern));
+  uintptr_t buf =
+      KittyScanner::findIdaPatternFirst(Module.startAddress, Module.endAddress, pattern);
+  if (buf == 0) {
+    return {};
+  }
+  return reinterpret_cast<T>(buf);
 }
 
 // 根据符号名称查找模块地址

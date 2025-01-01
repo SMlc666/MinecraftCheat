@@ -9,6 +9,7 @@ local is_android = is_plat("android")
 local DrawDir = "src/Draw"
 local LogDir = "src/Log"
 local ModuleDir = "src/Module"
+local MinecraftDir = "src/Minecraft"
 local ScriptDir = "src/Script"
 local MemToolDir = "src/MemTool"
 local iMsgCaptureDir= "src/include/iMsgCapture"
@@ -52,6 +53,7 @@ target("cheat")
     add_files(LogDir.."/sighandle/*.cpp")
     add_files(iMsgCaptureDir.. "/**.cpp")
     add_files(ModuleDir.. "/**.cpp|examples/example.cpp")
+    add_files(MinecraftDir.. "/*.cpp")
     add_files(MemToolDir.. "/**.cpp")
     add_files(LuaDir.. "/*.c")
     add_files(KittyMemoryDir.."/*.cpp")
@@ -64,6 +66,7 @@ target("cheat")
         DrawDir,
         LogDir,
         MemToolDir,
+        MinecraftDir,
         ScriptDir,
         IncludeDir
     )
