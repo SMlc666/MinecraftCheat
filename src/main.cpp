@@ -19,7 +19,7 @@ void setup() {
   if (!std::filesystem::exists(path)) {
     std::filesystem::create_directory(path);
   } //初始化目录
-  backtraceInit();
+  sighandleInit();
   configSetup();
   drawSetup();
   touchSetup();
