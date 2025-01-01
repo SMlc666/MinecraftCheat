@@ -54,7 +54,7 @@ std::string ScriptManager::Script::getFile() const {
 void ScriptManager::Script::onDraw() const {
   if (L != nullptr) {
     luabridge::LuaRef m_onDraw = luabridge::getGlobal(L, "onDraw");
-    if (!m_onDraw.isFunction()) {
+    if ((!m_onDraw.isNil()) && (!m_onDraw.isFunction())) {
       throw std::runtime_error(std::format("onDraw is not a function in script: {}", name));
     }
     try {
