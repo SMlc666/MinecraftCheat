@@ -76,7 +76,9 @@ public:
     }
     void *buf_ptr = nullptr;
     DobbyHook(reinterpret_cast<void *>(address), func, &buf_ptr);
-    m_orig_func = &buf_ptr;
+    if (m_orig_func != nullptr) {
+      *m_orig_func = buf_ptr;
+    }
     orig_func = buf_ptr;
     g_hooked_funcs[reinterpret_cast<void *>(address)] = true;
   }
