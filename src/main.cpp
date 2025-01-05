@@ -11,7 +11,7 @@
 #include "sighandle/sighandle.hpp"
 #include "log.hpp"
 #include "signature.hpp"
-
+#include "hooks/hooks.hpp"
 #define KittyInjector
 JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
