@@ -3,9 +3,12 @@
 #include "signature.hpp"
 #include "ModuleManager.hpp"
 MemTool::Hook Minecraft_update_;
-long (*old_Minecraft_update)(long Minecraft);
+long (*old_Minecraft_update)(long Minecraft) = nullptr;
 long Minecraft_update(long Minecraft) {
-  long ret = old_Minecraft_update(Minecraft);
+  long ret = 0;
+  if (old_Minecraft_update != nullptr) {
+    ret = old_Minecraft_update(Minecraft);
+  }
   ModuleManager::tickAllModules();
   return ret;
 }
