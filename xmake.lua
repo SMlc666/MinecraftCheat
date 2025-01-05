@@ -15,6 +15,7 @@ local MemToolDir = "src/MemTool"
 local iMsgCaptureDir= "src/include/iMsgCapture"
 local DobbyDir = "src/include/Dobby"
 local LuaDir = "src/include/Lua"
+local LuaSocketDir = "src/include/LuaSocket"
 local EnttDir = "src/include/entt"
 local KittyMemoryDir = "src/include/KittyMemory/"
 local KeystoneDir = "src/include/KittyMemory/Deps/Keystone/libs-android"
@@ -53,6 +54,7 @@ target("cheat")
     add_files(LogDir.. "/*.cpp")
     add_files(LogDir.."/sighandle/*.cpp")
     add_files(iMsgCaptureDir.. "/**.cpp")
+    add_files(LuaSocketDir.."/*.c")
     add_files(ModuleDir.. "/**.cpp|examples/example.cpp")
     add_files(MinecraftDir.. "/*.cpp")
     add_files(MemToolDir.. "/**.cpp")
