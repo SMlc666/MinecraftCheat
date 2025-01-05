@@ -67,6 +67,7 @@ template <typename T> inline void destoryHookByAddress(T address) {
 class Hook {
 public:
   // Hook 构造函数
+  inline Hook() = default;
   template <typename T>
   inline Hook(T address, void *func, void **m_orig_func, bool m_auto_destroy = true)
       : auto_destroy(m_auto_destroy), hook_func(reinterpret_cast<void *>(func)) {
@@ -77,18 +78,26 @@ public:
     orig_func = m_orig_func;
     g_hooked_funcs[reinterpret_cast<void *>(address)] = true;
   }
-
+  template <typename T> [[nodiscard]] T original() const {
+    return reinterpret_cast<T>(orig_func);
+  }
+  template <typename RetT = void, typename... Args> RetT call(Args... args) {
+    return original<RetT (*)(Args...)>()(args...);
+  }
+  template <typename RetT = void, typename... Args> RetT ccall(Args... args) {
+    return original<RetT(__cdecl *)(Args...)>()(args...);
+  }
   // 删除复制构造函数
   Hook(const Hook &) = delete;
 
   // 删除复制赋值运算符
-  Hook &operator=(const Hook &) = delete;
+  Hook &operator=(const Hook &) = default;
 
   // 删除移动构造函数
   Hook(Hook &&) = delete;
 
   // 删除移动赋值运算符
-  Hook &operator=(Hook &&) = delete;
+  Hook &operator=(Hook &&) = default;
 
   // Hook 析构函数
   ~Hook();
