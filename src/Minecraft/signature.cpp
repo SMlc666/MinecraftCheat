@@ -8,6 +8,7 @@ static const std::string module = "libminecraftpe.so";
 //NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"Player::Player", 0x4CE56FC},
+    {"Minecraft::update", 0x5E8EBA0},
 };
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
