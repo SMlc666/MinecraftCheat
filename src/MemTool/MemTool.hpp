@@ -74,8 +74,10 @@ public:
     if (g_hooked_funcs.find(reinterpret_cast<void *>(address)) != g_hooked_funcs.end()) {
       throw std::runtime_error("Address already hooked");
     }
-    DobbyHook(reinterpret_cast<void *>(address), func, m_orig_func);
-    orig_func = m_orig_func;
+    void **buf_ptr = nullptr;
+    DobbyHook(reinterpret_cast<void *>(address), func, buf_ptr);
+    m_orig_func = buf_ptr;
+    orig_func = buf_ptr;
     g_hooked_funcs[reinterpret_cast<void *>(address)] = true;
   }
   template <typename T> [[nodiscard]] T original() const {
