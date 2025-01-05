@@ -23,6 +23,7 @@ void setup() {
   } //初始化目录
   sighandleInit();
   signaturesInit();
+  hooksInit();
   configSetup();
   drawSetup();
   touchSetup();
