@@ -2,8 +2,10 @@
 #include "API/draw/draw.hpp"
 #include "API/mem/mem.hpp"
 #include "Lua/lua.hpp"
+extern "C" {
 #include "LuaSocket/luasocket.h"
 #include "LuaSocket/mime.h"
+}
 #include "LuaBridge/LuaBridge.h"
 #include "LuaBridge/detail/Namespace.h"
 #include "print/print.hpp"
