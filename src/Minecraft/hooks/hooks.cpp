@@ -3,7 +3,7 @@
 #include "signature.hpp"
 #include "ModuleManager.hpp"
 MemTool::Hook Minecraft_update_;
-long Minecraft_update(long *Minecraft) {
+long Minecraft_update(long Minecraft) {
   long ret = Minecraft_update_.call<long>(Minecraft);
   ModuleManager::tickAllModules();
   return ret;
