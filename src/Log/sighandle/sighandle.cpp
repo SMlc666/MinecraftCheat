@@ -10,6 +10,5 @@ static void signalhandler(int sig) {
 void sighandleInit() {
   // 注册信号处理函数
   signal(SIGSEGV, signalhandler);
-  signal(SIGABRT, signalhandler);
   signal(SIGILL, signalhandler);
 }
