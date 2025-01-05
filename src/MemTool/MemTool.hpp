@@ -77,7 +77,7 @@ public:
     void *buf_ptr = nullptr;
     DobbyHook(reinterpret_cast<void *>(address), func, &buf_ptr);
     m_orig_func = &buf_ptr;
-    orig_func = &buf_ptr;
+    orig_func = buf_ptr;
     g_hooked_funcs[reinterpret_cast<void *>(address)] = true;
   }
   template <typename T> [[nodiscard]] T original() const {
@@ -115,7 +115,7 @@ private:
   bool is_destoryed = false;
 
   // 原始函数指针
-  void **orig_func = nullptr;
+  void *orig_func = nullptr;
 
   // 钩子函数指针
   void *hook_func = nullptr;
