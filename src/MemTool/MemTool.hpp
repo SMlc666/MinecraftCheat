@@ -2,9 +2,11 @@
 #include "Dobby/dobby.h"
 #include "KittyMemory/KittyMemory.hpp"
 #include "KittyMemory/KittyScanner.hpp"
+#include "log.hpp"
 #include <cstddef>
 #include <cstdio>
 #include <string>
+#include <format>
 //NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
 extern std::unordered_map<void *, bool> g_hooked_funcs;
 namespace MemTool {
@@ -71,6 +73,9 @@ public:
   template <typename T>
   inline Hook(T address, void *func, void **m_orig_func, bool m_auto_destroy = true)
       : auto_destroy(m_auto_destroy), hook_func(reinterpret_cast<void *>(func)) {
+    g_log_tool.message(LogLevel::INFO, "Hook",
+                       std::format("Hooking function at 0x{:x} to 0x{:x} with auto_destroy {}",
+                                   address, &func, m_auto_destroy));
     if (g_hooked_funcs.find(reinterpret_cast<void *>(address)) != g_hooked_funcs.end()) {
       throw std::runtime_error("Address already hooked");
     }

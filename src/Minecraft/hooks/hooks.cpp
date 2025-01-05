@@ -1,5 +1,6 @@
 #include "hooks.hpp"
 #include "MemTool.hpp"
+#include "log.hpp"
 #include "signature.hpp"
 #include "ModuleManager.hpp"
 #include <cstddef>
