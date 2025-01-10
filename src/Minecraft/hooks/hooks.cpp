@@ -5,8 +5,8 @@
 #include "ModuleManager.hpp"
 #include <cstddef>
 MemTool::Hook Minecraft_update_;
-long Minecraft_update(long Minecraft) {
-  long ret = Minecraft_update_.call<long>(Minecraft);
+bool Minecraft_update(long Minecraft) {
+  bool ret = Minecraft_update_.call<long>(Minecraft);
   ModuleManager::tickAllModules();
   return ret;
 }
