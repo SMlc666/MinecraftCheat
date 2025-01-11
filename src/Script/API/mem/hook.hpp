@@ -1,7 +1,6 @@
 #pragma once
 #include "Lua/lua.hpp"
-#include "LuaBridge/detail/LuaRef.h"
-
+#include "LuaBridge/LuaBridge.h"
 namespace ScriptAPI::Mem::Hook {
 class ScriptHook {
   ScriptHook(luabridge::LuaRef _func, luabridge::LuaRef argv);

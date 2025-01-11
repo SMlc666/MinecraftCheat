@@ -8,5 +8,4 @@ ScriptAPI::Mem::Hook::ScriptHook::ScriptHook(luabridge::LuaRef _func, luabridge:
   if (!argv.isTable()) {
     throw std::runtime_error("Invalid arguments");
   }
-  MemTool::Hook()
 }

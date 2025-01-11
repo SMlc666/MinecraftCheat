@@ -1,7 +1,6 @@
 #pragma once
 #include "Lua/lua.hpp"
 #include "LuaBridge/LuaBridge.h"
-#include "LuaBridge/detail/LuaRef.h"
 #include <cstddef>
 #include <cstdint>
 #include <string>

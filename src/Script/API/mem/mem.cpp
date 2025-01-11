@@ -1,6 +1,5 @@
 #include "mem.hpp"
 #include "Lua/lua.hpp"
-#include "LuaBridge/detail/LuaRef.h"
 #include "MemTool.hpp"
 #include <cstddef>
 #include <string>
