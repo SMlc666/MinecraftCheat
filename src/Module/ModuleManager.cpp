@@ -1,4 +1,5 @@
 #include "ModuleManager.hpp"
+#include "cheat/cheatsetup.hpp"
 #include "log.hpp"
 #include <mutex>
 #include <string>
@@ -69,4 +70,5 @@ std::unordered_map<std::string, Module *> &getModules() {
 } // namespace ModuleManager
 
 void moduleSetup() {
+  cheatSetup();
 }
