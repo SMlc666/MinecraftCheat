@@ -2,6 +2,8 @@
 #include "ModuleManager.hpp"
 #include "gui/gui.hpp"
 #include "menu/menu.hpp"
+#include "runtimes/runtimes.hpp"
+#include "game/minecraft/minecraft.hpp"
 #include <unordered_map>
 static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
@@ -10,8 +12,18 @@ static std::unordered_map<std::string, std::any> ConfigData = {
 class Timer : public Module {
   Timer() : Module("Timer", MenuType::COMBAT_MENU, ConfigData) {
     ModuleManager::addModule(this);
-    setOnDraw([](Module *module, GUI gui) {
-
+    setOnEnable([](Module *module) {
+      Minecraft *mc = runtimes::getMinecraftInstance();
+      if (mc != nullptr) {
+        mc->setSimTimeScale(module->getGUI().Get<float>("Scale"));
+      }
     });
+    setOnDisable([](Module *module) {
+      Minecraft *mc = runtimes::getMinecraftInstance();
+      if (mc != nullptr) {
+        mc->setSimTimeScale(1.0F);
+      }
+    });
+    setOnDraw([](Module *module) { module->getGUI().SliderFloat("Scale", "Scale", 1.0F, 10.0F); });
   }
 };
