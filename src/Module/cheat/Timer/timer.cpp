@@ -9,7 +9,9 @@ static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
     {"Scale", 1.0F},
 };
+namespace {
 class Timer : public Module {
+public:
   Timer() : Module("Timer", MenuType::COMBAT_MENU, ConfigData) {
     ModuleManager::addModule(this);
     setOnEnable([](Module *module) {
@@ -27,3 +29,5 @@ class Timer : public Module {
     setOnDraw([](Module *module) { module->getGUI().SliderFloat("Scale", "Scale", 1.0F, 10.0F); });
   }
 };
+static Timer g_timer;
+} // namespace
