@@ -29,5 +29,5 @@ public:
     setOnDraw([](Module *module) { module->getGUI().SliderFloat("Scale", "Scale", 1.0F, 10.0F); });
   }
 };
-static Timer g_timer;
+Timer g_timer;
 } // namespace
