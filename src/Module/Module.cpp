@@ -74,3 +74,6 @@ void Module::onDraw() {
     m_onDraw(this);
   }
 }
+GUI &Module::getGUI() {
+  return m_gui;
+}

@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "gui/gui.hpp"
 class Module {
+
 public:
   Module(std::string name, MenuType type, std::unordered_map<std::string, std::any> configMap);
   ~Module() = default;
@@ -24,15 +25,16 @@ public:
   void onDisable();
   void onLoad();
   void onDraw();
+  GUI &getGUI();
 
 private:
   std::string m_name;
   MenuType m_type;
-  GUI m_gui;
   std::unordered_map<std::string, std::any> m_configMap;
   std::function<void(Module *)> m_onTick;
   std::function<void(Module *)> m_onEnable;
   std::function<void(Module *)> m_onDisable;
   std::function<void(Module *)> m_onLoad;
   std::function<void(Module *)> m_onDraw;
+  GUI m_gui;
 };
