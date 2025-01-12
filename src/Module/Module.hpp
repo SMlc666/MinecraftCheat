@@ -7,7 +7,7 @@ class Module {
 
 public:
   Module(std::string name, MenuType type, std::unordered_map<std::string, std::any> configMap);
-  ~Module() = default;
+  virtual ~Module() = default;
   Module(const Module &) = default;
   Module &operator=(const Module &) = default;
   Module(Module &&) noexcept = default;
