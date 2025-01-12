@@ -1,5 +1,6 @@
 #include "hooks.hpp"
 #include "MemTool.hpp"
+#include "game/minecraft/dimension/dimension.hpp"
 #include "log.hpp"
 #include "runtimes/runtimes.hpp"
 #include "signature.hpp"
@@ -7,13 +8,21 @@
 #include <cstddef>
 #include <format>
 #include <string>
-
+class Dimension;
 class Minecraft;
 MemTool::Hook Minecraft_update_;
 MemTool::Hook Minecraft_Minecraft_;
+MemTool::Hook Dimension_Dimension_;
 bool Minecraft_update(long Minecraft) {
   bool ret = Minecraft_update_.call<bool>(Minecraft);
   ModuleManager::tickAllModules();
+  return ret;
+}
+Dimension *Dimension_Dimension(Dimension *self, void *a1, void *a2, void *a3, void *a4,
+                               std::string dimensionName) {
+  auto *ret = Dimension_Dimension_.call<Dimension *>(self, a1, a2, a3, a4, dimensionName);
+  g_log_tool.message(LogLevel::INFO, "Dimension__Dimension",
+                     std::format("Dimension::Dimension called, name: {}", dimensionName));
   return ret;
 }
 Minecraft *Minecraft_Minecraft(Minecraft *a1, void *a2, void *a3, void *a4, void *a5, void *a6,
@@ -34,5 +43,8 @@ void hooksInit() {
   void *Minecraft = getSign<void *>("Minecraft::Minecraft");
   Minecraft_Minecraft_ =
       MemTool::Hook(Minecraft, reinterpret_cast<void *>(Minecraft_Minecraft), nullptr, false);
+  void *Dimension = getSign<void *>("Dimension::Dimension");
+  Dimension_Dimension_ =
+      MemTool::Hook(Dimension, reinterpret_cast<void *>(Dimension_Dimension), nullptr, false);
   g_log_tool.message(LogLevel::INFO, "HooksInit", "Hooks inited");
 }
