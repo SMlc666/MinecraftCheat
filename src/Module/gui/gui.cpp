@@ -67,11 +67,3 @@ bool GUI::CheckBox(const std::string &second, const std::string &text) {
   }
   return active;
 }
-
-template <typename T> T GUI::Get(const std::string &second) {
-  auto config = Config::getDocument()[first.c_str()].GetObject();
-  if (!config.HasMember(second.c_str())) {
-    throw std::runtime_error("config does not have " + second);
-  }
-  return config[second.c_str()].Get<T>();
-}
