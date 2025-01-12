@@ -1,19 +1,17 @@
 #include "Module.hpp"
-#include "ModuleManager.hpp"
 #include "gui/gui.hpp"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include "game/minecraft/minecraft.hpp"
 #include <unordered_map>
-static std::unordered_map<std::string, std::any> ConfigData = {
+static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
     {"Scale", 1.0F},
 };
-namespace {
+namespace cheat {
 class Timer : public Module {
 public:
   Timer() : Module("Timer", MenuType::COMBAT_MENU, ConfigData) {
-    ModuleManager::addModule(this);
     setOnEnable([](Module *module) {
       Minecraft *mc = runtimes::getMinecraftInstance();
       if (mc != nullptr) {
@@ -29,5 +27,4 @@ public:
     setOnDraw([](Module *module) { module->getGUI().SliderFloat("Scale", "Scale", 1.0F, 10.0F); });
   }
 };
-Timer g_timer;
-} // namespace
+} // namespace cheat
