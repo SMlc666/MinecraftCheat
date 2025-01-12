@@ -16,7 +16,7 @@ GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GU
     Config::getDocument().AddMember(name.Move(), doc.Move(), Config::getDocument().GetAllocator());
   }
 }
-bool GUI::SliderInt(std::string &second, std::string &text, int min, int max) {
+bool GUI::SliderInt(const std::string &second, const std::string &text, int min, int max) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
     throw std::runtime_error("GUIMap does not have " + second);
@@ -33,7 +33,7 @@ bool GUI::SliderInt(std::string &second, std::string &text, int min, int max) {
   }
   return active;
 }
-bool GUI::SliderFloat(std::string &second, std::string &text, float min, float max) {
+bool GUI::SliderFloat(const std::string &second, const std::string &text, float min, float max) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
     throw std::runtime_error("GUIMap does not have " + second);
@@ -50,7 +50,7 @@ bool GUI::SliderFloat(std::string &second, std::string &text, float min, float m
   }
   return active;
 }
-bool GUI::CheckBox(std::string &second, std::string &text) {
+bool GUI::CheckBox(const std::string &second, const std::string &text) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
     throw std::runtime_error("GUIMap does not have " + second);
@@ -68,7 +68,7 @@ bool GUI::CheckBox(std::string &second, std::string &text) {
   return active;
 }
 
-template <typename T> T GUI::Get(std::string &second) {
+template <typename T> T GUI::Get(const std::string &second) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   if (!config.HasMember(second.c_str())) {
     throw std::runtime_error("config does not have " + second);

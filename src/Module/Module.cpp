@@ -61,6 +61,15 @@ void Module::onLoad() {
 }
 
 void Module::onDraw() {
+  if (m_onEnable || m_onDisable) {
+    if (m_gui.CheckBox("enabled", "Enabled")) {
+      if (m_gui.Get<bool>("enabled")) {
+        onEnable();
+      } else {
+        onDisable();
+      }
+    }
+  }
   if (m_onDraw) {
     m_onDraw(this, m_gui);
   }
