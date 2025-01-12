@@ -32,7 +32,7 @@ void Module::setOnLoad(std::function<void(Module *)> func) {
   m_onLoad = std::move(func);
 }
 
-void Module::setOnDraw(std::function<void(Module *, GUI &)> func) {
+void Module::setOnDraw(std::function<void(Module *)> func) {
   m_onDraw = std::move(func);
 }
 
@@ -71,6 +71,6 @@ void Module::onDraw() {
     }
   }
   if (m_onDraw) {
-    m_onDraw(this, m_gui);
+    m_onDraw(this);
   }
 }

@@ -18,7 +18,7 @@ public:
   void setOnEnable(std::function<void(Module *)> func);
   void setOnDisable(std::function<void(Module *)> func);
   void setOnLoad(std::function<void(Module *)> func);
-  void setOnDraw(std::function<void(Module *, GUI &)> func);
+  void setOnDraw(std::function<void(Module *)> func);
   void onTick();
   void onEnable();
   void onDisable();
@@ -34,5 +34,5 @@ private:
   std::function<void(Module *)> m_onEnable;
   std::function<void(Module *)> m_onDisable;
   std::function<void(Module *)> m_onLoad;
-  std::function<void(Module *, GUI &)> m_onDraw;
+  std::function<void(Module *)> m_onDraw;
 };
