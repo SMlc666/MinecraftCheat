@@ -1,4 +1,5 @@
 #include "ModuleManager.hpp"
+#include "log.hpp"
 #include <mutex>
 #include <string>
 #include <unordered_map>
@@ -11,6 +12,8 @@ std::mutex moduleMutex; // 用于线程安全
 void addModule(Module *module) { //NOLINT
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   modules[module->getName()] = module;
+  g_log_tool.message(LogLevel::INFO, "ModuleManager",
+                     std::format("Module {} added", module->getName()));
 }
 
 void enableModuleByName(const std::string &name) {
