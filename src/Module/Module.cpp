@@ -1,5 +1,6 @@
 #include "Module.hpp"
 #include "gui/gui.hpp"
+#include "imgui/imgui.h"
 #include <unordered_map>
 #include <utility>
 Module::Module(std::string name, MenuType type, std::unordered_map<std::string, std::any> configMap)
@@ -61,17 +62,20 @@ void Module::onLoad() {
 }
 
 void Module::onDraw() {
-  if (m_onEnable || m_onDisable) {
-    if (m_gui.CheckBox("enabled", "Enabled")) {
-      if (m_gui.Get<bool>("enabled")) {
-        onEnable();
-      } else {
-        onDisable();
+  if (ImGui::TreeNode(m_name.c_str())) {
+    if (m_onEnable || m_onDisable) {
+      if (m_gui.CheckBox("enabled", "Enabled")) {
+        if (m_gui.Get<bool>("enabled")) {
+          onEnable();
+        } else {
+          onDisable();
+        }
       }
     }
-  }
-  if (m_onDraw) {
-    m_onDraw(this);
+    if (m_onDraw) {
+      m_onDraw(this);
+    }
+    ImGui::TreePop();
   }
 }
 GUI &Module::getGUI() {
