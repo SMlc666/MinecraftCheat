@@ -1,11 +1,13 @@
 #include "hooks.hpp"
 #include "MemTool.hpp"
 #include "log.hpp"
+#include "runtimes/runtimes.hpp"
 #include "signature.hpp"
 #include "ModuleManager.hpp"
 #include <cstddef>
 #include <format>
 #include <string>
+
 class Minecraft;
 MemTool::Hook Minecraft_update_;
 MemTool::Hook Minecraft_Minecraft_;
@@ -21,7 +23,8 @@ Minecraft *Minecraft_Minecraft(Minecraft *a1, void *a2, void *a3, void *a4, void
                                                      a12, a13, a14, a15, a16, a17);
   g_log_tool.message(LogLevel::INFO, "Minecraft__Minecraft", "Minecraft::Minecraft called");
   g_log_tool.message(LogLevel::INFO, "Minecraft__Minecraft",
-                     std::format("{:p}", reinterpret_cast<void *>(ret)));
+                     std::format("{:p}", reinterpret_cast<void *>(a1)));
+  runtimes::setMinecraftInstance(a1);
   return ret;
 }
 void hooksInit() {
