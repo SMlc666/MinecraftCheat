@@ -33,6 +33,23 @@ bool GUI::SliderInt(std::string &second, std::string &text, int min, int max) {
   }
   return active;
 }
+bool GUI::SliderFloat(std::string &second, std::string &text, float min, float max) {
+  auto config = Config::getDocument()[first.c_str()].GetObject();
+  if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
+    throw std::runtime_error("GUIMap does not have " + second);
+  }
+  if (!config.HasMember(second.c_str())) {
+    config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
+                     rapidjson::Value(any_cast<float>(GUIMap_orig.at(second))).Move(),
+                     Config::getDocument().GetAllocator());
+  }
+  float v = config[second.c_str()].GetFloat();
+  bool active = ImGui::SliderFloat(text.c_str(), &v, min, max);
+  if (active) {
+    config[second.c_str()].SetFloat(v);
+  }
+  return active;
+}
 bool GUI::CheckBox(std::string &second, std::string &text) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
