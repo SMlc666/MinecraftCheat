@@ -1,6 +1,5 @@
 #include "hooks.hpp"
 #include "MemTool.hpp"
-#include "game/minecraft/dimension/dimension.hpp"
 #include "log.hpp"
 #include "runtimes/runtimes.hpp"
 #include "signature.hpp"
