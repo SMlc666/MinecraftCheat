@@ -14,9 +14,7 @@
 #include <variant>
 
 class CompoundTagVariant {
-  typedef std::variant<EndTag, ByteTag, ShortTag, IntTag, Int64Tag, FloatTag, DoubleTag,
-                       ByteArrayTag, StringTag, ListTag, CompoundTag, IntArrayTag>
-      Variant;
+  using Variant = std::variant<EndTag, ByteTag, ShortTag, IntTag, Int64Tag, FloatTag, DoubleTag, ByteArrayTag, StringTag, ListTag, CompoundTag, IntArrayTag>;
 
 public:
   Variant mTagStorage;
