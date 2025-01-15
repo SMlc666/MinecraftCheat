@@ -1,3 +1,4 @@
+#pragma once
 #include "Module.hpp"
 #include "gui/gui.hpp"
 #include "menu/menu.hpp"
