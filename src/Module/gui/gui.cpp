@@ -3,6 +3,7 @@
 #include "config/config.hpp"
 #include "imgui/imgui.h"
 #include "rapidjson/document.h"
+#include <functional>
 GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GUIMap)
     : GUIMap_orig(m_GUIMap), module(m_module), first(m_module->getName()) {
   if (GUIMap_orig.find("enabled") == GUIMap_orig.end()) {
@@ -16,7 +17,8 @@ GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GU
     Config::getDocument().AddMember(name.Move(), doc.Move(), Config::getDocument().GetAllocator());
   }
 }
-bool GUI::SliderInt(const std::string &second, const std::string &text, int min, int max) {
+bool GUI::SliderInt(const std::string &second, const std::string &text, int min, int max,
+                    const std::function<void(int)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
     throw std::runtime_error("GUIMap does not have " + second);
@@ -30,10 +32,14 @@ bool GUI::SliderInt(const std::string &second, const std::string &text, int min,
   bool active = ImGui::SliderInt(text.c_str(), &v, min, max);
   if (active) {
     config[second.c_str()].SetInt(v);
+    if (callback) {
+      callback(v);
+    }
   }
   return active;
 }
-bool GUI::SliderFloat(const std::string &second, const std::string &text, float min, float max) {
+bool GUI::SliderFloat(const std::string &second, const std::string &text, float min, float max,
+                      const std::function<void(float)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
     throw std::runtime_error("GUIMap does not have " + second);
@@ -47,10 +53,14 @@ bool GUI::SliderFloat(const std::string &second, const std::string &text, float 
   bool active = ImGui::SliderFloat(text.c_str(), &v, min, max);
   if (active) {
     config[second.c_str()].SetFloat(v);
+    if (callback) {
+      callback(v);
+    }
   }
   return active;
 }
-bool GUI::CheckBox(const std::string &second, const std::string &text) {
+bool GUI::CheckBox(const std::string &second, const std::string &text,
+                   const std::function<void(bool)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
     throw std::runtime_error("GUIMap does not have " + second);
@@ -64,6 +74,9 @@ bool GUI::CheckBox(const std::string &second, const std::string &text) {
   bool active = ImGui::Checkbox(text.c_str(), &v);
   if (active) {
     config[second.c_str()].SetBool(v);
+    if (callback) {
+      callback(v);
+    }
   }
   return active;
 }
