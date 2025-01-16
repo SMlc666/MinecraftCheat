@@ -6,34 +6,17 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <unordered_map>
-static bool is_blink = false;
-MemTool::Hook send_;
-MemTool::Hook sendto_;
-MemTool::Hook sendmsg_;
-ssize_t new_send(int sockfd, const void *buf, size_t len, int flags) {
-  if (is_blink) {
-    return -1;
-  }
-  auto ret = send_.call<ssize_t>(sockfd, buf, len, flags);
-  return ret;
-}
+extern bool is_blink;
+extern const std::unordered_map<std::string, std::any> ConfigData;
+extern MemTool::Hook send_;
+extern MemTool::Hook sendto_;
+extern MemTool::Hook sendmsg_;
+ssize_t new_send(int sockfd, const void *buf, size_t len, int flags);
 int new_sendto(int fd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr,
-               socklen_t addrlen) {
-  if (is_blink) {
-    return -1;
-  }
-  auto ret = sendto_.call<int>(fd, buf, len, flags, dest_addr, addrlen);
-  return ret;
-}
-int new_sendmsg(int sockfd, const struct msghdr *msg, int flags) {
-  if (is_blink) {
-    return -1;
-  }
-  auto ret = sendmsg_.call<int>(sockfd, msg, flags);
-  return ret;
-}
+               socklen_t addrlen);
+int new_sendmsg(int sockfd, const struct msghdr *msg, int flags);
 
-static const std::unordered_map<std::string, std::any> ConfigData = {{"enabled", false}};
+namespace cheat {
 class Blink : public Module {
 public:
   Blink() : Module("Blink", MenuType::COMBAT_MENU, ConfigData) {
@@ -47,3 +30,4 @@ public:
     setOnDisable([](Module *module) { is_blink = false; });
   }
 };
+} // namespace cheat
