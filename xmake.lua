@@ -90,23 +90,3 @@ target("cheat")
     elseif is_x86 then 
         add_archlinks("x86")
     end
-
-target("example_Script")
-    set_languages("c17", "cxx20")
-    set_kind("binary")
-    add_files(LuaDir.. "/*.c")
-    add_files(ScriptDir.. "/examples/example.cpp")
-    add_includedirs(
-        LuaDir,
-        DobbyDir,
-        IncludeDir
-    )
-    if is_arm64_v8a then 
-        add_archlinks("arm64-v8a")
-    elseif is_armeabi_v7a then 
-        add_archlinks("armeabi-v7a")
-    elseif is_x86_64 then 
-        add_archlinks("x86_64")
-    elseif is_x86 then 
-        add_archlinks("x86")
-    end
