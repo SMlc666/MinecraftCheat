@@ -7,19 +7,19 @@
 #include <unistd.h>
 #include <unordered_map>
 extern bool is_blink;
-extern const std::unordered_map<std::string, std::any> ConfigData;
+extern const std::unordered_map<std::string, std::any> BlinkConfigData;
 extern MemTool::Hook send_;
 extern MemTool::Hook sendto_;
 extern MemTool::Hook sendmsg_;
 ssize_t new_send(int sockfd, const void *buf, size_t len, int flags);
-int new_sendto(int fd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr,
-               socklen_t addrlen);
-int new_sendmsg(int sockfd, const struct msghdr *msg, int flags);
+ssize_t new_sendto(int fd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr,
+                   socklen_t addrlen);
+ssize_t new_sendmsg(int sockfd, const struct msghdr *msg, int flags);
 
 namespace cheat {
 class Blink : public Module {
 public:
-  Blink() : Module("Blink", MenuType::COMBAT_MENU, ConfigData) {
+  Blink() : Module("Blink", MenuType::COMBAT_MENU, BlinkConfigData) {
     void *send_addr = MemTool::findSymbol(nullptr, "send");
     send_ = MemTool::Hook(send_addr, reinterpret_cast<void *>(new_send), nullptr, false);
     void *sendto_addr = MemTool::findSymbol(nullptr, "sendto");
