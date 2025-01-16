@@ -5,14 +5,11 @@
 #include "runtimes/runtimes.hpp"
 #include "game/minecraft/minecraft.hpp"
 #include <unordered_map>
-static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},
-    {"Scale", 1.0F},
-};
+extern const std::unordered_map<std::string, std::any> TimerConfigData;
 namespace cheat {
 class Timer : public Module {
 public:
-  Timer() : Module("Timer", MenuType::COMBAT_MENU, ConfigData) {
+  Timer() : Module("Timer", MenuType::COMBAT_MENU, TimerConfigData) {
     setOnEnable([](Module *module) {
       Minecraft *mc = runtimes::getMinecraftInstance();
       if (mc != nullptr) {
