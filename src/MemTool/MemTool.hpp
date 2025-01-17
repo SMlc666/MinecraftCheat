@@ -72,7 +72,9 @@ public:
   inline Hook() = default;
   template <typename T>
   inline Hook(T address, void *func, void **m_orig_func, bool m_auto_destroy = true)
-      : auto_destroy(m_auto_destroy), hook_func(reinterpret_cast<void *>(func)) {
+      : auto_destroy(m_auto_destroy), is_destoryed(false),
+        hook_func(reinterpret_cast<void *>(func)) {
+
     g_log_tool.message(LogLevel::INFO, "Hook",
                        std::format("Hooking function at {:p} to {:p} with auto_destroy {}",
                                    reinterpret_cast<void *>(address), func, m_auto_destroy));
@@ -119,7 +121,7 @@ private:
   bool auto_destroy = true;
 
   // 是否已经被销毁
-  bool is_destoryed = false;
+  bool is_destoryed{};
 
   // 原始函数指针
   void *orig_func = nullptr;
