@@ -3,19 +3,12 @@
 #include "log.hpp"
 #include "runtimes/runtimes.hpp"
 #include "signature.hpp"
-#include "ModuleManager.hpp"
 #include <cstddef>
 #include <format>
 #include <string>
 class ClientInstance;
-class Minecraft;
-MemTool::Hook Minecraft_update_;
 MemTool::Hook ClientInstance_ClientInstance_;
-bool Minecraft_update(Minecraft *mMinecraft) {
-  bool ret = Minecraft_update_.call<bool>(mMinecraft);
-  ModuleManager::tickAllModules();
-  return ret;
-}
+
 ClientInstance *ClientInstance_ClientInstance(ClientInstance *mClientInstance, int a2, int a3,
                                               int a4, char a5, void *a6, void *a7, int a8,
                                               void *a9) {
@@ -28,9 +21,6 @@ ClientInstance *ClientInstance_ClientInstance(ClientInstance *mClientInstance, i
   return ret;
 }
 void hooksInit() {
-  void *update = getSign<void *>("Minecraft::update");
-  Minecraft_update_ =
-      MemTool::Hook(update, reinterpret_cast<void *>(Minecraft_update), nullptr, false);
   void *clientInstance = getSign<void *>("ClientInstance::ClientInstance");
   ClientInstance_ClientInstance_ = MemTool::Hook(
       clientInstance, reinterpret_cast<void *>(ClientInstance_ClientInstance), nullptr, false);
