@@ -3,6 +3,7 @@
 #include "Module.hpp"
 #include "menu/menu.hpp"
 #include <unordered_map>
+static uintptr_t modbase = MemTool::getModuleBase<uintptr_t>("libminecraftpe.so");
 static const uintptr_t SpinAttack_pattern = 0x734A0C8;
 static const uintptr_t velX_pattern = 0x733EFCC;
 static const uintptr_t velY_pattern = 0x733EFD0;
@@ -22,16 +23,16 @@ static std::unordered_map<std::string, std::any> ConfigData = {
     {"range", 4.0F},
 };
 static void velPatch() {
-  MemTool::writeASM(velX_pattern, "NOP");
-  MemTool::writeASM(velY_pattern, "NOP");
+  MemTool::writeASM(modbase+velX_pattern, "NOP");
+  MemTool::writeASM(modbase+velY_pattern, "NOP");
 }
 static void velRestore() {
-  MemTool::write(velX_pattern, &vel_backup, sizeof(vel_backup));
+  MemTool::write(modbase+velX_pattern, &vel_backup, sizeof(vel_backup));
 }
 static void ragPatch(float range) {
-  MemTool::writeASM(rag1_pattern, std::format("FMOV            S3, #-{:.1f}", range));
-  MemTool::writeASM(rag2_pattern, std::format("FMOV            V1.2S, #-{:.1f}", range));
-  MemTool::writeASM(rag3_pattern, std::format("FMOV            V5.2S, #{:.1f}", range));
+  MemTool::writeASM(modbase+rag1_pattern, std::format("FMOV            S3, #-{:.1f}", range));
+  MemTool::writeASM(modbase+rag2_pattern, std::format("FMOV            V1.2S, #-{:.1f}", range));
+  MemTool::writeASM(modbase+rag3_pattern, std::format("FMOV            V5.2S, #{:.1f}", range));
   MemTool::writeASM(rag4_pattern, std::format(" FMOV            S3, #{:.1f}", range));
 }
 static void ragRestore() {
@@ -42,18 +43,19 @@ static void ragRestore() {
 }
 
 static void SpinAttackPatch() {
-  MemTool::writeASM(SpinAttack_pattern, "NOP");
+  MemTool::writeASM(modbase+SpinAttack_pattern, "NOP");
 }
 static void SpinAttackRestore() {
-  MemTool::write(SpinAttack_pattern, &SpinAttack_backup, sizeof(SpinAttack_backup));
+  MemTool::write(modbase+SpinAttack_pattern, &SpinAttack_backup, sizeof(SpinAttack_backup));
 }
 cheat::SpinAttack::SpinAttack() : Module("SpinAttack", MenuType::COMBAT_MENU, ConfigData) {
-  MemTool::read(velX_pattern, &vel_backup, sizeof(vel_backup));
-  MemTool::read(SpinAttack_pattern, &SpinAttack_backup, sizeof(SpinAttack_backup));
-  MemTool::read(rag1_pattern, &rag1_backup, sizeof(rag1_backup));
-  MemTool::read(rag2_pattern, &rag2_backup, sizeof(rag2_backup));
-  MemTool::read(rag3_pattern, &rag3_backup, sizeof(rag3_backup));
-  MemTool::read(rag4_pattern, &rag4_backup, sizeof(rag4_backup));
+  
+  MemTool::read(modbase+velX_pattern, &vel_backup, sizeof(vel_backup));
+  MemTool::read(modbase+SpinAttack_pattern, &SpinAttack_backup, sizeof(SpinAttack_backup));
+  MemTool::read(modbase+rag1_pattern, &rag1_backup, sizeof(rag1_backup));
+  MemTool::read(modbase+rag2_pattern, &rag2_backup, sizeof(rag2_backup));
+  MemTool::read(modbase+rag3_pattern, &rag3_backup, sizeof(rag3_backup));
+  MemTool::read(modbase+rag4_pattern, &rag4_backup, sizeof(rag4_backup));
   setOnEnable([](Module *module) {
     SpinAttackPatch();
     ragPatch(module->getGUI().Get<float>("range"));
