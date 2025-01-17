@@ -202,7 +202,7 @@ class IClientInstance : Bedrock::EnableNonOwnerReferences {
 public:
   //NOLINTBEGIN
   // vtable index: 0
-  virtual ~IClientInstance() /*override*/ = default;
+  virtual ~IClientInstance() = default;
 
   // vtable index: 1
   virtual void onInitMinecraftGame() = 0;
