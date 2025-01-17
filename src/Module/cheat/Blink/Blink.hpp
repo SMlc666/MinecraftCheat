@@ -6,7 +6,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <unordered_map>
-extern bool is_blink;
 extern const std::unordered_map<std::string, std::any> BlinkConfigData;
 extern MemTool::Hook send_;
 extern MemTool::Hook sendto_;
@@ -20,14 +19,19 @@ namespace cheat {
 class Blink : public Module {
 public:
   Blink() : Module("Blink", MenuType::COMBAT_MENU, BlinkConfigData) {
-    void *send_addr = MemTool::findSymbol(nullptr, "send");
-    send_ = MemTool::Hook(send_addr, reinterpret_cast<void *>(new_send), nullptr, false);
-    void *sendto_addr = MemTool::findSymbol(nullptr, "sendto");
-    sendto_ = MemTool::Hook(sendto_addr, reinterpret_cast<void *>(new_sendto), nullptr, false);
-    void *sendmsg_addr = MemTool::findSymbol(nullptr, "sendmsg");
-    sendmsg_ = MemTool::Hook(sendmsg_addr, reinterpret_cast<void *>(new_sendmsg), nullptr, false);
-    setOnEnable([](Module *module) { is_blink = true; });
-    setOnDisable([](Module *module) { is_blink = false; });
+    setOnEnable([](Module *module) {
+      void *send_addr = MemTool::findSymbol(nullptr, "send");
+      send_ = MemTool::Hook(send_addr, reinterpret_cast<void *>(new_send), nullptr, false);
+      void *sendto_addr = MemTool::findSymbol(nullptr, "sendto");
+      sendto_ = MemTool::Hook(sendto_addr, reinterpret_cast<void *>(new_sendto), nullptr, false);
+      void *sendmsg_addr = MemTool::findSymbol(nullptr, "sendmsg");
+      sendmsg_ = MemTool::Hook(sendmsg_addr, reinterpret_cast<void *>(new_sendmsg), nullptr, false);
+    });
+    setOnDisable([](Module *module) {
+      send_.destroy();
+      sendto_.destroy();
+      sendmsg_.destroy();
+    });
   }
 };
 } // namespace cheat
