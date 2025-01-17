@@ -98,7 +98,6 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui::EndFrame();
   ImGui_ImplScript_NewFrame();
   ImGui::Render();
-  glViewport(0, 0, (int)ioData.DisplaySize.x, (int)ioData.DisplaySize.y);
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   return old_eglSwapBuffers(dpy, surface);
 }
