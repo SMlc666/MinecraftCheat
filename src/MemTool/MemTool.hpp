@@ -2,14 +2,23 @@
 #include "Dobby/dobby.h"
 #include "KittyMemory/KittyMemory.hpp"
 #include "KittyMemory/KittyScanner.hpp"
+#include "KittyMemory/MemoryPatch.hpp"
 #include "log.hpp"
 #include <cstddef>
+#include <cstdint>
 #include <cstdio>
 #include <string>
 #include <format>
 //NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
 extern std::unordered_map<void *, bool> g_hooked_funcs;
 namespace MemTool {
+// 定义ASM指令集架构
+enum ASM_ARCH {
+  ASM_ARM32 = 0,
+  ASM_ARM64,
+  ASM_x86,
+  ASM_x86_64,
+};
 // 获取指定模块的进程映射
 KittyMemory::ProcMap getModuleMap(const std::string &moduleName);
 // 写入数据到指定地址
@@ -31,6 +40,13 @@ template <typename T, typename U> inline T read(U address) {
 // 写入特定类型的数据到地址
 template <typename T, typename U> inline bool write(T address, U value) {
   return write(address, &value, sizeof(U));
+}
+// 写入ASM代码到指定地址
+template <typename T>
+inline bool writeASM(T address, const std::string &asm_code, ASM_ARCH arch = ASM_ARM64) {
+  MemoryPatch patch = MemoryPatch::createWithAsm(reinterpret_cast<uintptr_t>(address),
+                                                 static_cast<MP_ASM_ARCH>(arch), asm_code);
+  return patch.Modify();
 }
 // 获取指定模块的基地址
 template <typename T> inline T getModuleBase(const std::string &moduleName) {
