@@ -15,7 +15,7 @@ void ClientInstance_onStartJoinGame(ClientInstance *self, bool a1, std::string a
                                  reinterpret_cast<void *>(self), a1, a2, a3));
 }
 void hooksInit() {
-  void *clientInstance = getSign<void *>("ClientInstance::onStartJoinGame_");
+  void *clientInstance = getSign<void *>("ClientInstance::onStartJoinGame");
   ClientInstance_onStartJoinGame_ = MemTool::Hook(
       clientInstance, reinterpret_cast<void *>(ClientInstance_onStartJoinGame), nullptr, false);
   g_log_tool.message(LogLevel::INFO, "HooksInit", "Hooks inited");
