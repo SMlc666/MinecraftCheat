@@ -1,3 +1,6 @@
 #pragma once
-class Minecraft;
-namespace runtimes {} // namespace runtimes
+class ClientInstance;
+namespace runtimes {
+ClientInstance *getClientInstance();
+void setClientInstance(ClientInstance *instance);
+} // namespace runtimes
