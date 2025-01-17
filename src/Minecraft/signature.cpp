@@ -9,8 +9,7 @@ static const std::string module = "libminecraftpe.so";
 std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"Player::Player", 0x6DD37FC},       {"Minecraft::Minecraft", 0x7493638},
     {"Minecraft::update", 0x749472C},    {"ClientInstance::ClientInstance", 0x509BE10},
-    {"Dimension::Dimension", 0x8A4E578},
-};
+    {"Dimension::Dimension", 0x8A4E578}, {"ClientInstance::onStartJoinGame", 0x50A2A48}};
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
 void signaturesInit() {
