@@ -1,5 +1,5 @@
 #pragma once
-#include <sys/types.h>
+#include "base/mcint.hpp"
 enum class ClientPlayMode : uint {
   Normal = 0,
   Teaser = 1,
