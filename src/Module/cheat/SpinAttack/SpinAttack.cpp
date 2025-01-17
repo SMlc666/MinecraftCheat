@@ -47,7 +47,7 @@ static void SpinAttackPatch() {
 static void SpinAttackRestore() {
   MemTool::write(SpinAttack_pattern, &SpinAttack_backup, sizeof(SpinAttack_backup));
 }
-SpinAttack::SpinAttack() : Module("SpinAttack", MenuType::COMBAT_MENU, ConfigData) {
+cheat::SpinAttack::SpinAttack() : Module("SpinAttack", MenuType::COMBAT_MENU, ConfigData) {
   MemTool::read(velX_pattern, &vel_backup, sizeof(vel_backup));
   MemTool::read(SpinAttack_pattern, &SpinAttack_backup, sizeof(SpinAttack_backup));
   MemTool::read(rag1_pattern, &rag1_backup, sizeof(rag1_backup));
