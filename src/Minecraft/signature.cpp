@@ -14,7 +14,8 @@ std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"Dimension::Dimension", 0x8A4E578},
     {"ClientInstance::onStartJoinGame", 0x50A2A48},
     {"ClientInstance::onInitMinecraftGame", 0x509F4DC},
-    {"Player::getGameMode", 0x6DF3BF0}};
+    {"Player::getGameMode", 0x6DF3BF0},
+    {"Player::getName", 0x6DD9C94}};
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
 void signaturesInit() {
