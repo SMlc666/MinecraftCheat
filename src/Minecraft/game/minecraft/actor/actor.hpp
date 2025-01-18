@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cstdint>
 class Actor {
 public:
-  //NOLINTEND
+  uintptr_t **vtable;
+
 public:
 }; // namespace class Actor
