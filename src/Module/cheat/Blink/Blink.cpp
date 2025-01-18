@@ -16,7 +16,8 @@ static int Blink_send(int fd, const void *buf, size_t n, int flags) {
 static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
 };
-Blink::Blink() : Module("Blink", MenuType::COMBAT_MENU, ConfigData) {
+
+cheat::Blink::Blink() : Module("Blink", MenuType::COMBAT_MENU, ConfigData) {
   send_ = MemTool::Hook(MemTool::findSymbol(nullptr, "send"), reinterpret_cast<void *>(Blink_send),
                         nullptr, false);
   setOnEnable([](Module *module) { isBlink = true; });
