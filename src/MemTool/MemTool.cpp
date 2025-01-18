@@ -24,7 +24,7 @@ KittyMemory::ProcMap MemTool::getModuleMap(const std::string &moduleName) {
  * 销毁钩子并清理资源。
  */
 void MemTool::Hook::destroy() {
-  if ((orig_func != nullptr) || is_destoryed || (hook_func != nullptr)) {
+  if (orig_func != nullptr && (!is_destoryed)) {
     return;
   }
   MemTool::destoryHookByAddress(hook_func);
