@@ -38,13 +38,14 @@ void drawDebugMenu() {
         g_log_tool.message(LogLevel::DEBUG, "DEBUG",
                            std::format("LocalPlayer: {:p}", reinterpret_cast<void *>(localPlayer)));
       }
-      if (ImGui::Button("get Name")) {
-        if (localPlayer != nullptr) {
-          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                             std::format("LocalPlayer Name: {}", localPlayer->mName.get()));
-        }
-      }
-      ImGui::TreePop();
     }
+    ImGui::SameLine();
+    if (ImGui::Button("get Name")) {
+      if (localPlayer != nullptr) {
+        g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                           std::format("LocalPlayer Name: {}", localPlayer->mName.get()));
+      }
+    }
+    ImGui::TreePop();
   }
 }
