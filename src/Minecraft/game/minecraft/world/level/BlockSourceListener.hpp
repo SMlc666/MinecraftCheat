@@ -1,7 +1,7 @@
 #pragma once
 
 #include "base/mcint.hpp"
-
+#include "BlockChangedEventTarget.hpp"
 class BlockSource;
 class BlockActor;
 class Actor;
@@ -9,8 +9,6 @@ class Block;
 class BlockPos;
 struct ActorBlockSyncMessage;
 class BlockPos;
-
-enum class BlockChangedEventTarget : unsigned char { SelfBlock, NeighborBlock };
 
 class BlockSourceListener {
 public:
