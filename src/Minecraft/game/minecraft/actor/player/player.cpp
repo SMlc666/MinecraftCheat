@@ -5,8 +5,8 @@ GameMode &Player::getGameMode() const {
   auto func = getSign<function>("Player::getGameMode");
   return func(this);
 }
-std::string Player::getName() const {
-  using function = std::string (*)(const Player *);
+std::string &Player::getName() const {
+  using function = std::string &(*)(const Player *);
   auto func = getSign<function>("Player::getName");
   return func(this);
 }
