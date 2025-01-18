@@ -1,9 +1,11 @@
 #pragma once
+#include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "imgui/imgui.h"
 #include "runtimes/runtimes.hpp"
 #include "log.hpp"
 #include <cstdlib>
+#include <format>
 #include <stdexcept>
 void drawDebugMenu() {
   if (ImGui::TreeNode("Crash Test")) {
@@ -25,18 +27,24 @@ void drawDebugMenu() {
     }
     ImGui::TreePop();
   }
-  if (ImGui::Button("get localplayer")) {
+  if (ImGui::TreeNode("LocalPlayer")) {
     ClientInstance *instance = runtimes::getClientInstance();
+    LocalPlayer *localPlayer{};
     if (instance != nullptr) {
-      auto *player = instance->getLocalPlayer();
-      if (player != nullptr) {
-        g_log_tool.message(LogLevel::DEBUG, "Debug",
-                           std::format("LocalPlayer: {:p}", reinterpret_cast<void *>(player)));
-      } else {
-        g_log_tool.message(LogLevel::DEBUG, "Debug", "LocalPlayer: nullptr");
+      localPlayer = instance->getLocalPlayer();
+    }
+    if (ImGui::Button("get localplayer")) {
+      if (localPlayer != nullptr) {
+        g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                           std::format("LocalPlayer: {:p}", reinterpret_cast<void *>(localPlayer)));
       }
-    } else {
-      g_log_tool.message(LogLevel::DEBUG, "Debug", "ClientInstance: nullptr");
+      if (ImGui::Button("get Name")) {
+        if (localPlayer != nullptr) {
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("LocalPlayer Name: {}", localPlayer->mName.get()));
+        }
+      }
+      ImGui::TreePop();
     }
   }
 }
