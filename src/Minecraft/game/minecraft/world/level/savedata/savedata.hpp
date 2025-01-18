@@ -1,27 +1,14 @@
 #pragma once
 #include <string>
-
+#include "base/alias.hpp"
+#include "game/common/nbt/CompoundTag.hpp"
 class SavedData {
-private:
-  bool mDirty;
-  std::string mId;
+public:
+  alias::TypedStorage<1, 1, bool> mDirty;
+  alias::TypedStorage<8, 32, ::std::string> mId;
 
 public:
-  SavedData(const std::string &id) : mId(id), mDirty(false){};
-
-  virtual ~SavedData() = default;
-  virtual void deserialize(const CompoundTag &) = 0;
+  virtual ~SavedData();
+  virtual void deserialize(CompoundTag const &) = 0;
   virtual void serialize(CompoundTag &) const = 0;
-
-  void setDirty(bool v) {
-    mDirty = v;
-  }
-
-  bool isDirty() {
-    return mDirty;
-  }
-
-  const std::string &getId() const {
-    return mId;
-  }
 };
