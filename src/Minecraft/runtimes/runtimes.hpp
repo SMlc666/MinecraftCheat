@@ -2,5 +2,5 @@
 class ClientInstance;
 namespace runtimes {
 ClientInstance *getClientInstance();
-void setClientInstance(ClientInstance *instance);
+void setClientInstance(ClientInstance *minstance);
 } // namespace runtimes
