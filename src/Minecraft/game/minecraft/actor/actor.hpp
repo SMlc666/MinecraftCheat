@@ -6,4 +6,5 @@ public:
   uintptr_t **vtable;
 
 public:
+  
 }; // namespace class Actor
