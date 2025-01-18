@@ -10,6 +10,7 @@ class ClientInstance;
 MemTool::Hook ClientInstance_onStartJoinGame_;
 void ClientInstance_onStartJoinGame(ClientInstance *self, bool a1, std::string a2, void *a3) {
   ClientInstance_onStartJoinGame_.call<void>(self, a1, a2, a3);
+  runtimes::setClientInstance(self);
   g_log_tool.message(LogLevel::INFO, "ClientInstance_onStartJoinGame",
                      std::format("ClientInstance::onStartJoinGame({:p},{}, {}, {})",
                                  reinterpret_cast<void *>(self), a1, a2, a3));
