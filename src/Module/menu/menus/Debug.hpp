@@ -24,19 +24,19 @@ void drawDebugMenu() {
       *(int *)0 = 0; //NOLINT
     }
     ImGui::TreePop();
-    if (ImGui::Button("get localplayer")) {
-      ClientInstance *instance = runtimes::getClientInstance();
-      if (instance != nullptr) {
-        auto *player = instance->getLocalPlayer();
-        if (player != nullptr) {
-          g_log_tool.message(LogLevel::DEBUG, "Debug",
-                             std::format("LocalPlayer: {:p}", reinterpret_cast<void *>(player)));
-        } else {
-          g_log_tool.message(LogLevel::DEBUG, "Debug", "LocalPlayer: nullptr");
-        }
+  }
+  if (ImGui::Button("get localplayer")) {
+    ClientInstance *instance = runtimes::getClientInstance();
+    if (instance != nullptr) {
+      auto *player = instance->getLocalPlayer();
+      if (player != nullptr) {
+        g_log_tool.message(LogLevel::DEBUG, "Debug",
+                           std::format("LocalPlayer: {:p}", reinterpret_cast<void *>(player)));
       } else {
-        g_log_tool.message(LogLevel::DEBUG, "Debug", "ClientInstance: nullptr");
+        g_log_tool.message(LogLevel::DEBUG, "Debug", "LocalPlayer: nullptr");
       }
+    } else {
+      g_log_tool.message(LogLevel::DEBUG, "Debug", "ClientInstance: nullptr");
     }
   }
 }
