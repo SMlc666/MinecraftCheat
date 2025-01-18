@@ -1,6 +1,7 @@
 #include "MemTool.hpp"
 #include "Dobby/dobby.h"
 #include "KittyMemory/KittyMemory.hpp"
+#include "log.hpp"
 #include <string>
 #include <unordered_map>
 std::unordered_map<void *, bool> g_hooked_funcs;
@@ -29,6 +30,7 @@ void MemTool::Hook::destroy() {
   }
   MemTool::destoryHookByAddress(hook_func);
   is_destoryed = true;
+  g_log_tool.message(LogLevel::INFO, "Hook", "destroy hook");
 }
 void *MemTool::findSymbol(const char *moduleName, const char *symbolName) {
   if (symbolName == nullptr) {
