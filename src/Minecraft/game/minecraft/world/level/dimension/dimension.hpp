@@ -1,8 +1,12 @@
 #pragma once
 #include <string>
 #include "LimboEntitiesVersion.hpp"
+#include "game/minecraft/world/level/dimension/Idimension.hpp"
 #include "game/minecraft/world/level/storage/StorageVersion.hpp"
 #include "game/minecraft/world/level/BlockChangedEventTarget.hpp"
+#include "game/deps/core/Bedrock/NonOwnerPointer.hpp"
+#include "game/minecraft/world/level/LevelListener.hpp"
+#include "game/minecraft/world/level/savedata/savedata.hpp"
 class ILevel;
 class DimensionType;
 class DimensionHeightRange;
@@ -11,7 +15,11 @@ namespace mce {
 class Color;
 }
 
-class Dimension {
+class Dimension : public IDimension,
+                  public LevelListener,
+                  public SavedData,
+                  public Bedrock::EnableNonOwnerReferences,
+                  public std::enable_shared_from_this<Dimension> {
 public:
 public:
   Dimension *Dimension_(ILevel &level, DimensionType dimId, DimensionHeightRange heightRange,
