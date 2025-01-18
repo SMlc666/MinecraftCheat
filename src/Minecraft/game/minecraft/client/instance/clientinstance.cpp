@@ -3,7 +3,7 @@
 //NOLINTBEGIN
 LocalPlayer *ClientInstance::getLocalPlayer() const {
   using function = LocalPlayer *(*)(const ClientInstance *);
-  auto func = reinterpret_cast<function>(this->vtable[30]);
+  auto func = reinterpret_cast<function>(this->vtable[29]);
   return func(this);
 }
 //NOLINTEND
