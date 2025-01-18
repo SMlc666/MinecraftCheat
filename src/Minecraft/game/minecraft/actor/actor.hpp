@@ -1,14 +1,42 @@
 #pragma once
 #include "actorflags.hpp"
 #include "base/alias.hpp"
+#include "base/mcint.hpp"
+#include "glm/fwd.hpp"
+#include "game/common/gamerefs/WeakRef.hpp"
+#include "SpawnRuleEnum.hpp"
+
+#include <map>
 class EntityContext;
 class VariantParameterList;
 class ActorInitializationMethod;
 class ActorDefinitionGroup;
 class ActorDefinitionDescriptor;
+class SynchedActorDataEntityWrapper;
+class RopeSystem;
+class Vec3;
+class Dimension;
+class ActorUniqueID;
+class ILevel;
+class ActorCategory;
+class AnimationComponent;
+class ActorDefinitionDiffList;
+class ActionQueue;
+namespace mce {
+class Color;
+}
+class BuiltInActorComponents;
+class ActorTerrainInterlockData;
+class MolangVariableMap;
+class ActorDefinitionPtr;
+class ActorDamageCause;
+class AABB;
+class CompoundTag;
+class SpatialActorNetworkData;
 class HashedString;
-namespace class Actor {
+class Actor {
 public:
+  //NOLINTBEGIN
   alias::TypedStorage<8, 24, EntityContext> mEntityContext;
   alias::TypedStorage<8, 72, VariantParameterList> mInitParams;
   alias::TypedStorage<8, 32, std::string> mCustomInitEventName;
@@ -24,7 +52,7 @@ public:
   alias::TypedStorage<8, 16, std::map<HashedString, std::vector<std::vector<glm::mat4x4>>>>
       mPreviousBoneMatrices;
   alias::TypedStorage<8, 48, SynchedActorDataEntityWrapper> mEntityData;
-  alias::TypedStorage<8, 8, std::unique_ptr<::SpatialActorNetworkData>> mNetworkData;
+  alias::TypedStorage<8, 8, std::unique_ptr<SpatialActorNetworkData>> mNetworkData;
   alias::TypedStorage<4, 12, Vec3> mSentDelta;
   alias::TypedStorage<4, 4, float> mScale;
   alias::TypedStorage<4, 4, float> mScalePrev;
@@ -100,10 +128,10 @@ public:
   alias::TypedStorage<4, 4, int> mTicksInWall;
   alias::TypedStorage<4, 4, int> mAffectedByWaterBottleTicksToEffect;
   alias::TypedStorage<4, 4, SpawnRuleEnum> mSpawnRulesEnum;
-  alias::TypedStorage<8, 8, std::unique_ptr<::ActionQueue>> mActionQueue;
+  alias::TypedStorage<8, 8, std::unique_ptr<ActionQueue>> mActionQueue;
   alias::TypedStorage<8, 56, MolangVariableMap> mMolangVariables;
   alias::TypedStorage<8, 8, ActorUniqueID> mFishingHookID;
-
+  //NOLINTEND
 public:
   virtual bool getStatusFlag(ActorFlags);
   virtual void setStatusFlag(ActorFlags, bool);
