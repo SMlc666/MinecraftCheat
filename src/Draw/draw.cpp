@@ -41,7 +41,7 @@ void drawMenu(MenuType menuType) {
   }
   for (const auto &pair : ModuleManager::getModules()) {
     if ((pair.second != nullptr) && pair.second->getMenuType() == menuType) {
-      pair.second->onDraw();
+      pair.second->onDrawGUI();
     }
   }
   for (const auto &pair : ScriptManager::getScripts()) {

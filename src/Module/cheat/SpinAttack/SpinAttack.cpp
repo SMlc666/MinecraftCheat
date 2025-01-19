@@ -68,7 +68,7 @@ cheat::SpinAttack::SpinAttack() : Module("SpinAttack", MenuType::COMBAT_MENU, Co
     ragRestore();
     velRestore();
   });
-  setOnDraw([](Module *module) {
+  setOnDrawGUI([](Module *module) {
     module->getGUI().CheckBox("velocity", "velocity", [module](bool value) {
       if (module->getGUI().Get<bool>("enabled")) {
         if (value) {

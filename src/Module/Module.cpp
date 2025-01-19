@@ -6,7 +6,7 @@
 Module::Module(std::string name, MenuType type, std::unordered_map<std::string, std::any> configMap)
     : m_name(std::move(name)), m_type(type), m_gui(this, m_configMap),
       m_configMap(std::move(configMap)), m_onTick(nullptr), m_onEnable(nullptr),
-      m_onDisable(nullptr), m_onLoad(nullptr), m_onDraw(nullptr) {
+      m_onDisable(nullptr), m_onLoad(nullptr), m_onDrawGUI(nullptr) {
 }
 
 std::string Module::getName() const {
@@ -33,8 +33,8 @@ void Module::setOnLoad(std::function<void(Module *)> func) {
   m_onLoad = std::move(func);
 }
 
-void Module::setOnDraw(std::function<void(Module *)> func) {
-  m_onDraw = std::move(func);
+void Module::setOnDrawGUI(std::function<void(Module *)> func) {
+  m_onDrawGUI = std::move(func);
 }
 
 void Module::onTick() {
@@ -61,7 +61,7 @@ void Module::onLoad() {
   }
 }
 
-void Module::onDraw() {
+void Module::onDrawGUI() {
   if (ImGui::TreeNode(m_name.c_str())) {
     if (m_onEnable || m_onDisable) {
       if (m_gui.CheckBox("enabled", "Enabled")) {
@@ -72,8 +72,8 @@ void Module::onDraw() {
         }
       }
     }
-    if (m_onDraw) {
-      m_onDraw(this);
+    if (m_onDrawGUI) {
+      m_onDrawGUI(this);
     }
     ImGui::TreePop();
   }
