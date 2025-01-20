@@ -5,11 +5,11 @@ class Minecraft;
 class ClientInstance {
 public:
   uintptr_t **vtable;
-  std::byte padding0[176];
-  Minecraft *minecraftPtr; // 将偏移量44处的4字节改为Minecraft*指针
+  std::byte padding0[168];
+  Minecraft *minecraftPtr;
+
 public:
   [[nodiscard]] LocalPlayer *getLocalPlayer() const;
 };
 
-static_assert(offsetof(ClientInstance, minecraftPtr) == 0xB0 + 8,
-              "Minecraft pointer offset is wrong");
+static_assert(offsetof(ClientInstance, minecraftPtr) == 0xB0, "Minecraft pointer offset is wrong");
