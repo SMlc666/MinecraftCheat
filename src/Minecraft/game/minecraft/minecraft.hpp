@@ -61,6 +61,9 @@ public:
   Minecraft *Minecraft_(Minecraft *a1, void *a2, void *a3, void *a4, void *a5, void *a6, void *a7,
                         void *a8, void *a9, void *a10, char a11, void *a12, void *a13, void *a14,
                         void *a15, void *a16, void *a17);
+
+public:
+  Timer &getRealTimer();
 };
 static_assert(offsetof(Minecraft, mGameCallbacks) == 0x18, "Minecraft has wrong layout");
 static_assert(offsetof(Minecraft, mEventing) == 0x20, "Minecraft has wrong layout");
