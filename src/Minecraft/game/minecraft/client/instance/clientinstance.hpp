@@ -5,7 +5,7 @@ class Minecraft;
 class ClientInstance {
 public:
   uintptr_t **vtable;
-  std::byte placeholder[176];
+  std::byte padding0[176];
   Minecraft *minecraftPtr; // 将偏移量44处的4字节改为Minecraft*指针
 public:
   [[nodiscard]] LocalPlayer *getLocalPlayer() const;
