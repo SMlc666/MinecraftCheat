@@ -2,6 +2,7 @@
 #include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/actor/player/player.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
+#include "game/minecraft/minecraft.hpp"
 #include "game/minecraft/world/level/Level.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
 #include "imgui/imgui.h"
@@ -113,6 +114,18 @@ void drawDebugMenu() {
           if (minecraft != nullptr) {
             g_log_tool.message(LogLevel::DEBUG, "DEBUG",
                                std::format("Minecraft: {:p}", reinterpret_cast<void *>(minecraft)));
+          }
+        }
+      }
+      ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Minecraft")) {
+      if (ImGui::Button("getSimPaused")) {
+        if (instance != nullptr) {
+          Minecraft *minecraft = instance->minecraftPtr;
+          if (minecraft != nullptr) {
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                               std::format("getSimPaused: {}", minecraft->getSimPaused()));
           }
         }
       }
