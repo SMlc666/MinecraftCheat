@@ -30,6 +30,7 @@ void setup() {
   moduleSetup();
   ScriptSetup();
 }
+/*
 extern "C" auto JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) -> jint { //NOLINT
   if (g_jvm != nullptr) {
     return JNI_VERSION_1_6;
@@ -44,7 +45,7 @@ extern "C" auto JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) -> jint { //NOL
   std::thread(setup).detach();
   return JNI_VERSION_1_6;
 }
-#ifndef KittyInjector
+*/
 const static int MAX_JAVAVM_BUFFER = 1;
 __attribute__((constructor)) void OnLoad() {
   std::array<JavaVM *, MAX_JAVAVM_BUFFER> jvmBuffer{};
@@ -55,6 +56,11 @@ __attribute__((constructor)) void OnLoad() {
     return;
   }
   g_log_tool.message(LogLevel::INFO, "OnLoad", std::format("nVms: {}", nVms));
-  JNI_OnLoad(jvmBuffer[0], nullptr);
+  g_jvm = jvmBuffer[0];
+  JNIEnv *m_env = nullptr;
+  g_log_tool.message(LogLevel::INFO, "OnLoad",
+                     std::format("vm: {:p}", reinterpret_cast<void *>(g_jvm)));
+  g_jvm->GetEnv(reinterpret_cast<void **>(&m_env), JNI_VERSION_1_6);
+  g_env = m_env;
+  std::thread(setup).detach();
 }
-#endif
