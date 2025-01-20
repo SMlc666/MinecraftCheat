@@ -98,6 +98,26 @@ void drawDebugMenu() {
       }
       ImGui::TreePop();
     }
+    if (ImGui::TreeNode("ClientInstance")) {
+      if (ImGui::Button("get client instance")) {
+        if (instance != nullptr) {
+          g_log_tool.message(
+              LogLevel::DEBUG, "DEBUG",
+              std::format("ClientInstance: {:p}", reinterpret_cast<void *>(instance)));
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("get minecraft")) {
+        if (instance != nullptr) {
+          Minecraft *minecraft = instance->minecraftPtr;
+          if (minecraft != nullptr) {
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                               std::format("Minecraft: {:p}", reinterpret_cast<void *>(minecraft)));
+          }
+        }
+      }
+      ImGui::TreePop();
+    }
     ImGui::TreePop();
   }
 }
