@@ -71,4 +71,5 @@ std::unordered_map<std::string, Module *> &getModules() {
 
 void moduleSetup() {
   cheatSetup();
+  ModuleManager::loadAllModules();
 }
