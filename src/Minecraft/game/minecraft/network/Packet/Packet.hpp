@@ -5,6 +5,7 @@
 class ReadOnlyBinaryStream;
 class BinaryStream;
 class Packet {
+public:
   virtual ~Packet();
   virtual MinecraftPacketIds getId() const = 0;
   virtual std::string getName() const = 0;
