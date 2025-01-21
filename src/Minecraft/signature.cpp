@@ -19,6 +19,7 @@ std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"Actor::getLevel", 0x7333360},
     {"Actor::getDimensionConst", 0x733BEBC},
     {"Level::Level", 0x819645C},
+    {"LoopbackPacketSender::send", 0x6390610},
 };
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
