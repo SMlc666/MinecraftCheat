@@ -108,8 +108,7 @@ public:
   template <typename T, typename RetT, typename... Args>
   inline Hook(T address, RetT (*new_func)(Args...), void **m_orig_func,
               bool m_auto_destroy = true) {
-    std::function<RetT(Args...)> func(new_func);
-    Hook(address, reinterpret_cast<void *>(func), m_orig_func, m_auto_destroy);
+    Hook(address, reinterpret_cast<void *>(new_func), m_orig_func, m_auto_destroy);
   }
   template <typename T> [[nodiscard]] T original() const {
     return reinterpret_cast<T>(orig_func);
