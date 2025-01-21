@@ -1,4 +1,5 @@
 #pragma once
+#include "game/common/SubClientId.hpp"
 #include "game/common/gamerefs/StackRefResult.hpp"
 #include "game/common/gamerefs/IEntityRegistryOwner.hpp"
 #include "gsl/gsl"
@@ -46,7 +47,7 @@ public:
   PacketSender &mPacketSender;
   std::byte paddingE8[8];
   IMinecraftApp &mApp;
-  char mClientSubId;
+  SubClientId mClientSubId;
   //NOLINTEND
 public:
   virtual ~Minecraft();
