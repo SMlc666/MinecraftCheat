@@ -106,8 +106,9 @@ public:
     g_hooked_funcs[reinterpret_cast<void *>(address)] = true;
   }
   template <typename T, typename RetT, typename... Args>
-  inline Hook(T address, RetT (*new_func)(Args...), void **m_orig_func,
-              bool m_auto_destroy = true) {
+  inline Hook(T address, RetT (*new_func)(Args...), void **m_orig_func, bool m_auto_destroy = true)
+      : auto_destroy(m_auto_destroy), is_destoryed(false),
+        hook_func(reinterpret_cast<void *>(new_func)) {
     Hook(address, reinterpret_cast<void *>(new_func), m_orig_func, m_auto_destroy);
   }
   template <typename T> [[nodiscard]] T original() const {
