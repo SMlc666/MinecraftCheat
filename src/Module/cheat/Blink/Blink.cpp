@@ -6,20 +6,22 @@
 #include <unordered_map>
 #include "MemTool.hpp"
 static bool isBlink;
-static MemTool::Hook send_;
-static int Blink_send(int fd, const void *buf, size_t n, int flags) {
-  if (isBlink) {
-    return 0;
-  }
-  return send_.call<int>(fd, buf, n, flags);
-}
+MemTool::Hook BlinkSendMsg_;
 static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
 };
 
+static int Blinksendmsg(int fd, const msghdr *msg, int flags) {
+  if (isBlink) {
+    return 0;
+  }
+  return BlinkSendMsg_.call<int>(fd, msg, flags);
+}
 cheat::Blink::Blink() : Module("Blink", MenuType::COMBAT_MENU, ConfigData) {
-  send_ = MemTool::Hook(MemTool::findSymbol(nullptr, "send"), reinterpret_cast<void *>(Blink_send),
-                        nullptr, false);
+  setOnLoad([](Module *module) {
+    BlinkSendMsg_ = MemTool::Hook(MemTool::findSymbol(nullptr, "sendmsg"),
+                                  reinterpret_cast<void *>(Blinksendmsg), nullptr, false);
+  });
   setOnEnable([](Module *module) { isBlink = true; });
   setOnDisable([](Module *module) { isBlink = false; });
 }
