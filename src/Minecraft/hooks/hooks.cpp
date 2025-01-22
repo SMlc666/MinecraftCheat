@@ -12,12 +12,13 @@ class ClientInstance;
 class Minecraft;
 MemTool::Hook ClientInstance_onStartJoinGame_;
 MemTool::Hook Minecraft_update_;
-uint64 ClientInstance_onStartJoinGame(ClientInstance *self, uint64 a1, uint64 a2, uint64 a3) {
-  auto ret = ClientInstance_onStartJoinGame_.call<uint64>(self, a1, a2, a3);
+int64 ClientInstance_onStartJoinGame(ClientInstance *self, uint64 a1, uint8 *a2, uint8 a3) {
+  auto ret = ClientInstance_onStartJoinGame_.call<int64>(self, a1, a2, a3);
   runtimes::setClientInstance(self);
   g_log_tool.message(LogLevel::INFO, "ClientInstance_onStartJoinGame",
                      std::format("ClientInstance::onStartJoinGame({:p},{}, {}, {})",
-                                 reinterpret_cast<void *>(self), a1, a2, a3));
+                                 reinterpret_cast<void *>(self), a1, reinterpret_cast<void *>(a2),
+                                 a3));
   return ret;
 }
 bool Minecraft_update(Minecraft *self) {
