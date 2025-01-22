@@ -1,6 +1,7 @@
 #include "hooks.hpp"
 #include "MemTool.hpp"
 #include "ModuleManager.hpp"
+#include "base/mcint.hpp"
 #include "log.hpp"
 #include "runtimes/runtimes.hpp"
 #include "signature.hpp"
@@ -11,7 +12,7 @@ class ClientInstance;
 class Minecraft;
 MemTool::Hook ClientInstance_onStartJoinGame_;
 MemTool::Hook Minecraft_update_;
-void ClientInstance_onStartJoinGame(ClientInstance *self, bool a1, std::string a2, void *a3) {
+void ClientInstance_onStartJoinGame(ClientInstance *self, uint64 a1, uint64 a2, uint64 a3) {
   ClientInstance_onStartJoinGame_.call<void>(self, a1, a2, a3);
   runtimes::setClientInstance(self);
   g_log_tool.message(LogLevel::INFO, "ClientInstance_onStartJoinGame",
