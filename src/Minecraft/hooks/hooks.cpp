@@ -12,7 +12,7 @@ class ClientInstance;
 class Minecraft;
 MemTool::Hook ClientInstance_onStartJoinGame_;
 MemTool::Hook Minecraft_update_;
-int64 ClientInstance_onStartJoinGame(ClientInstance *self, uint64 a1, uint8 *a2, uint8 a3) {
+int64 ClientInstance_onStartJoinGame(ClientInstance *self, char a1, uint8 *a2, uint a3) {
   auto ret = ClientInstance_onStartJoinGame_.call<int64>(self, a1, a2, a3);
   runtimes::setClientInstance(self);
   g_log_tool.message(LogLevel::INFO, "ClientInstance_onStartJoinGame",
