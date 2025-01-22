@@ -36,6 +36,11 @@ private:
 
 public:
   void message(LogLevel Level, const std::string &tag, const std::string &message);
+  template <typename... Args>
+  void message(LogLevel Level, const std::string &tag, const std::string &fmt, Args... args) {
+    std::string message = std::format(fmt, std::forward<Args>(args)...);
+    this->message(Level, tag, message);
+  }
   std::vector<LogEntry> getLogs() const;
   std::vector<LogEntry> getLogs(LogLevel Level) const;
   std::vector<LogEntry> getLogs(const std::string &tag) const;
