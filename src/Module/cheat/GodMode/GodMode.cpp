@@ -24,7 +24,6 @@ cheat::GodMode::GodMode() : Module("GodMode", MenuType::COMBAT_MENU, ConfigData)
     if (!player) {
       return;
     }
-    GameMode gamemode = player->getGameMode();
-    gamemode.attack(*player);
+    player->getGameMode().attack(*player);
   });
 }
