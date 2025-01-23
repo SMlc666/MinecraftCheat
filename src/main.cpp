@@ -18,7 +18,7 @@ JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
 
 void setup() {
-  std::this_thread::sleep_for(std::chrono::seconds(1)); //for debug
+  std::this_thread::sleep_for(std::chrono::seconds(3)); //for debug
   std::filesystem::path path(CheatDir);
   if (!std::filesystem::exists(path)) {
     std::filesystem::create_directory(path);
