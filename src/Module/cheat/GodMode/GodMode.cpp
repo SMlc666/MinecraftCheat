@@ -17,11 +17,11 @@ cheat::GodMode::GodMode() : Module("GodMode", MenuType::COMBAT_MENU, ConfigData)
       return;
     }
     ClientInstance *client = runtimes::getClientInstance();
-    if (!client) {
+    if (client == nullptr) {
       return;
     }
     LocalPlayer *player = client->getLocalPlayer();
-    if (!player) {
+    if (player == nullptr) {
       return;
     }
     player->getGameMode().attack(*player);
