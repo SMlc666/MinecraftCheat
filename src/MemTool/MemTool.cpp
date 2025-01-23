@@ -25,11 +25,11 @@ KittyMemory::ProcMap MemTool::getModuleMap(const std::string &moduleName) {
  * 销毁钩子并清理资源。
  */
 void MemTool::Hook::destroy() {
-  if (orig_func != nullptr && (!is_destoryed)) {
+  if (orig_func != nullptr && (!is_destroyed)) {
     return;
   }
   MemTool::destoryHookByAddress(hook_func);
-  is_destoryed = true;
+  is_destroyed = true;
   g_log_tool.message(LogLevel::INFO, "Hook", "destroy hook");
 }
 void *MemTool::findSymbol(const char *moduleName, const char *symbolName) {
