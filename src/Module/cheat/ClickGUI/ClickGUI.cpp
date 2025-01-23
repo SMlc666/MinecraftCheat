@@ -9,7 +9,6 @@
 #include <string>
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", true},
-    {"ScaleAllSizes", 1.0F},
     {"WindowRounding", 10.0F},
     {"ScrollbarSize ", 10.0F},
     {"Alpha", 1.0F},
@@ -27,8 +26,6 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
                                  [](float value) { ImGui::GetStyle().WindowRounding = value; });
     module->getGUI().SliderFloat("ScrollbarSize ", "滚动条大小", 0.0F, 50.0F,
                                  [](float value) { ImGui::GetStyle().ScrollbarSize = value; });
-    module->getGUI().SliderFloat("ScaleAllSizes", "缩放尺寸", 0.01F, 4.0F,
-                                 [](float value) { ImGui::GetStyle().ScaleAllSizes(value); });
     module->getGUI().SliderFloat("Alpha", "透明度", 0.01F, 1.0F,
                                  [](float value) { ImGui::GetStyle().Alpha = value; });
     module->getGUI().SliderFloat("DisabledAlpha", "禁用透明度", 0.01F, 1.0F,
@@ -54,9 +51,6 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
       }
       if (module->getGUI().Has("ScrollbarSize ")) {
         ImGui::GetStyle().ScrollbarSize = module->getGUI().Get<float>("ScrollbarSize ");
-      }
-      if (module->getGUI().Has("ScaleAllSizes")) {
-        ImGui::GetStyle().ScaleAllSizes(module->getGUI().Get<float>("ScaleAllSizes"));
       }
       if (module->getGUI().Has("Alpha")) {
         ImGui::GetStyle().Alpha = module->getGUI().Get<float>("Alpha");
