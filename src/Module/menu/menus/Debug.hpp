@@ -85,7 +85,7 @@ void drawDebugMenu() {
     if (ImGui::TreeNode("Dimension")) {
       Dimension *dimension = nullptr;
       if (localPlayer != nullptr) {
-        dimension = &localPlayer->getDimension();
+        dimension = localPlayer->getDimension();
       }
       if (ImGui::Button("get dimension")) {
         if (dimension != nullptr) {
