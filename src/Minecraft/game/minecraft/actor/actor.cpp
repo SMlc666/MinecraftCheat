@@ -6,9 +6,10 @@ Level *Actor::getLevel() const {
   auto func = getSign<function>("Actor::getLevel");
   return func(this);
 }
-Dimension &Actor::getDimension() const {
-  return *mDimension.lock();
+Dimension *Actor::getDimension() const {
+  return mDimension.lock().get();
 }
+
 bool Actor::hasDimension() const {
   return mDimension.lock() != nullptr;
 }

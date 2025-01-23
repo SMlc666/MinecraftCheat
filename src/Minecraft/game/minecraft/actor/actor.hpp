@@ -12,7 +12,8 @@ public:
 
 public:
   [[nodiscard]] Level *getLevel() const;
-  [[nodiscard]] Dimension &getDimension() const;
+  [[nodiscard]] Dimension *getDimension() const;
   [[nodiscard]] bool hasDimension() const;
 }; // namespace class Actor
 static_assert(offsetof(Actor, mDimension) == 0x2D8);
+static_assert(sizeof(std::weak_ptr<std::shared_ptr<Dimension>>) == 16);
