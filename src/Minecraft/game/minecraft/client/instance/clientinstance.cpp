@@ -1,7 +1,5 @@
 #include "clientinstance.hpp"
 #include "game/minecraft/actor/player/localplayer.hpp"
-#include "log.hpp"
-#include <format>
 //NOLINTBEGIN
 LocalPlayer *ClientInstance::getLocalPlayer() const {
   using function = LocalPlayer *(*)(const ClientInstance *);
