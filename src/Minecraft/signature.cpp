@@ -6,7 +6,7 @@
 #include <unordered_map>
 static const std::string module = "libminecraftpe.so";
 //NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-std::unordered_map<std::string, uintptr_t> IDApattern = {
+const std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"Player::Player", 0x6DD37FC},
     {"Minecraft::Minecraft", 0x7493638},
     {"Minecraft::update", 0x749472C},
@@ -28,7 +28,7 @@ void signaturesInit() {
   void *end = MemTool::getModuleEnd<void *>(module);
   g_log_tool.message(LogLevel::INFO, "initSignatures",
                      std::format("Module base: {:p}, end: {:p}", base, end));
-  for (auto &IDA : IDApattern) {
+  for (const auto &IDA : IDApattern) {
     void *addr = reinterpret_cast<void *>(reinterpret_cast<uintptr_t>(base) + IDA.second);
     signatures.insert({IDA.first, addr});
     g_log_tool.message(LogLevel::INFO, "initSignatures",
