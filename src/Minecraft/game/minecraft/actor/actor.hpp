@@ -10,7 +10,7 @@ class Actor {
 public:
   uintptr_t **vtable;
   std::byte padding8[0x2D0];
-  OwnerPtr<SharePtrRefTraits<Dimension>::OwnerStorage> mDimension;
+  std::weak_ptr<std::shared_ptr<Dimension>> mDimension;
 
 public:
   [[nodiscard]] Level *getLevel() const;

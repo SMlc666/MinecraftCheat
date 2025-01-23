@@ -7,9 +7,9 @@ Level *Actor::getLevel() const {
   return func(this);
 }
 Dimension *Actor::getDimension() const {
-  return mDimension->mValue.get();
+  return mDimension.lock()->get();
 }
 
 bool Actor::hasDimension() const {
-  return mDimension->mValue != nullptr;
+  return mDimension.lock()->get() != nullptr;
 }
