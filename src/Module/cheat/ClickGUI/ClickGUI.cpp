@@ -1,6 +1,8 @@
 #include "ClickGUI.hpp"
+#include "draw.hpp"
 #include "imgui/imgui.h"
 #include "menu/menu.hpp"
+#include <thread>
 #include <unordered_map>
 #include "Module.hpp"
 #include <any>
@@ -19,8 +21,13 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
                                  [](float value) { ImGui::GetStyle().WindowRounding = value; });
   });
   setOnLoad([](Module *module) {
-    if (module->getGUI().Has("WindowRounding")) {
-      ImGui::GetStyle().WindowRounding = module->getGUI().Get<float>("WindowRounding");
-    }
+    std::thread([module]() {
+      while (!is_ImguiSetup) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      }
+      if (module->getGUI().Has("WindowRounding")) {
+        ImGui::GetStyle().WindowRounding = module->getGUI().Get<float>("WindowRounding");
+      }
+    }).detach();
   });
 }
