@@ -2,7 +2,7 @@
 #include "OwnerStorageSharePtr.hpp"
 
 template <typename T> struct SharePtrRefTraits {
-  typedef T StackRef;
-  typedef OwnerStorageSharePtr<T> OwnerStorage;
-  typedef SharePtrRefTraits<T>::StackRef OwnerStackRef;
+  using StackRef = T;
+  using OwnerStorage = OwnerStorageSharePtr<T>;
+  using OwnerStackRef = SharePtrRefTraits<T>::StackRef;
 };
