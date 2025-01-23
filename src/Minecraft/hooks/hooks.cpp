@@ -27,8 +27,15 @@ bool Minecraft_update(Minecraft *self) {
   return ret;
 }
 void hooksInit() {
-  void *clientInstance = getSign<void *>("ClientInstance::onStartJoinGame");
-  ClientInstance_onStartJoinGame_ = MemTool::Hook(
-      clientInstance, reinterpret_cast<void *>(ClientInstance_onStartJoinGame), nullptr, false);
+  {
+    void *clientInstance = getSign<void *>("ClientInstance::onStartJoinGame");
+    ClientInstance_onStartJoinGame_ = MemTool::Hook(
+        clientInstance, reinterpret_cast<void *>(ClientInstance_onStartJoinGame), nullptr, false);
+  }
+  {
+    void *minecraft = getSign<void *>("Minecraft::update");
+    Minecraft_update_ =
+        MemTool::Hook(minecraft, reinterpret_cast<void *>(Minecraft_update), nullptr, false);
+  }
   g_log_tool.message(LogLevel::INFO, "HooksInit", "Hooks inited");
 }
