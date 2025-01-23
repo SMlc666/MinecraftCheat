@@ -15,7 +15,7 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
 
   });
   setOnDrawGUI([](Module *module) {
-    module->getGUI().SliderFloat("WindowRounding", "窗口圆角", 0.0F, 10.0F,
+    module->getGUI().SliderFloat("WindowRounding", "窗口圆角", 0.0F, 24.0F,
                                  [](float value) { ImGui::GetStyle().WindowRounding = value; });
   });
   setOnLoad([](Module *module) {
