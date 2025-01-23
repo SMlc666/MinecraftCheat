@@ -7,9 +7,15 @@ Level *Actor::getLevel() const {
   return func(this);
 }
 Dimension *Actor::getDimension() const {
-  return mDimension.lock()->get();
+  std::shared_ptr<Dimension> sharedDimension = mDimension.lock();
+  if (sharedDimension) {
+    return sharedDimension.get();
+  } else {
+    return nullptr;
+  }
 }
 
 bool Actor::hasDimension() const {
-  return mDimension.lock()->get() != nullptr;
+  std::shared_ptr<Dimension> sharedDimension = mDimension.lock();
+  return sharedDimension != nullptr;
 }
