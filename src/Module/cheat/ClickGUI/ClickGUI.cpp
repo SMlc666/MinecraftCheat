@@ -19,6 +19,8 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
                                  [](float value) { ImGui::GetStyle().WindowRounding = value; });
   });
   setOnLoad([](Module *module) {
-    ImGui::GetStyle().WindowRounding = module->getGUI().Get<float>("WindowRounding");
+    if (module->getGUI().Has("WindowRounding")) {
+      ImGui::GetStyle().WindowRounding = module->getGUI().Get<float>("WindowRounding");
+    }
   });
 }

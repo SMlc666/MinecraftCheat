@@ -80,3 +80,7 @@ bool GUI::CheckBox(const std::string &second, const std::string &text,
   }
   return active;
 }
+bool GUI::Has(const std::string &second) {
+  auto config = Config::getDocument()[first.c_str()].GetObject();
+  return config.HasMember(second.c_str());
+}

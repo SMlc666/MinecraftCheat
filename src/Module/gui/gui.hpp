@@ -22,6 +22,11 @@ public:
     }
     return config[second.c_str()].Get<T>();
   }
+  template <typename T> inline void Set(const std::string &second, const T &value) {
+    auto config = Config::getDocument()[first.c_str()].GetObject();
+    config[second.c_str()].Set(value);
+  }
+  bool Has(const std::string &second);
 
 private:
   std::unordered_map<std::string, std::any> GUIMap_orig;
