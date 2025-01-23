@@ -2,6 +2,7 @@
 #include "MemTool.hpp"
 #include "ScriptManager.hpp"
 #include "log.hpp"
+#include "menu/menu.hpp"
 #include "my_imgui.h"
 #include "API/draw/draw.hpp"
 #include "ModuleManager.hpp"
@@ -63,6 +64,7 @@ void drawAllMenus() {
   drawMenu(CONFIG_MENU);
   drawMenu(DEBUG_MENU);
   drawMenu(COMBAT_MENU);
+  drawMenu(RENDER_MENU);
 }
 int g_GlHeight, g_GlWidth = 0; //opengl窗口的高度和宽度
 bool is_ImguiSetup = false;
