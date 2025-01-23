@@ -1,6 +1,5 @@
 #pragma once
-#include "game/common/gamerefs/OwnerPtr.hpp"
-#include "game/common/gamerefs/gamerefs_shareptr/GameRefsSharePtr.hpp"
+#include "game/common/gamerefs/WeakRef.hpp"
 #include <cstddef>
 #include <memory>
 class Dimension;
@@ -10,7 +9,7 @@ class Actor {
 public:
   uintptr_t **vtable;
   std::byte padding8[0x2D0];
-  std::weak_ptr<Dimension> mDimension;
+  WeakRef<Dimension> mDimension;
 
 public:
   [[nodiscard]] Level *getLevel() const;
