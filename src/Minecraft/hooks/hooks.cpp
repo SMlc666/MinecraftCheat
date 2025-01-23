@@ -7,8 +7,8 @@
 #include "signature.hpp"
 #include <cstddef>
 #include <format>
+#include "game/minecraft/client/instance/clientinstance.hpp"
 #include <string>
-class ClientInstance;
 class Minecraft;
 MemTool::Hook ClientInstance_onStartJoinGame_;
 MemTool::Hook Minecraft_update_;
@@ -23,7 +23,10 @@ int64 ClientInstance_onStartJoinGame(ClientInstance *self, char a1, uint8 *a2, u
 }
 bool Minecraft_update(Minecraft *self) {
   auto ret = Minecraft_update_.call<bool>(self);
-  ModuleManager::tickAllModules();
+  ClientInstance *clientInstance = runtimes::getClientInstance();
+  if (clientInstance->minecraftPtr == self) {
+    ModuleManager::tickAllModules();
+  }
   return ret;
 }
 void hooksInit() {
