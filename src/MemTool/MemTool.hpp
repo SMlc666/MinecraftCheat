@@ -86,50 +86,68 @@ class Hook {
 public:
   // Hook 构造函数
   inline Hook() = default;
+
   template <typename T>
   inline Hook(T address, void *func, void **m_orig_func, bool m_auto_destroy = true)
-      : auto_destroy(m_auto_destroy), is_destoryed(false),
-        hook_func(reinterpret_cast<void *>(func)) {
+      : auto_destroy(m_auto_destroy), is_destroyed(false), hook_func(func) {
+    void *addr = reinterpret_cast<void *>(address);
 
     g_log_tool.message(LogLevel::INFO, "Hook",
-                       std::format("Hooking function at {:p} to {:p} with auto_destroy {}",
-                                   reinterpret_cast<void *>(address), func, m_auto_destroy));
-    if (g_hooked_funcs.find(reinterpret_cast<void *>(address)) != g_hooked_funcs.end()) {
+                       std::format("Hooking function at {:p} to {:p} with auto_destroy {}", addr,
+                                   func, m_auto_destroy));
+
+    if (g_hooked_funcs.find(addr) != g_hooked_funcs.end()) {
       throw std::runtime_error("Address already hooked");
     }
+
     void *buf_ptr = nullptr;
-    DobbyHook(reinterpret_cast<void *>(address), func, &buf_ptr);
+    if (DobbyHook(addr, func, &buf_ptr) != 0) {
+      throw std::runtime_error("Failed to hook function");
+    }
+
     if (m_orig_func != nullptr) {
       *m_orig_func = buf_ptr;
     }
+
     orig_func = buf_ptr;
-    g_hooked_funcs[reinterpret_cast<void *>(address)] = true;
+    g_hooked_funcs[addr] = true;
   }
-  template <typename T, typename RetT, typename... Args>
-  inline Hook(T address, RetT (*new_func)(Args...), void **m_orig_func, bool m_auto_destroy = true)
-      : auto_destroy(m_auto_destroy), is_destoryed(false),
-        hook_func(reinterpret_cast<void *>(new_func)) {
-    Hook(address, reinterpret_cast<void *>(new_func), m_orig_func, m_auto_destroy);
+
+  template <typename RetT, typename... Args>
+  inline Hook(RetT (*new_func)(Args...), void **m_orig_func, bool m_auto_destroy = true)
+      : Hook(reinterpret_cast<void *>(new_func), reinterpret_cast<void *>(new_func), m_orig_func,
+             m_auto_destroy) {
   }
+
   template <typename T> [[nodiscard]] T original() const {
+    if (orig_func == nullptr) {
+      throw std::runtime_error("Original function not found");
+    }
     return reinterpret_cast<T>(orig_func);
   }
+
   template <typename RetT = void, typename... Args> RetT call(Args... args) {
+    if (orig_func == nullptr) {
+      throw std::runtime_error("Original function not found");
+    }
     return original<RetT (*)(Args...)>()(args...);
   }
+
   template <typename RetT = void, typename... Args> RetT ccall(Args... args) {
+    if (orig_func == nullptr) {
+      throw std::runtime_error("Original function not found");
+    }
     return original<RetT(__cdecl *)(Args...)>()(args...);
   }
+
   // 删除复制构造函数
   Hook(const Hook &) = delete;
 
-  // 删除复制赋值运算符
   Hook &operator=(const Hook &) = default;
 
   // 删除移动构造函数
   Hook(Hook &&) = delete;
 
-  // 删除移动赋值运算符
   Hook &operator=(Hook &&) = default;
 
   // Hook 析构函数
@@ -143,7 +161,7 @@ private:
   bool auto_destroy = true;
 
   // 是否已经被销毁
-  bool is_destoryed{};
+  bool is_destroyed = false;
 
   // 原始函数指针
   void *orig_func = nullptr;
@@ -151,5 +169,6 @@ private:
   // 钩子函数指针
   void *hook_func = nullptr;
 };
+
 }; // namespace MemTool
 //NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
