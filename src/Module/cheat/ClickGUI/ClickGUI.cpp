@@ -21,6 +21,9 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"FrameRounding", 3.0F},
     {"shortcut", false},
     {"shortcutSize", GUI::Vec2(200.0F, 100.0F)},
+    {"shortcutRounding", 5.0F},
+    {"shortcutTextScale", 1.0F},
+    {"shortcutPadding", GUI::Vec2(0.0F, 0.0F)},
 };
 cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigData) {
   setOnDisable([](Module *module) {});
@@ -45,8 +48,14 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
     module->getGUI().SliderFloat("FrameRounding", "边框圆角", 0.0F, 48.0F,
                                  [](float value) { ImGui::GetStyle().FrameRounding = value; });
     if (ImGui::TreeNode("快捷键")) {
+      module->getGUI().SliderFloat("shortcutRounding", "快捷键圆角", 0.0F, 48.0F,
+                                   [](float value) { shortcutRouding = value; });
+      module->getGUI().SliderFloat("shortcutTextScale", "快捷键文字大小", 0.1F, 3.0F,
+                                   [](float value) { shortcutTextScale = value; });
       module->getGUI().SliderFloat2("shortcutSize", "快捷键大小", 0.0F, 300.0F,
                                     [](float x, float y) { shortcutSize = ImVec2(x, y); });
+      module->getGUI().SliderFloat2("shortcutPadding", "快捷键内边距", 0.0F, 10.0F,
+                                    [](float x, float y) { shortcutPadding = ImVec2(x, y); });
       ImGui::TreePop();
     }
   });
@@ -82,6 +91,18 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
       }
       if (module->getGUI().Has("FrameRounding")) {
         ImGui::GetStyle().FrameRounding = module->getGUI().Get<float>("FrameRounding");
+      }
+      if (module->getGUI().Has("shortcutRounding")) {
+        shortcutRouding = module->getGUI().Get<float>("shortcutRounding");
+      }
+      if (module->getGUI().Has("shortcutTextScale")) {
+        shortcutTextScale = module->getGUI().Get<float>("shortcutTextScale");
+      }
+      if (module->getGUI().Has("shortcutSize")) {
+        shortcutSize = module->getGUI().Get<ImVec2>("shortcutSize");
+      }
+      if (module->getGUI().Has("shortcutPadding")) {
+        shortcutPadding = module->getGUI().Get<ImVec2>("shortcutPadding");
       }
     }).detach();
   });
