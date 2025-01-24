@@ -70,8 +70,8 @@ void Module::onDrawGUI() {
         } else {
           onDisable();
         }
-        m_gui.CheckBox("shortcut", "Shortcut");
       }
+      m_gui.CheckBox("shortcut", "Shortcut");
     }
     if (m_onDrawGUI) {
       m_onDrawGUI(this);
