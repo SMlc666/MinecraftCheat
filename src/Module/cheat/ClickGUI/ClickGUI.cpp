@@ -47,6 +47,7 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
     if (ImGui::TreeNode("快捷键")) {
       module->getGUI().SliderFloat2("shortcutSize", "快捷键大小", 0.0F, 300.0F,
                                     [](float x, float y) { shortcutSize = ImVec2(x, y); });
+      ImGui::TreePop();
     }
   });
   setOnLoad([](Module *module) {
