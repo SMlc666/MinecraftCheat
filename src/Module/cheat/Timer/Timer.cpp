@@ -9,6 +9,7 @@
 //NOLINTBEGIN
 static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
+    {"shortcut", false},
     {"value", 1.0F},
 };
 //NOLINTEND
