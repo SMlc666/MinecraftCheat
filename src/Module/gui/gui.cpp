@@ -3,6 +3,7 @@
 #include "config/config.hpp"
 #include "imgui/imgui.h"
 #include "rapidjson/document.h"
+#include "rapidjson/rapidjson.h"
 #include <functional>
 GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GUIMap)
     : GUIMap_orig(m_GUIMap), module(m_module), first(m_module->getName()) {
@@ -55,6 +56,35 @@ bool GUI::SliderFloat(const std::string &second, const std::string &text, float 
     config[second.c_str()].SetFloat(v);
     if (callback) {
       callback(v);
+    }
+  }
+  return active;
+}
+bool GUI::SliderFloat2(const std::string &second, const std::string &text, float min, float max,
+                       const std::function<void(float, float)> &callback) {
+  auto config = Config::getDocument()[first.c_str()].GetObject();
+  if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
+    throw std::runtime_error("GUIMap does not have " + second);
+  }
+  if (!Has(second)) {
+    config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
+                     rapidjson::Value(rapidjson::kArrayType).Move(),
+                     Config::getDocument().GetAllocator());
+  }
+  auto json_arr = config[second.c_str()].GetArray();
+  if (json_arr.Size() < 2) {
+    json_arr.PushBack(rapidjson::Value(any_cast<Vec2>(GUIMap_orig.at(second)).x).Move(),
+                      Config::getDocument().GetAllocator());
+    json_arr.PushBack(rapidjson::Value(any_cast<Vec2>(GUIMap_orig.at(second)).y).Move(),
+                      Config::getDocument().GetAllocator());
+  }
+  std::array<float, 2> float_arr = {json_arr[0].GetFloat(), json_arr[1].GetFloat()};
+  bool active = ImGui::SliderFloat2(text.c_str(), float_arr.data(), min, max);
+  if (active) {
+    json_arr[0].SetFloat(float_arr[0]);
+    json_arr[1].SetFloat(float_arr[1]);
+    if (callback) {
+      callback(float_arr[0], float_arr[1]);
     }
   }
   return active;

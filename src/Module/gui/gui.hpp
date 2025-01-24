@@ -5,8 +5,12 @@
 #include <string>
 #include <unordered_map>
 class Module;
-
 class GUI {
+public:
+  struct Vec2 {
+    float x, y;
+  };
+
 public:
   GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GUIMap);
   bool SliderInt(const std::string &second, const std::string &text, int min, int max,
@@ -15,6 +19,8 @@ public:
                 const std::function<void(bool)> &callback = nullptr);
   bool SliderFloat(const std::string &second, const std::string &text, float min, float max,
                    const std::function<void(float)> &callback = nullptr);
+  bool SliderFloat2(const std::string &second, const std::string &text, float min, float max,
+                    const std::function<void(float, float)> &callback = nullptr);
   template <typename T> inline T Get(const std::string &second) {
     auto config = Config::getDocument()[first.c_str()].GetObject();
     if (!config.HasMember(second.c_str())) {
