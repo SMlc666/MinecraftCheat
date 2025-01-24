@@ -8,6 +8,7 @@
 #include <unordered_map>
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
+    {"shortcut", false},
 };
 cheat::GodMode::GodMode() : Module("GodMode", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});

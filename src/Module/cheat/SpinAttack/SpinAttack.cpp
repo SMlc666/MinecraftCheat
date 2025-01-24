@@ -21,6 +21,8 @@ static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
     {"velocity", false},
     {"range", 4.0F},
+    {"shortcut", false},
+
 };
 static void velPatch() {
   MemTool::writeASM(modbase + velX_pattern, "NOP");

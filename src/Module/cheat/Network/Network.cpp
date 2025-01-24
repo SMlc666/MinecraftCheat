@@ -9,6 +9,7 @@
 #include <unordered_map>
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
+    {"shortcut", false},
 };
 static bool Logger = false;
 static MemTool::Hook LoopbackPacketSender_send_;

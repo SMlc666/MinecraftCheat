@@ -17,7 +17,9 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"AntiAliasedLines", false},
     {"AntiAliasedLinesUseTex", false},
     {"TabBarOverlineSize", 1.0F},
-    {"FrameRounding", 3.0F}};
+    {"FrameRounding", 3.0F},
+    {"shortcut", false},
+};
 cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigData) {
   setOnDisable([](Module *module) {});
   setOnEnable([](Module *module) {});

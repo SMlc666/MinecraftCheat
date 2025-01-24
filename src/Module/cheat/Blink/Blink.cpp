@@ -9,6 +9,7 @@ static bool isBlink;
 MemTool::Hook BlinkSendMsg_;
 static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
+    {"shortcut", false},
 };
 
 static int Blinksendmsg(int fd, const msghdr *msg, int flags) {
