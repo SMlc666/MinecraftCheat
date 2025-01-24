@@ -57,55 +57,6 @@ void drawDebugMenu() {
         localPlayer->getGameMode().attack(*localPlayer);
       }
     }
-    if (ImGui::TreeNode("Level")) {
-      Level *level = nullptr;
-      if (localPlayer != nullptr) {
-        level = localPlayer->getLevel();
-      }
-      if (ImGui::Button("get level")) {
-        if (level != nullptr) {
-          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                             std::format("Level: {:p}", reinterpret_cast<void *>(level)));
-        }
-      }
-      ImGui::SameLine();
-      if (ImGui::Button("forEachPlayer")) {
-        if (level != nullptr) {
-          std::function mCallback = [](Player &player) {
-            g_log_tool.message(
-                LogLevel::DEBUG, "DEBUG",
-                std::format("Player address: {:p}", reinterpret_cast<void *>(&player)));
-            return true;
-          };
-          level->forEachPlayer(&mCallback);
-        }
-      }
-      ImGui::TreePop();
-    }
-    if (ImGui::TreeNode("Dimension")) {
-      Dimension *dimension = nullptr;
-      if (localPlayer != nullptr) {
-        dimension = localPlayer->getDimension();
-      }
-      if (ImGui::Button("get dimension")) {
-        if (dimension != nullptr) {
-          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                             std::format("Dimension: {:p}", reinterpret_cast<void *>(dimension)));
-        }
-      }
-      if (ImGui::Button("forEachPlayer")) {
-        if (dimension != nullptr) {
-          std::function mCallback = [](Player &player) {
-            g_log_tool.message(
-                LogLevel::DEBUG, "DEBUG",
-                std::format("Player address: {:p}", reinterpret_cast<void *>(&player)));
-            return true;
-          };
-          dimension->forEachPlayer(mCallback);
-        }
-      }
-      ImGui::TreePop();
-    }
     if (ImGui::TreeNode("ClientInstance")) {
       if (ImGui::Button("get client instance")) {
         if (instance != nullptr) {
