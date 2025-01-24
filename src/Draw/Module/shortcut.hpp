@@ -5,4 +5,5 @@ extern ImVec4 disableBackgroundColor;
 extern ImVec4 enableTextColor;
 extern ImVec4 disableTextColor;
 extern ImVec2 shortcutSize;
+extern float shortcutRouding;
 void drawAllShortcuts();

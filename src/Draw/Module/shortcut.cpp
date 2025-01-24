@@ -11,6 +11,7 @@ ImVec4 enableBackgroundColor = ImVec4(0.0F / 255.0F, 163.0F / 255.0F, 255.0F / 2
 ImVec4 disableTextColor = ImVec4(0.0F / 255.0F, 0.0F / 255.0F, 0.0F / 255.0F, 1.0F);
 ImVec4 enableTextColor = ImVec4(0.0F / 255.0F, 0.0F / 255.0F, 0.0F / 255.0F, 1.0F);
 ImVec2 shortcutSize = ImVec2(200.0F, 100.0F);
+float shortcutRouding = 5.0F;
 static std::unordered_map<std::string, holdInfo> shortcutHoldInfo = {};
 void drawAllShortcuts() {
   auto mModules = ModuleManager::getModules();
@@ -30,7 +31,7 @@ void drawAllShortcuts() {
         ImGui::PushStyleColor(ImGuiCol_Button, disableBackgroundColor);
         ImGui::PushStyleColor(ImGuiCol_Text, disableTextColor);
       }
-      ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0F);
+      ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, shortcutRouding);
       if (ImGui::Button(m->getName().c_str(), shortcutSize)) {
         shortcutHoldInfo[m->getName()].pressTime = ImGui::GetTime();
         if (mEnabled) {
