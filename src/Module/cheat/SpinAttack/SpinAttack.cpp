@@ -4,13 +4,13 @@
 #include "menu/menu.hpp"
 #include <unordered_map>
 static uintptr_t modbase = MemTool::getModuleBase<uintptr_t>("libminecraftpe.so");
-static const uintptr_t SpinAttack_pattern = 0x734A0C8;
-static const uintptr_t velX_pattern = 0x733EFCC;
-static const uintptr_t velY_pattern = 0x733EFD0;
-static const uintptr_t rag1_pattern = 0x733EE0C;
-static const uintptr_t rag2_pattern = 0x733EE10;
-static const uintptr_t rag3_pattern = 0x733EE14;
-static const uintptr_t rag4_pattern = 0x733EE30;
+static const uintptr_t SpinAttack_pattern = 0x7250A68;
+static const uintptr_t velX_pattern = 0x7246880;
+static const uintptr_t velY_pattern = 0x7246884;
+static const uintptr_t rag1_pattern = 0x72466C0;
+static const uintptr_t rag2_pattern = 0x72466C4;
+static const uintptr_t rag3_pattern = 0x72466C8;
+static const uintptr_t rag4_pattern = 0x72466E0;
 static std::byte SpinAttack_backup[4];
 static std::byte vel_backup[8];
 static std::byte rag1_backup[4];
