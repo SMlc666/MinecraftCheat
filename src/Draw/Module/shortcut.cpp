@@ -43,7 +43,7 @@ void drawAllShortcuts() {
       if (ImGui::IsItemActive()) {
         shortcutHoldInfo[m->getName()].holdDuration =
             ImGui::GetTime() - shortcutHoldInfo[m->getName()].pressTime;
-        if (shortcutHoldInfo[m->getName()].holdDuration > 1.0) {
+        if (shortcutHoldInfo[m->getName()].holdDuration > 3.0) {
           ImGui::SetWindowPos(ImGui::GetMousePos(), ImGuiCond_Always);
           ImGui::SetWindowFocus();
         }
