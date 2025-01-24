@@ -1,5 +1,6 @@
 #include "draw.hpp"
 #include "MemTool.hpp"
+#include "Module/shortcut.hpp"
 #include "ScriptManager.hpp"
 #include "log.hpp"
 #include "menu/menu.hpp"
@@ -97,6 +98,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui::NewFrame();
   ImGui_ImplScript_NewFrame();
   drawAllMenus();
+  drawAllShortcuts();
   ImGui::EndFrame();
   ImGui_ImplScript_NewFrame();
   ImGui::Render();
