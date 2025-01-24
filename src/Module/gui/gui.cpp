@@ -4,6 +4,7 @@
 #include "imgui/imgui.h"
 #include "rapidjson/document.h"
 #include "rapidjson/rapidjson.h"
+#include <format>
 #include <functional>
 GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GUIMap)
     : GUIMap_orig(m_GUIMap), module(m_module), first(m_module->getName()) {
@@ -113,4 +114,18 @@ bool GUI::CheckBox(const std::string &second, const std::string &text,
 bool GUI::Has(const std::string &second) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   return config.HasMember(second.c_str());
+}
+GUI::Vec2 GUI::GetVec2(const std::string &second) {
+  auto config = Config::getDocument()[first.c_str()].GetObject();
+  if (config.HasMember(second.c_str())) {
+    throw std::runtime_error(std::format("does not have {}", second));
+  }
+  if (!config[second.c_str()].IsArray()) {
+    throw std::runtime_error(std::format("{} is not an array", second));
+  }
+  auto json_arr = config[second.c_str()].GetArray();
+  if (json_arr.Size() != 2) {
+    throw std::runtime_error(std::format("{} does not have 2 elements", second));
+  }
+  return {json_arr[0].GetFloat(), json_arr[1].GetFloat()};
 }
