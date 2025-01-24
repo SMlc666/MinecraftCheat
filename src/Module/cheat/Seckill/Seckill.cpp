@@ -23,6 +23,7 @@ static int64 GameMode_attack(GameMode *self, Actor *entity) {
         for (int i = 0; i < value; i++) {
           attack_.call<void>(self, entity);
           if (swing) {
+            player->swing();
           }
         }
       }
