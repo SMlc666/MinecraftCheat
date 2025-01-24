@@ -10,8 +10,7 @@ class BlockSource;
 class Actor {
 public:
   uintptr_t **vtable;
-  std::byte padding8[0x2C0];
-  WeakRef<Dimension> mDimension;
+  std::byte padding8[0x2D0];
   BlockSource &mRegion;
 
 public:
