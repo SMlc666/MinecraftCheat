@@ -1,5 +1,6 @@
 #pragma once
 #include "base/mcint.hpp"
+#include "game/minecraft/actor/player/player.hpp"
 #include <functional>
 class BlockPos;
 class Vec3;
@@ -9,6 +10,10 @@ class InteractionResult;
 class Block;
 class Actor;
 class GameMode {
+public:
+  Player *player;
+  std::byte padding8[168];
+
 public:
   //vtable index: 0
   virtual ~GameMode();
@@ -51,3 +56,4 @@ public:
   //vtable index: 18
   virtual void registerUpsellScreenCallback(std::function<void(bool)> callback);
 };
+static_assert(sizeof(GameMode) == 0xB8);
