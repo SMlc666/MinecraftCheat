@@ -22,9 +22,11 @@ void drawAllShortcuts() {
       if (mEnabled) {
         ImGui::PushStyleColor(ImGuiCol_Button, enableBackgroundColor);
         ImGui::PushStyleColor(ImGuiCol_Text, enableTextColor);
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, enableBackgroundColor);
       } else {
         ImGui::PushStyleColor(ImGuiCol_Button, disableBackgroundColor);
         ImGui::PushStyleColor(ImGuiCol_Text, disableTextColor);
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, disableBackgroundColor);
       }
       ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, shortcutRouding);
       if (ImGui::Button(m->getName().c_str(), shortcutSize)) {
@@ -36,7 +38,7 @@ void drawAllShortcuts() {
           gui.Set("enabled", true);
         }
       }
-      ImGui::PopStyleColor(2);
+      ImGui::PopStyleColor(3);
       ImGui::PopStyleVar();
       ImGui::End();
     }
