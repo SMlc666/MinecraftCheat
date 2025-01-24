@@ -9,8 +9,8 @@ ImVec4 enableTextColor = ImVec4(0.0F / 255.0F, 0.0F / 255.0F, 0.0F / 255.0F, 1.0
 ImVec2 shortcutSize = ImVec2(100.0F, 20.0F);
 void drawAllShortcuts() {
   auto mModules = ModuleManager::getModules();
-  for (auto const &value : mModules) {
-    auto const &m = value.second;
+  for (auto &value : mModules) {
+    auto &m = value.second;
     auto &gui = m->getGUI();
     if (gui.Has("shortcut") && gui.Get<bool>("shortcut")) {
       bool mEnabled = gui.Has("enabled") && gui.Get<bool>("enabled");
@@ -24,7 +24,15 @@ void drawAllShortcuts() {
         ImGui::PushStyleColor(ImGuiCol_Button, disableBackgroundColor);
         ImGui::PushStyleColor(ImGuiCol_Text, disableTextColor);
       }
-      ImGui::Button(m->getName().c_str(), shortcutSize);
+      if (ImGui::Button(m->getName().c_str(), shortcutSize)) {
+        if (mEnabled) {
+          ModuleManager::disableModule(m);
+          gui.Set("enabled", false);
+        } else {
+          ModuleManager::enableModule(m);
+          gui.Set("enabled", true);
+        }
+      }
       ImGui::PopStyleColor(2);
       ImGui::End();
     }
