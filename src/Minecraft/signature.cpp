@@ -7,19 +7,13 @@
 static const std::string module = "libminecraftpe.so";
 //NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 const std::unordered_map<std::string, uintptr_t> IDApattern = {
-    {"Player::Player", 0x6DD37FC},
-    {"Minecraft::Minecraft", 0x7493638},
-    {"Minecraft::update", 0x749472C},
-    {"ClientInstance::ClientInstance", 0x509BE10},
-    {"Dimension::Dimension", 0x8A4E578},
-    {"ClientInstance::onStartJoinGame", 0x50A2A48},
-    {"ClientInstance::onInitMinecraftGame", 0x509F4DC},
-    {"Player::getGameMode", 0x6DF3BF0},
-    {"Player::getName", 0x6DD9C94},
-    {"Actor::getLevel", 0x7333360},
-    {"Actor::getDimensionConst", 0x733BEBC},
-    {"Level::Level", 0x819645C},
-    {"LoopbackPacketSender::send", 0x6390610},
+    {"Minecraft::Minecraft", 0x7396278},
+    {"Minecraft::update", 0x739736C},
+    {"ClientInstance::onStartJoinGame", 0x501A590},
+    {"Player::getGameMode", 0x6D03208},
+    {"Player::getName", 0x6CE97A8},
+    {"Actor::getLevel", 0x723AF78},
+    {"LoopbackPacketSender::send", 0x62BA068},
 };
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
