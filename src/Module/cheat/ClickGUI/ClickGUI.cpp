@@ -99,10 +99,12 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
         shortcutTextScale = module->getGUI().Get<float>("shortcutTextScale");
       }
       if (module->getGUI().Has("shortcutSize")) {
-        shortcutSize = module->getGUI().Get<ImVec2>("shortcutSize");
+        GUI::Vec2 shortcutSize_ = module->getGUI().GetVec2("shortcutSize");
+        shortcutSize = ImVec2(shortcutSize_.x, shortcutSize_.y);
       }
       if (module->getGUI().Has("shortcutPadding")) {
-        shortcutPadding = module->getGUI().Get<ImVec2>("shortcutPadding");
+        GUI::Vec2 shortcutPadding_ = module->getGUI().GetVec2("shortcutPadding");
+        shortcutPadding = ImVec2(shortcutPadding_.x, shortcutPadding_.y);
       }
     }).detach();
   });
