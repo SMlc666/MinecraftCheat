@@ -14,9 +14,7 @@ public:
   BlockSource &mRegion;
 
 public:
-  [[nodiscard]] Level *getLevel() const;
-  [[nodiscard]] Dimension *getDimension() const;
-  [[nodiscard]] bool hasDimension() const;
+
 }; // namespace class Actor
 static_assert(offsetof(Actor, mRegion) == 0x2D8);
 static_assert(sizeof(WeakRef<Dimension>) == 16);
