@@ -19,6 +19,7 @@ void drawAllShortcuts() {
     auto &gui = m->getGUI();
     if (gui.Has("shortcut") && gui.Get<bool>("shortcut")) {
       bool mEnabled = gui.Has("enabled") && gui.Get<bool>("enabled");
+      ImGui::SetNextWindowSize(shortcutSize);
       ImGui::Begin(m->getName().c_str(), nullptr,
                    ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                        ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
