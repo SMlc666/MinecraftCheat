@@ -3,7 +3,10 @@
 #include "Module.hpp"
 #include "base/mcint.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
+#include "game/minecraft/actor/player/localplayer.hpp"
+#include "game/minecraft/client/instance/clientinstance.hpp"
 #include "menu/menu.hpp"
+#include "runtimes/runtimes.hpp"
 #include "signature.hpp"
 #include <unordered_map>
 static MemTool::Hook attack_;
@@ -12,9 +15,17 @@ static int64 GameMode_attack(GameMode *self, Actor *entity) {
   auto ret = attack_.call<int64>(self, entity);
   bool swing = g_md->getGUI().Get<bool>("swing");
   int value = g_md->getGUI().Get<int>("value");
-  for (int i = 0; i < value; i++) {
-    attack_.call<void>(self, entity);
-    if (swing) {
+  auto *instance = runtimes::getClientInstance();
+  if (instance != nullptr) {
+    LocalPlayer *player = instance->getLocalPlayer();
+    if (player != nullptr) {
+      if (self->player != player) {
+        for (int i = 0; i < value; i++) {
+          attack_.call<void>(self, entity);
+          if (swing) {
+          }
+        }
+      }
     }
   }
   return ret;
