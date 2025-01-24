@@ -1,4 +1,5 @@
 #include "ClickGUI.hpp"
+#include "Module/shortcut.hpp"
 #include "draw.hpp"
 #include "imgui/imgui.h"
 #include "menu/menu.hpp"
@@ -19,6 +20,7 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"TabBarOverlineSize", 1.0F},
     {"FrameRounding", 3.0F},
     {"shortcut", false},
+    {"shortcutSize", GUI::Vec2(200.0F, 100.0F)},
 };
 cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigData) {
   setOnDisable([](Module *module) {});
@@ -42,6 +44,10 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
                                  [](float value) { ImGui::GetStyle().TabBarOverlineSize = value; });
     module->getGUI().SliderFloat("FrameRounding", "边框圆角", 0.0F, 48.0F,
                                  [](float value) { ImGui::GetStyle().FrameRounding = value; });
+    if (ImGui::TreeNode("快捷键")) {
+      module->getGUI().SliderFloat2("shortcutSize", "快捷键大小", 0.0F, 300.0F,
+                                    [](float x, float y) { shortcutSize = ImVec2(x, y); });
+    }
   });
   setOnLoad([](Module *module) {
     std::thread([module]() {
