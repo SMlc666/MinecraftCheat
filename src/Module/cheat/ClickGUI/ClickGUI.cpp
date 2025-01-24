@@ -54,7 +54,7 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
                                    [](float value) { shortcutTextScale = value; });
       module->getGUI().SliderFloat2("shortcutSize", "快捷键大小", 0.0F, 300.0F,
                                     [](float x, float y) { shortcutSize = ImVec2(x, y); });
-      module->getGUI().SliderFloat2("shortcutPadding", "快捷键内边距", 0.0F, 10.0F,
+      module->getGUI().SliderFloat2("shortcutPadding", "快捷键内边距", -10.0F, 10.0F,
                                     [](float x, float y) { shortcutPadding = ImVec2(x, y); });
       ImGui::TreePop();
     }
