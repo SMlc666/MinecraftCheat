@@ -20,6 +20,5 @@ public:
   virtual BiomeRegistry &getBiomeRegistry() = 0;
   virtual const BiomeRegistry &getBiomeRegistry() const = 0;
   virtual Vec3 translatePosAcrossDimension(const Vec3 &, DimensionType) const = 0;
-  virtual void forEachPlayer(std::function<bool(class Player &)> callback) const = 0;
   virtual Actor *fetchEntity(ActorUniqueID actorID, bool getRemoved) const = 0;
 };
