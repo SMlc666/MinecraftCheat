@@ -115,7 +115,7 @@ bool GUI::Has(const std::string &second) {
 }
 GUI::Vec2 GUI::GetVec2(const std::string &second) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-  if (config.HasMember(second.c_str())) {
+  if (!config.HasMember(second.c_str())) {
     throw std::runtime_error(std::format("does not have {}", second));
   }
   if (!config[second.c_str()].IsArray()) {
