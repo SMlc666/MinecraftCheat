@@ -79,5 +79,5 @@ public:
   virtual void serialize(class CompoundTag &tag) const;
 
 public:
-  void forEachPlayer(std::function<bool(Player &)> &callback);
+  void forEachPlayer(std::function<bool(Player &)> callback);
 };
