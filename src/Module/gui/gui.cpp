@@ -6,11 +6,17 @@
 #include "rapidjson/rapidjson.h"
 #include <format>
 #include <functional>
+namespace {
+void validateKeyExists(const std::unordered_map<std::string, std::any> &GUIMap,
+                       const std::string &key) {
+  if (GUIMap.find(key) == GUIMap.end()) {
+    throw std::runtime_error(std::format("GUIMap does not have {}", key));
+  }
+}
+} // namespace
 GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GUIMap)
     : GUIMap_orig(m_GUIMap), module(m_module), first(m_module->getName()) {
-  if (GUIMap_orig.find("enabled") == GUIMap_orig.end()) {
-    throw std::runtime_error("GUIMap does not have enabled");
-  }
+  validateKeyExists(m_GUIMap, "name");
   if ((!Config::getDocument().HasMember(first.c_str())) ||
       (!Config::getDocument()[first.c_str()].IsObject())) {
     rapidjson::Document doc;
@@ -22,9 +28,7 @@ GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GU
 bool GUI::SliderInt(const std::string &second, const std::string &text, int min, int max,
                     const std::function<void(int)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-  if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
-    throw std::runtime_error("GUIMap does not have " + second);
-  }
+  validateKeyExists(GUIMap_orig, second);
   if (!config.HasMember(second.c_str())) {
     config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
                      rapidjson::Value(any_cast<int>(GUIMap_orig.at(second))).Move(),
@@ -43,9 +47,7 @@ bool GUI::SliderInt(const std::string &second, const std::string &text, int min,
 bool GUI::SliderFloat(const std::string &second, const std::string &text, float min, float max,
                       const std::function<void(float)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-  if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
-    throw std::runtime_error("GUIMap does not have " + second);
-  }
+  validateKeyExists(GUIMap_orig, second);
   if (!config.HasMember(second.c_str())) {
     config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
                      rapidjson::Value(any_cast<float>(GUIMap_orig.at(second))).Move(),
@@ -64,9 +66,7 @@ bool GUI::SliderFloat(const std::string &second, const std::string &text, float 
 bool GUI::SliderFloat2(const std::string &second, const std::string &text, float min, float max,
                        const std::function<void(float, float)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-  if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
-    throw std::runtime_error("GUIMap does not have " + second);
-  }
+  validateKeyExists(GUIMap_orig, second);
   if (!Has(second)) {
     config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
                      rapidjson::Value(rapidjson::kArrayType).Move(),
@@ -93,9 +93,7 @@ bool GUI::SliderFloat2(const std::string &second, const std::string &text, float
 bool GUI::CheckBox(const std::string &second, const std::string &text,
                    const std::function<void(bool)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-  if (GUIMap_orig.find(second) == GUIMap_orig.end()) {
-    throw std::runtime_error("GUIMap does not have " + second);
-  }
+  validateKeyExists(GUIMap_orig, second);
   if (!config.HasMember(second.c_str())) {
     config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
                      rapidjson::Value(any_cast<bool>(GUIMap_orig.at(second))).Move(),
