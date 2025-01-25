@@ -5,6 +5,7 @@
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
+#include "log.hpp"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include "signature.hpp"
@@ -19,17 +20,16 @@ static int64 GameMode_attack(GameMode *self, Actor *entity) {
   if (instance != nullptr) {
     LocalPlayer *player = instance->getLocalPlayer();
     if (player != nullptr) {
-      if (self->player != player) {
-        for (int i = 0; i < value; i++) {
-          attack_.call<void>(self, entity);
-          if (swing) {
-            player->swing();
-          }
+      if (self->player == player) {
+        attack_.call<void>(self, entity);
+        if (swing) {
+          player->swing();
         }
       }
     }
   }
-  return ret;
+}
+return ret;
 }
 const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"swing", false}, {"value", 1}, {"shortcut", false}};
