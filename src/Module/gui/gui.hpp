@@ -1,5 +1,6 @@
 #pragma once
 #include "config/config.hpp"
+#include "imgui/imgui.h"
 #include <any>
 #include <functional>
 #include <string>
@@ -41,5 +42,27 @@ private:
   std::string first;
 
 private:
-  void validateKeyExists(const std::string &second);
+  void validateKeyExists(const std::string &key);
+  template <typename SliderFunc, typename SliderType>
+  bool handleSlider(const std::string &second, const std::string &text, SliderType min,
+                    SliderType max, SliderFunc sliderFunc,
+                    const std::function<void(SliderType)> &callback = nullptr) {
+    auto &document = Config::getDocument();
+    auto config = document[first.c_str()].GetObject();
+    validateKeyExists(second);
+    if (!Has(second)) {
+      config.AddMember(rapidjson::Value(second.c_str(), document.GetAllocator()).Move(),
+                       rapidjson::Value(std::any_cast<SliderType>(GUIMap_orig.at(second))).Move(),
+                       document.GetAllocator());
+    }
+    auto &configValue = config[second.c_str()];
+    auto value = sliderFunc(configValue);
+    bool active = ImGui::IsItemActive();
+    if (active) {
+      if (callback) {
+        callback(value);
+      }
+    }
+    return active;
+  }
 };
