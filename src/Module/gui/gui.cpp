@@ -44,7 +44,7 @@ bool GUI::SliderInt(const std::string &second, const std::string &text, int min,
 bool GUI::SliderFloat(const std::string &second, const std::string &text, float min, float max,
                       const std::function<void(float)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-  validateKeyExists(GUIMap_orig, second);
+  validateKeyExists(second);
   if (!config.HasMember(second.c_str())) {
     config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
                      rapidjson::Value(any_cast<float>(GUIMap_orig.at(second))).Move(),
@@ -63,7 +63,7 @@ bool GUI::SliderFloat(const std::string &second, const std::string &text, float 
 bool GUI::SliderFloat2(const std::string &second, const std::string &text, float min, float max,
                        const std::function<void(float, float)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-  validateKeyExists(GUIMap_orig, second);
+  validateKeyExists(second);
   if (!Has(second)) {
     config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
                      rapidjson::Value(rapidjson::kArrayType).Move(),
