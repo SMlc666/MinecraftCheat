@@ -6,17 +6,15 @@
 #include "rapidjson/rapidjson.h"
 #include <format>
 #include <functional>
-namespace {
-void validateKeyExists(const std::unordered_map<std::string, std::any> &GUIMap,
-                       const std::string &key) {
-  if (GUIMap.find(key) == GUIMap.end()) {
+void GUI::validateKeyExists(const std::string &key) {
+  if (GUIMap_orig.find(key) == GUIMap_orig.end()) {
     throw std::runtime_error(std::format("GUIMap does not have {}", key));
   }
-}
+
 } // namespace
 GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GUIMap)
     : GUIMap_orig(m_GUIMap), module(m_module), first(m_module->getName()) {
-  validateKeyExists(m_GUIMap, "name");
+  validateKeyExists("enabled");
   if ((!Config::getDocument().HasMember(first.c_str())) ||
       (!Config::getDocument()[first.c_str()].IsObject())) {
     rapidjson::Document doc;
@@ -28,7 +26,7 @@ GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GU
 bool GUI::SliderInt(const std::string &second, const std::string &text, int min, int max,
                     const std::function<void(int)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-  validateKeyExists(GUIMap_orig, second);
+  validateKeyExists(second);
   if (!config.HasMember(second.c_str())) {
     config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
                      rapidjson::Value(any_cast<int>(GUIMap_orig.at(second))).Move(),

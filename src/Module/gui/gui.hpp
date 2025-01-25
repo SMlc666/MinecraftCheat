@@ -39,4 +39,7 @@ private:
   std::unordered_map<std::string, std::any> GUIMap_orig;
   Module *module;
   std::string first;
+
+private:
+  void validateKeyExists(const std::string &second);
 };
