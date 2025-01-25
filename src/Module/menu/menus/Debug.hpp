@@ -4,8 +4,8 @@
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/minecraft.hpp"
-#include "game/minecraft/world/level/Level.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
+#include "game/minecraft/world/level/block/BlockSource.hpp"
 #include "imgui/imgui.h"
 #include "runtimes/runtimes.hpp"
 #include "log.hpp"
@@ -56,6 +56,31 @@ void drawDebugMenu() {
       if (localPlayer != nullptr) {
         localPlayer->getGameMode().attack(*localPlayer);
       }
+    }
+    if (ImGui::TreeNode("BlockSource")) {
+      BlockSource *mRegion{};
+      Dimension *dimension{};
+      if (localPlayer != nullptr) {
+        mRegion = &localPlayer->mRegion;
+        dimension = mRegion->mDimension;
+      }
+      if (ImGui::Button("getDimension")) {
+        if (mRegion != nullptr) {
+          g_log_tool.message(
+              LogLevel::DEBUG, "DEBUG",
+              std::format("BlockSource Dimension: {:p}", reinterpret_cast<void *>(dimension)));
+        }
+      }
+      if (ImGui::Button("forEachPlayer")) {
+        if (dimension != nullptr) {
+          dimension->forEachPlayer([](Player &player) {
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG", "forEachPlayer");
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG", player.getName());
+            return false;
+          });
+        }
+      }
+      ImGui::TreePop();
     }
     if (ImGui::TreeNode("ClientInstance")) {
       if (ImGui::Button("get client instance")) {
