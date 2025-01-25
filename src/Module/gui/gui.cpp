@@ -10,8 +10,7 @@ void GUI::validateKeyExists(const std::string &key) {
   if (GUIMap_orig.find(key) == GUIMap_orig.end()) {
     throw std::runtime_error(std::format("GUIMap does not have {}", key));
   }
-
-} // namespace
+}
 GUI::GUI(Module *m_module, const std::unordered_map<std::string, std::any> &m_GUIMap)
     : GUIMap_orig(m_GUIMap), module(m_module), first(m_module->getName()) {
   validateKeyExists("enabled");
@@ -91,7 +90,7 @@ bool GUI::SliderFloat2(const std::string &second, const std::string &text, float
 bool GUI::CheckBox(const std::string &second, const std::string &text,
                    const std::function<void(bool)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
-  validateKeyExists(GUIMap_orig, second);
+  validateKeyExists(second);
   if (!config.HasMember(second.c_str())) {
     config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
                      rapidjson::Value(any_cast<bool>(GUIMap_orig.at(second))).Move(),
