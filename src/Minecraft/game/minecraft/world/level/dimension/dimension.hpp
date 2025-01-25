@@ -77,4 +77,7 @@ public:
   virtual void onLevelDestruction(std::string const &);
   virtual void deserialize(class CompoundTag const &);
   virtual void serialize(class CompoundTag &tag) const;
+
+public:
+  void forEachPlayer(std::function<bool(Player &)> &callback);
 };
