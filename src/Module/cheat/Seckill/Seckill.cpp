@@ -9,6 +9,7 @@
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include "signature.hpp"
+#include <format>
 #include <unordered_map>
 static MemTool::Hook attack_;
 static Module *g_md;
@@ -17,22 +18,25 @@ static int64 GameMode_attack(GameMode *self, Actor *entity) {
   bool swing = g_md->getGUI().Get<bool>("swing");
   int value = g_md->getGUI().Get<int>("value");
   auto *instance = runtimes::getClientInstance();
-  g_log_tool.message(LogLevel::INFO, "Seckill", "self: {:p}", reinterpret_cast<void *>(self));
-  g_log_tool.message(LogLevel::INFO, "Seckill", "entity: {:p}", reinterpret_cast<void *>(entity));
-  g_log_tool.message(LogLevel::INFO, "Seckill", "player: {:p}",
-                     reinterpret_cast<void *>(self->player));
+  g_log_tool.message(LogLevel::INFO, "Seckill", std::format("ret: {}", ret));
+  g_log_tool.message(LogLevel::INFO, "Seckill",
+                     std::format("entity: {:p}", reinterpret_cast<void *>(entity)));
+  g_log_tool.message(LogLevel::INFO, "Seckill",
+                     std::format("player: {:p}", reinterpret_cast<void *>(self->player)));
   if (instance != nullptr) {
-    LocalPlayer *player = instance->getLocalPlayer();
-    if (player != nullptr) {
-      if (self->player == player) {
-        attack_.call<void>(self, entity);
-        if (swing) {
-          player->swing();
+    if (instance != nullptr) {
+      LocalPlayer *player = instance->getLocalPlayer();
+      if (player != nullptr) {
+        if (self->player == player) {
+          attack_.call<void>(self, entity);
+          if (swing) {
+            player->swing();
+          }
         }
       }
     }
+    return ret;
   }
-  return ret;
 }
 const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"swing", false}, {"value", 1}, {"shortcut", false}};
