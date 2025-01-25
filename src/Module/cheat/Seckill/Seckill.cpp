@@ -19,7 +19,7 @@ static int64 GameMode_attack(GameMode *self, Actor *entity) {
   if (instance != nullptr) {
     LocalPlayer *player = instance->getLocalPlayer();
     if (player != nullptr) {
-      if (self->player != player) {
+      if (self->player == player) {
         for (int i = 0; i < value; i++) {
           attack_.call<void>(self, entity);
           if (swing) {
