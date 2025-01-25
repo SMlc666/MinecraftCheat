@@ -64,6 +64,13 @@ void drawDebugMenu() {
         mRegion = &localPlayer->mRegion;
         dimension = mRegion->mDimension;
       }
+      if (ImGui::Button("getRegion")) {
+        if (mRegion != nullptr) {
+          g_log_tool.message(
+              LogLevel::DEBUG, "DEBUG",
+              std::format("BlockSource Region: {:p}", reinterpret_cast<void *>(mRegion)));
+        }
+      }
       if (ImGui::Button("getDimension")) {
         if (mRegion != nullptr) {
           g_log_tool.message(
