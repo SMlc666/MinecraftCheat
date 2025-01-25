@@ -28,8 +28,7 @@ static int64 GameMode_attack(GameMode *self, Actor *entity) {
       }
     }
   }
-}
-return ret;
+  return ret;
 }
 const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"swing", false}, {"value", 1}, {"shortcut", false}};
