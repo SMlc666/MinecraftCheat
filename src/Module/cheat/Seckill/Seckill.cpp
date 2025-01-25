@@ -17,6 +17,10 @@ static int64 GameMode_attack(GameMode *self, Actor *entity) {
   bool swing = g_md->getGUI().Get<bool>("swing");
   int value = g_md->getGUI().Get<int>("value");
   auto *instance = runtimes::getClientInstance();
+  g_log_tool.message(LogLevel::INFO, "Seckill", "self: {:p}", reinterpret_cast<void *>(self));
+  g_log_tool.message(LogLevel::INFO, "Seckill", "entity: {:p}", reinterpret_cast<void *>(entity));
+  g_log_tool.message(LogLevel::INFO, "Seckill", "player: {:p}",
+                     reinterpret_cast<void *>(self->player));
   if (instance != nullptr) {
     LocalPlayer *player = instance->getLocalPlayer();
     if (player != nullptr) {
