@@ -10,7 +10,6 @@
 #include <string>
 #include <format>
 //NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
-extern std::unordered_map<void *, bool> g_hooked_funcs;
 namespace MemTool {
 // 定义ASM指令集架构
 enum ASM_ARCH {
@@ -76,10 +75,7 @@ void *findSymbol(const char *moduleName, const char *symbolName);
 std::string getProcessName();
 // 销毁指定地址的 Hook
 template <typename T> inline void destoryHookByAddress(T address) {
-  if (g_hooked_funcs.find(reinterpret_cast<void *>(address)) != g_hooked_funcs.end()) {
-    DobbyDestroy(reinterpret_cast<void *>(address));
-    g_hooked_funcs.erase(reinterpret_cast<void *>(address));
-  }
+  DobbyDestroy(reinterpret_cast<void *>(address));
 }
 // Hook 类用于实现函数钩子
 class Hook {
@@ -95,10 +91,6 @@ public:
     g_log_tool.message(LogLevel::INFO, "Hook",
                        std::format("Hooking function at {:p} to {:p} with auto_destroy {}", addr,
                                    func, m_auto_destroy));
-
-    if (g_hooked_funcs.find(addr) != g_hooked_funcs.end()) {
-      throw std::runtime_error("Address already hooked");
-    }
 
     void *buf_ptr = nullptr;
     if (DobbyHook(addr, func, &buf_ptr) != 0) {

@@ -3,8 +3,6 @@
 #include "KittyMemory/KittyMemory.hpp"
 #include "log.hpp"
 #include <string>
-#include <unordered_map>
-std::unordered_map<void *, bool> g_hooked_funcs;
 //NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
 
 /**
