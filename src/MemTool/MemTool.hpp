@@ -102,7 +102,6 @@ public:
     }
 
     orig_func = buf_ptr;
-    g_hooked_funcs[addr] = true;
   }
 
   template <typename RetT, typename... Args>
