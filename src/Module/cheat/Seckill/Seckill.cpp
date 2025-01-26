@@ -13,17 +13,20 @@ static MemTool::Hook attack_;
 static Module *g_md;
 static int64 GameMode_attack(GameMode *self, Actor *entity) {
   auto ret = attack_.call<int64>(self, entity);
-  bool swing = g_md->getGUI().Get<bool>("swing");
-  int value = g_md->getGUI().Get<int>("value");
-  auto *instance = runtimes::getClientInstance();
-  if (instance != nullptr) {
-    LocalPlayer *player = instance->getLocalPlayer();
-    if (player != nullptr) {
-      if (self->player == player) {
-        for (int i = 0; i < value; i++) {
-          attack_.call<void>(self, entity);
-          if (swing) {
-            player->swing();
+  bool enabled = g_md->getGUI().Get<bool>("enabled");
+  if (enabled) {
+    bool swing = g_md->getGUI().Get<bool>("swing");
+    int value = g_md->getGUI().Get<int>("value");
+    auto *instance = runtimes::getClientInstance();
+    if (instance != nullptr) {
+      LocalPlayer *player = instance->getLocalPlayer();
+      if (player != nullptr) {
+        if (self->player == player) {
+          for (int i = 0; i < value; i++) {
+            attack_.call<void>(self, entity);
+            if (swing) {
+              player->swing();
+            }
           }
         }
       }
