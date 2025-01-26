@@ -58,21 +58,12 @@ void drawDebugMenu() {
       }
     }
     if (ImGui::TreeNode("BlockSource")) {
-      BlockSource *mRegion{};
       Dimension *dimension{};
       if (localPlayer != nullptr) {
-        mRegion = &localPlayer->mRegion;
-        dimension = mRegion->mDimension;
-      }
-      if (ImGui::Button("getRegion")) {
-        if (mRegion != nullptr) {
-          g_log_tool.message(
-              LogLevel::DEBUG, "DEBUG",
-              std::format("BlockSource Region: {:p}", reinterpret_cast<void *>(mRegion)));
-        }
+        dimension = localPlayer->mDimension.get();
       }
       if (ImGui::Button("getDimension")) {
-        if (mRegion != nullptr) {
+        if (dimension != nullptr) {
           g_log_tool.message(
               LogLevel::DEBUG, "DEBUG",
               std::format("BlockSource Dimension: {:p}", reinterpret_cast<void *>(dimension)));
