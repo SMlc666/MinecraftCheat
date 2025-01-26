@@ -52,6 +52,14 @@ void drawDebugMenu() {
       }
     }
     ImGui::SameLine();
+    if (ImGui::Button("get Position")) {
+      if (localPlayer != nullptr) {
+        auto pos = localPlayer->getPosition();
+        g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                           std::format("LocalPlayer Position: {} , {} , {}", pos.x, pos.y, pos.z));
+      }
+    }
+    ImGui::SameLine();
     if (ImGui::Button("Attack self")) {
       if (localPlayer != nullptr) {
         localPlayer->getGameMode().attack(*localPlayer);
