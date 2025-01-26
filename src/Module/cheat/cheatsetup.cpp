@@ -4,6 +4,7 @@
 #include "Blink/Blink.hpp"
 #include "cheat/ClickGUI/ClickGUI.hpp"
 #include "cheat/GodMode/GodMode.hpp"
+#include "cheat/KillAura/KillAura.hpp"
 #include "cheat/Network/Network.hpp"
 #include "cheat/Seckill/Seckill.hpp"
 #include "cheat/Timer/Timer.hpp"
@@ -15,4 +16,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::GodMode);
   ModuleManager::addModule(new cheat::ClickGUI);
   ModuleManager::addModule(new cheat::Seckill);
+  ModuleManager::addModule(new cheat::KillAura);
 }
