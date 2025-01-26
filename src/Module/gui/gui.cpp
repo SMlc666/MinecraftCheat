@@ -106,6 +106,42 @@ bool GUI::CheckBox(const std::string &second, const std::string &text,
   }
   return active;
 }
+bool GUI::ColorPicker(const std::string &second, const std::string &text,
+                      const std::function<void(GUI::Color)> &callback) {
+  auto config = Config::getDocument()[first.c_str()].GetObject();
+  validateKeyExists(second);
+  if (!config.HasMember(second.c_str())) {
+    config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
+                     rapidjson::Value(rapidjson::kArrayType).Move(),
+                     Config::getDocument().GetAllocator());
+  }
+  auto json_arr = config[second.c_str()].GetArray();
+  if (json_arr.Size() < 4) {
+    json_arr.PushBack(rapidjson::Value(any_cast<Color>(GUIMap_orig.at(second)).r).Move(),
+                      Config::getDocument().GetAllocator());
+    json_arr.PushBack(rapidjson::Value(any_cast<Color>(GUIMap_orig.at(second)).g).Move(),
+                      Config::getDocument().GetAllocator());
+    json_arr.PushBack(rapidjson::Value(any_cast<Color>(GUIMap_orig.at(second)).b).Move(),
+                      Config::getDocument().GetAllocator());
+    json_arr.PushBack(rapidjson::Value(any_cast<Color>(GUIMap_orig.at(second)).a).Move(),
+                      Config::getDocument().GetAllocator());
+  }
+  std::array<float, 4> float_arr = {json_arr[0].GetFloat(), json_arr[1].GetFloat(),
+                                    json_arr[2].GetFloat(), json_arr[3].GetFloat()};
+  bool active1 = ImGui::ColorEdit4(text.c_str(), float_arr.data());
+  ImGui::SameLine();
+  bool active2 = ImGui::ColorPicker4(text.c_str(), float_arr.data());
+  if (active1 || active2) {
+    json_arr[0].SetFloat(float_arr[0]);
+    json_arr[1].SetFloat(float_arr[1]);
+    json_arr[2].SetFloat(float_arr[2]);
+    json_arr[3].SetFloat(float_arr[3]);
+    if (callback) {
+      callback({float_arr[0], float_arr[1], float_arr[2], float_arr[3]});
+    }
+  }
+  return active1 || active2;
+}
 bool GUI::Has(const std::string &second) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   return config.HasMember(second.c_str());
