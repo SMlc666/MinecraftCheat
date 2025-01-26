@@ -1,6 +1,7 @@
 #include "ClickGUI.hpp"
 #include "Module/shortcut.hpp"
 #include "draw.hpp"
+#include "gui/gui.hpp"
 #include "imgui/imgui.h"
 #include "menu/menu.hpp"
 #include <thread>
@@ -24,6 +25,10 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"shortcutRounding", 5.0F},
     {"shortcutTextScale", 1.0F},
     {"shortcutPadding", GUI::Vec2(0.0F, 0.0F)},
+    {"disableBackgroundColor", GUI::Color(0.0F / 255.0F, 255.0F / 255.0F, 207.0F / 255.0F, 1.0F)},
+    {"enableBackgroundColor", GUI::Color(0.0F / 255.0F, 163.0F / 255.0F, 255.0F / 255.0F, 1.0F)},
+    {"disableTextColor", GUI::Color(0.0F / 255.0F, 0.0F / 255.0F, 0.0F / 255.0F, 1.0F)},
+    {"enableTextColor", GUI::Color(0.0F / 255.0F, 0.0F / 255.0F, 0.0F / 255.0F, 1.0F)},
 };
 cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigData) {
   setOnDisable([](Module *module) {});
