@@ -58,6 +58,12 @@ cheat::SpinAttack::SpinAttack() : Module("SpinAttack", MenuType::COMBAT_MENU, Co
     MemTool::read(modbase + rag2_pattern, &rag2_backup, sizeof(rag2_backup));
     MemTool::read(modbase + rag3_pattern, &rag3_backup, sizeof(rag3_backup));
     MemTool::read(modbase + rag4_pattern, &rag4_backup, sizeof(rag4_backup));
+    if (module->getGUI().Get<bool>("enabled")) {
+      ragPatch(module->getGUI().Get<float>("range"));
+      if (module->getGUI().Get<bool>("velocity")) {
+        velPatch();
+      }
+    }
   });
   setOnEnable([](Module *module) {
     SpinAttackPatch();
