@@ -24,8 +24,8 @@ public:
                    const std::function<void(float)> &callback = nullptr);
   bool SliderFloat2(const std::string &second, const std::string &text, float min, float max,
                     const std::function<void(float, float)> &callback = nullptr);
-  bool ColorPicker(const std::string &second, const std::string &text,
-                   const std::function<void(Color)> &callback = nullptr);
+  bool ColorEdit(const std::string &second, const std::string &text,
+                 const std::function<void(Color)> &callback = nullptr);
   template <typename T> inline T Get(const std::string &second) {
     auto config = Config::getDocument()[first.c_str()].GetObject();
     if (!config.HasMember(second.c_str())) {

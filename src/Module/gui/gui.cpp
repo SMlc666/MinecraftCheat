@@ -106,8 +106,8 @@ bool GUI::CheckBox(const std::string &second, const std::string &text,
   }
   return active;
 }
-bool GUI::ColorPicker(const std::string &second, const std::string &text,
-                      const std::function<void(GUI::Color)> &callback) {
+bool GUI::ColorEdit(const std::string &second, const std::string &text,
+                    const std::function<void(GUI::Color)> &callback) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   validateKeyExists(second);
   if (!config.HasMember(second.c_str())) {

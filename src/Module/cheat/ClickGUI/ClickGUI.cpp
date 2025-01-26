@@ -61,16 +61,16 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
                                     [](float x, float y) { shortcutSize = ImVec2(x, y); });
       module->getGUI().SliderFloat2("shortcutPadding", "快捷键内边距", -10.0F, 10.0F,
                                     [](float x, float y) { shortcutPadding = ImVec2(x, y); });
-      module->getGUI().ColorPicker("disableBackgroundColor", "禁用背景颜色", [](GUI::Color color) {
+      module->getGUI().ColorEdit("disableBackgroundColor", "禁用背景颜色", [](GUI::Color color) {
         disableBackgroundColor = ImVec4(color.r, color.g, color.b, color.a);
       });
-      module->getGUI().ColorPicker("enableBackgroundColor", "启用背景颜色", [](GUI::Color color) {
+      module->getGUI().ColorEdit("enableBackgroundColor", "启用背景颜色", [](GUI::Color color) {
         enableBackgroundColor = ImVec4(color.r, color.g, color.b, color.a);
       });
-      module->getGUI().ColorPicker("disableTextColor", "禁用文字颜色", [](GUI::Color color) {
+      module->getGUI().ColorEdit("disableTextColor", "禁用文字颜色", [](GUI::Color color) {
         disableTextColor = ImVec4(color.r, color.g, color.b, color.a);
       });
-      module->getGUI().ColorPicker("enableTextColor", "启用文字颜色", [](GUI::Color color) {
+      module->getGUI().ColorEdit("enableTextColor", "启用文字颜色", [](GUI::Color color) {
         enableTextColor = ImVec4(color.r, color.g, color.b, color.a);
       });
       ImGui::TreePop();
