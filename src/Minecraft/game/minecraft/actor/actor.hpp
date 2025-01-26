@@ -11,10 +11,9 @@ class Actor {
 public:
   uintptr_t **vtable;
   std::byte padding8[0x2D0];
-  BlockSource &mRegion;
+  WeakRef<Dimension> mDimension;
 
 public:
-
 }; // namespace class Actor
-static_assert(offsetof(Actor, mRegion) == 0x2D8);
+static_assert(offsetof(Actor, mDimension) == 0x2D8);
 static_assert(sizeof(WeakRef<Dimension>) == 16);
