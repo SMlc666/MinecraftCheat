@@ -7,12 +7,14 @@
 #include "game/minecraft/world/level/dimension/dimension.hpp"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
+#include <chrono>
 #include <string>
 #include <unordered_map>
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"cps", 10},
     {"range", 5.0f},    {"swing", false},    {"attackNum", 1}};
 static std::vector<Player *> PlayerList = {};
+static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
@@ -30,7 +32,12 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     int cps = module->getGUI().Get<int>("cps");
     int attackNum = module->getGUI().Get<int>("attackNum");
     int attackCount = 0;
+    auto now = std::chrono::steady_clock::now();
+    auto interval = std::chrono::milliseconds(1000 / std::max(cps, 1));
     if (!enabled) {
+      return;
+    }
+    if (now - LastAttackTime < interval) {
       return;
     }
     ClientInstance *mInstance = runtimes::getClientInstance();
@@ -70,5 +77,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
         }
       }
     }
+    LastAttackTime = std::chrono::steady_clock::now();
   });
 }
