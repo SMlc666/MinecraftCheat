@@ -25,6 +25,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     bool enabled = module->getGUI().Get<bool>("enabled");
     auto Range = module->getGUI().Get<float>("range");
     bool swing = module->getGUI().Get<bool>("swing");
+    int cps = module->getGUI().Get<int>("cps");
     if (!enabled) {
       return;
     }
