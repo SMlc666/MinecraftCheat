@@ -16,6 +16,12 @@ static std::vector<Player *> PlayerList = {};
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
+  setOnDrawGUI([](Module *module) {
+    auto &gui = module->getGUI();
+    gui.SliderFloat("range", "范围", 0.0F, 10.0F);
+    gui.SliderInt("cps", "攻击速度", 1, 20);
+    gui.CheckBox("swing", "挥手");
+  });
   setOnTick([](Module *module) {
     bool enabled = module->getGUI().Get<bool>("enabled");
     auto Range = module->getGUI().Get<float>("range");
