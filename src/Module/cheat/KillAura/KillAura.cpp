@@ -5,7 +5,6 @@
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
-
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include <string>
