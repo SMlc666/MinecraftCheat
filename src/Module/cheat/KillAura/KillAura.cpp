@@ -66,7 +66,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     PlayerList.clear();
     mDimension->forEachPlayer([](Player &player) {
       PlayerList.push_back(&player);
-      return false;
+      return true;
     });
     if (PlayerList.empty()) {
       return;
