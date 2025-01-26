@@ -123,6 +123,26 @@ cheat::ClickGUI::ClickGUI() : Module("ClickGUI", MenuType::RENDER_MENU, ConfigDa
         GUI::Vec2 shortcutPadding_ = module->getGUI().GetVec2("shortcutPadding");
         shortcutPadding = ImVec2(shortcutPadding_.x, shortcutPadding_.y);
       }
+      if (module->getGUI().Has("disableBackgroundColor")) {
+        GUI::Color disableBackgroundColor_ = module->getGUI().GetColor("disableBackgroundColor");
+        disableBackgroundColor = ImVec4(disableBackgroundColor_.r, disableBackgroundColor_.g,
+                                        disableBackgroundColor_.b, disableBackgroundColor_.a);
+      }
+      if (module->getGUI().Has("enableBackgroundColor")) {
+        GUI::Color enableBackgroundColor_ = module->getGUI().GetColor("enableBackgroundColor");
+        enableBackgroundColor = ImVec4(enableBackgroundColor_.r, enableBackgroundColor_.g,
+                                       enableBackgroundColor_.b, enableBackgroundColor_.a);
+      }
+      if (module->getGUI().Has("disableTextColor")) {
+        GUI::Color disableTextColor_ = module->getGUI().GetColor("disableTextColor");
+        disableTextColor = ImVec4(disableTextColor_.r, disableTextColor_.g, disableTextColor_.b,
+                                  disableTextColor_.a);
+      }
+      if (module->getGUI().Has("enableTextColor")) {
+        GUI::Color enableTextColor_ = module->getGUI().GetColor("enableTextColor");
+        enableTextColor =
+            ImVec4(enableTextColor_.r, enableTextColor_.g, enableTextColor_.b, enableTextColor_.a);
+      }
     }).detach();
   });
 }
