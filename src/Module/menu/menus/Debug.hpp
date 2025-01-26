@@ -76,7 +76,7 @@ void drawDebugMenu() {
                                          reinterpret_cast<void *>(&localPlayer->mDimension)));
         }
       }
-
+      ImGui::SameLine();
       if (ImGui::Button("forEachPlayer")) {
         if (dimension != nullptr) {
           dimension->forEachPlayer([](Player &player) {
