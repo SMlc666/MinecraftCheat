@@ -10,10 +10,11 @@ class BlockSource;
 class Actor {
 public:
   uintptr_t **vtable;
-  std::byte padding8[0x2D0];
-  WeakRef<Dimension> mDimension;
+  std::byte padding8[0x2C8];
+  Dimension *mDimension;
+  WeakRef<Dimension> WeakRef_mDimension;
 
 public:
 }; // namespace class Actor
-static_assert(offsetof(Actor, mDimension) == 0x2D8);
+static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
 static_assert(sizeof(WeakRef<Dimension>) == 16);
