@@ -26,11 +26,20 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     gui.CheckBox("swing", "挥手");
   });
   setOnTick([](Module *module) {
-    bool enabled = module->getGUI().Get<bool>("enabled");
-    auto Range = module->getGUI().Get<float>("range");
-    bool swing = module->getGUI().Get<bool>("swing");
-    int cps = module->getGUI().Get<int>("cps");
-    int attackNum = module->getGUI().Get<int>("attackNum");
+    bool enabled;
+    float Range;
+    bool swing;
+    int cps;
+    int attackNum;
+    try {
+      enabled = module->getGUI().Get<bool>("enabled");
+      Range = module->getGUI().Get<float>("range");
+      swing = module->getGUI().Get<bool>("swing");
+      cps = module->getGUI().Get<int>("cps");
+      attackNum = module->getGUI().Get<int>("attackNum");
+    } catch (const std::exception &e) {
+      return;
+    }
     int attackCount = 0;
     auto now = std::chrono::steady_clock::now();
     auto interval = std::chrono::milliseconds(1000 / std::max(cps, 1));
