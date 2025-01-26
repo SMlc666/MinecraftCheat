@@ -129,9 +129,7 @@ bool GUI::ColorPicker(const std::string &second, const std::string &text,
   std::array<float, 4> float_arr = {json_arr[0].GetFloat(), json_arr[1].GetFloat(),
                                     json_arr[2].GetFloat(), json_arr[3].GetFloat()};
   bool active1 = ImGui::ColorEdit4(text.c_str(), float_arr.data());
-  ImGui::SameLine();
-  bool active2 = ImGui::ColorPicker4(text.c_str(), float_arr.data());
-  if (active1 || active2) {
+  if (active1) {
     json_arr[0].SetFloat(float_arr[0]);
     json_arr[1].SetFloat(float_arr[1]);
     json_arr[2].SetFloat(float_arr[2]);
@@ -140,7 +138,7 @@ bool GUI::ColorPicker(const std::string &second, const std::string &text,
       callback({float_arr[0], float_arr[1], float_arr[2], float_arr[3]});
     }
   }
-  return active1 || active2;
+  return active1;
 }
 bool GUI::Has(const std::string &second) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
