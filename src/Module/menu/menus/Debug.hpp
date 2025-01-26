@@ -57,16 +57,15 @@ void drawDebugMenu() {
         localPlayer->getGameMode().attack(*localPlayer);
       }
     }
-    if (ImGui::TreeNode("BlockSource")) {
+    if (ImGui::TreeNode("Dimension")) {
       Dimension *dimension{};
       if (localPlayer != nullptr) {
         dimension = localPlayer->mDimension.get();
       }
       if (ImGui::Button("getDimension")) {
         if (dimension != nullptr) {
-          g_log_tool.message(
-              LogLevel::DEBUG, "DEBUG",
-              std::format("BlockSource Dimension: {:p}", reinterpret_cast<void *>(dimension)));
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("Dimension: {:p}", reinterpret_cast<void *>(dimension)));
         }
       }
       if (ImGui::Button("forEachPlayer")) {
