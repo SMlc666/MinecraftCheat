@@ -76,49 +76,50 @@ void drawDebugMenu() {
                                          reinterpret_cast<void *>(&localPlayer->mDimension)));
         }
       }
-    }
-    if (ImGui::Button("forEachPlayer")) {
-      if (dimension != nullptr) {
-        dimension->forEachPlayer([](Player &player) {
-          g_log_tool.message(LogLevel::DEBUG, "DEBUG", "forEachPlayer");
-          g_log_tool.message(LogLevel::DEBUG, "DEBUG", player.getName());
-          return false;
-        });
-      }
-    }
-    ImGui::TreePop();
-  }
-  if (ImGui::TreeNode("ClientInstance")) {
-    if (ImGui::Button("get client instance")) {
-      if (instance != nullptr) {
-        g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                           std::format("ClientInstance: {:p}", reinterpret_cast<void *>(instance)));
-      }
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("get minecraft")) {
-      if (instance != nullptr) {
-        Minecraft *minecraft = instance->minecraftPtr;
-        if (minecraft != nullptr) {
-          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                             std::format("Minecraft: {:p}", reinterpret_cast<void *>(minecraft)));
+
+      if (ImGui::Button("forEachPlayer")) {
+        if (dimension != nullptr) {
+          dimension->forEachPlayer([](Player &player) {
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG", "forEachPlayer");
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG", player.getName());
+            return false;
+          });
         }
       }
+      ImGui::TreePop();
     }
-    ImGui::TreePop();
-  }
-  if (ImGui::TreeNode("Minecraft")) {
-    if (ImGui::Button("getSimPaused")) {
-      if (instance != nullptr) {
-        Minecraft *minecraft = instance->minecraftPtr;
-        if (minecraft != nullptr) {
-          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                             std::format("getSimPaused: {}", minecraft->getSimPaused()));
+    if (ImGui::TreeNode("ClientInstance")) {
+      if (ImGui::Button("get client instance")) {
+        if (instance != nullptr) {
+          g_log_tool.message(
+              LogLevel::DEBUG, "DEBUG",
+              std::format("ClientInstance: {:p}", reinterpret_cast<void *>(instance)));
         }
       }
+      ImGui::SameLine();
+      if (ImGui::Button("get minecraft")) {
+        if (instance != nullptr) {
+          Minecraft *minecraft = instance->minecraftPtr;
+          if (minecraft != nullptr) {
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                               std::format("Minecraft: {:p}", reinterpret_cast<void *>(minecraft)));
+          }
+        }
+      }
+      ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Minecraft")) {
+      if (ImGui::Button("getSimPaused")) {
+        if (instance != nullptr) {
+          Minecraft *minecraft = instance->minecraftPtr;
+          if (minecraft != nullptr) {
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                               std::format("getSimPaused: {}", minecraft->getSimPaused()));
+          }
+        }
+      }
+      ImGui::TreePop();
     }
     ImGui::TreePop();
   }
-  ImGui::TreePop();
-}
 }
