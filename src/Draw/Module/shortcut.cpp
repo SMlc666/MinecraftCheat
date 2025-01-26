@@ -24,11 +24,11 @@ void drawAllShortcuts() {
       if (mEnabled) {
         ImGui::PushStyleColor(ImGuiCol_Button, enableBackgroundColor);
         ImGui::PushStyleColor(ImGuiCol_Text, enableTextColor);
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, enableBackgroundColor);
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, disableBackgroundColor);
       } else {
         ImGui::PushStyleColor(ImGuiCol_Button, disableBackgroundColor);
         ImGui::PushStyleColor(ImGuiCol_Text, disableTextColor);
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, disableBackgroundColor);
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, enableBackgroundColor);
       }
       ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, shortcutRouding);
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, shortcutPadding);
