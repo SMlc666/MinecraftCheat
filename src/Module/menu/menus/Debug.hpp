@@ -90,7 +90,7 @@ void drawDebugMenu() {
           dimension->forEachPlayer([](Player &player) {
             g_log_tool.message(LogLevel::DEBUG, "DEBUG", "forEachPlayer");
             g_log_tool.message(LogLevel::DEBUG, "DEBUG", player.getName());
-            return false;
+            return true;
           });
         }
       }
