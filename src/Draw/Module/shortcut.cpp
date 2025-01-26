@@ -32,6 +32,7 @@ void drawAllShortcuts() {
       }
       ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, shortcutRouding);
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, shortcutPadding);
+      ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0F, 0.0F));
       ImGui::SetWindowFontScale(shortcutTextScale);
       if (ImGui::Button(m->getName().c_str(), shortcutSize)) {
         if (mEnabled) {
@@ -44,7 +45,7 @@ void drawAllShortcuts() {
       }
       ImGui::SetWindowFontScale(1.0F);
       ImGui::PopStyleColor(3);
-      ImGui::PopStyleVar(2);
+      ImGui::PopStyleVar(3);
       ImGui::End();
     }
   }
