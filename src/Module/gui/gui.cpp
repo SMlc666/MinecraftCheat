@@ -160,3 +160,18 @@ GUI::Vec2 GUI::GetVec2(const std::string &second) {
   }
   return {json_arr[0].GetFloat(), json_arr[1].GetFloat()};
 }
+GUI::Color GUI::GetColor(const std::string &second) {
+  auto config = Config::getDocument()[first.c_str()].GetObject();
+  if (!config.HasMember(second.c_str())) {
+    throw std::runtime_error(std::format("does not have {}", second));
+  }
+  if (!config[second.c_str()].IsArray()) {
+    throw std::runtime_error(std::format("{} is not an array", second));
+  }
+  auto json_arr = config[second.c_str()].GetArray();
+  if (json_arr.Size() != 4) {
+    throw std::runtime_error(std::format("{} does not have 4 elements", second));
+  }
+  return {json_arr[0].GetFloat(), json_arr[1].GetFloat(), json_arr[2].GetFloat(),
+          json_arr[3].GetFloat()};
+}

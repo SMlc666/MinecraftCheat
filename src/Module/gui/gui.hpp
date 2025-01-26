@@ -34,6 +34,7 @@ public:
     return config[second.c_str()].Get<T>();
   }
   Vec2 GetVec2(const std::string &second);
+  Color GetColor(const std::string &second);
   template <typename T> inline void Set(const std::string &second, const T &value) {
     auto config = Config::getDocument()[first.c_str()].GetObject();
     config[second.c_str()].Set(value);
