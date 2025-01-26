@@ -10,7 +10,8 @@
 #include <string>
 #include <unordered_map>
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"cps", 10}, {"range", 5.0f}, {"swing", false}};
+    {"enabled", false}, {"shortcut", false}, {"cps", 10},
+    {"range", 5.0f},    {"swing", false},    {"attackNum", 1}};
 static std::vector<Player *> PlayerList = {};
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
@@ -19,6 +20,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     auto &gui = module->getGUI();
     gui.SliderFloat("range", "范围", 0.0F, 10.0F);
     gui.SliderInt("cps", "攻击速度", 1, 20);
+    gui.SliderInt("attackNum", "攻击数量", 1, 20);
     gui.CheckBox("swing", "挥手");
   });
   setOnTick([](Module *module) {
@@ -26,6 +28,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     auto Range = module->getGUI().Get<float>("range");
     bool swing = module->getGUI().Get<bool>("swing");
     int cps = module->getGUI().Get<int>("cps");
+    int attackNum = module->getGUI().Get<int>("attackNum");
+    int attackCount = 0;
     if (!enabled) {
       return;
     }
@@ -54,8 +58,12 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       if (player == mLocalPlayer) {
         continue;
       }
+      if (attackCount >= attackNum) {
+        break;
+      }
       float mDistance = mLocalPlayer->getDistance(player);
       if (mDistance <= Range) {
+        attackCount++;
         mGameMode->attack(*player);
         if (swing) {
           mLocalPlayer->swing();
