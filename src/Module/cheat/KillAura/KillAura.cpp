@@ -1,4 +1,6 @@
 #include "KillAura.hpp"
+
+#include <math.h>
 #include "Module.hpp"
 #include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/actor/player/player.hpp"
@@ -12,7 +14,7 @@
 #include <unordered_map>
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"cps", 10},
-    {"range", 5.0f},    {"swing", false},    {"attackNum", 1}};
+    {"range", 5.0F},    {"swing", false},    {"attackNum", 1}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
@@ -26,11 +28,11 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     gui.CheckBox("swing", "挥手");
   });
   setOnTick([](Module *module) {
-    bool enabled;
-    float Range;
-    bool swing;
-    int cps;
-    int attackNum;
+    bool enabled = false;
+    float Range = NAN;
+    bool swing = false;
+    int cps = 0;
+    int attackNum = 0;
     try {
       enabled = module->getGUI().Get<bool>("enabled");
       Range = module->getGUI().Get<float>("range");
