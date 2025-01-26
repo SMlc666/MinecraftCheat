@@ -19,6 +19,8 @@ public:
   glm::vec3 *mPos;
 
 public:
+  [[nodiscard]] glm::vec3 getPosition() const;
+  void setPosition(glm::vec3 pos);
 }; // namespace class Actor
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
 static_assert(offsetof(Actor, mPos) == 0x318);
