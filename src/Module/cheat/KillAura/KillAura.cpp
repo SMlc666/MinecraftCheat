@@ -103,7 +103,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       return;
     }
     PlayerList.clear();
-    mDimension->forEachPlayer([mLocalPlayer](Player &player) {
+    mDimension->forEachPlayer([mLocalPlayer, antibot](Player &player) {
       if (&player == mLocalPlayer) {
         return true;
       }
