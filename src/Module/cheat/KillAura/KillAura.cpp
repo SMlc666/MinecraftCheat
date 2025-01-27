@@ -14,11 +14,20 @@
 #include <unordered_map>
 #include <random>
 static const std::vector<std::string> PriorityItems = {"Health", "Distance"};
-static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},         {"shortcut", false}, {"cps", 10},         {"range", 5.0F},
-    {"swing", false},           {"attackNum", 1},    {"antibot", false},  {"fov", 180.0F},
-    {"failurerate", 0},         {"priority", 0},     {"rotation", false}, {"rotationSpeed", 10.0F},
-    {"rotationToTarget", false}};
+static const std::unordered_map<std::string, std::any> ConfigData = {{"enabled", false},
+                                                                     {"shortcut", false},
+                                                                     {"cps", 10},
+                                                                     {"range", 5.0F},
+                                                                     {"swing", false},
+                                                                     {"attackNum", 1},
+                                                                     {"antibot", false},
+                                                                     {"fov", 180.0F},
+                                                                     {"failurerate", 0},
+                                                                     {"priority", 0},
+                                                                     {"rotation", false},
+                                                                     {"rotationSpeed", 10.0F},
+                                                                     {"rotationToTarget", false},
+                                                                     {"rotationSwing", false}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
 static std::random_device g_rd;
@@ -60,6 +69,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     if (ImGui::TreeNode("Rotation")) {
       gui.CheckBox("rotation", "转头");
       gui.CheckBox("rotationToTarget", "只在瞄准到时攻击");
+      gui.CheckBox("rotationSwing", "在转头过程中挥手");
       gui.SliderFloat("rotationSpeed", "转头速度", 0.0F, 20.0F);
       ImGui::TreePop();
     }
@@ -80,6 +90,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     bool rotation = false;
     float rotationSpeed = NAN;
     bool rotationToTarget = false;
+    bool rotationSwing = false;
     try {
       enabled = module->getGUI().Get<bool>("enabled");
       Range = module->getGUI().Get<float>("range");
@@ -93,6 +104,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       rotation = module->getGUI().Get<bool>("rotation");
       rotationSpeed = module->getGUI().Get<float>("rotationSpeed");
       rotationToTarget = module->getGUI().Get<bool>("rotationToTarget");
+      rotationSwing = module->getGUI().Get<bool>("rotationSwing");
     } catch (const std::exception &e) {
       return;
     }
