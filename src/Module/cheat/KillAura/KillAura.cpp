@@ -57,7 +57,12 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
   setOnDrawGUI([](Module *module) {
     auto &gui = module->getGUI();
     gui.SliderFloat("range", "范围", 0.0F, 10.0F);
-    gui.SliderInt("mincps", "最小攻击速度", 1, 20);
+    gui.SliderInt("mincps", "最小攻击速度", 1, 20, [module](int value) {
+      int maxcps = module->getGUI().Get<int>("maxcps");
+      if (value > maxcps) {
+        module->getGUI().Set("maxcps", value);
+      }
+    });
     gui.SliderInt("maxcps", "最大攻击速度", 1, 20);
     gui.SliderInt("attackNum", "攻击数量", 1, 20);
     gui.CheckBox("swing", "挥手");
