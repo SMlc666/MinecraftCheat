@@ -11,11 +11,15 @@
 #include <chrono>
 #include <string>
 #include <unordered_map>
+#include <random>
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"cps", 10},     {"range", 5.0F},   {"swing", false},
     {"attackNum", 1},   {"antibot", false},  {"fov", 180.0F}, {"failurerate", 0}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
+static std::random_device g_rd;
+static std::uniform_int_distribution<> g_dist(0, 100);
+static std::mt19937 g_gen(g_rd());
 static bool isInFov(LocalPlayer *mLocalPlayer, Player *target, float maxFov) {
   if (maxFov >= 360.0F) {
     return true;
@@ -117,7 +121,9 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       }
       if (mDistance <= Range && isInFov(mLocalPlayer, player, fov)) {
         attackCount++;
-        mGameMode->attack(*player);
+        if (failurerate <= 0 || g_dist(g_gen) >= failurerate) {
+          mGameMode->attack(*player);
+        }
         if (swing) {
           mLocalPlayer->swing();
         }
