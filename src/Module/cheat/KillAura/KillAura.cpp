@@ -128,14 +128,12 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       if (attackCount >= attackNum) {
         break;
       }
-      if (isInFov(mLocalPlayer, player, fov)) {
-        attackCount++;
-        if (failurerate <= 0 || g_dist(g_gen) >= failurerate) {
-          mGameMode->attack(*player);
-        }
-        if (swing) {
-          mLocalPlayer->swing();
-        }
+      attackCount++;
+      if (failurerate <= 0 || g_dist(g_gen) >= failurerate) {
+        mGameMode->attack(*player);
+      }
+      if (swing) {
+        mLocalPlayer->swing();
       }
     }
     LastAttackTime = std::chrono::steady_clock::now();
