@@ -1,6 +1,5 @@
 #include "KillAura.hpp"
-
-#include <math.h>
+#include <cmath>
 #include "Module.hpp"
 #include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/actor/player/player.hpp"
