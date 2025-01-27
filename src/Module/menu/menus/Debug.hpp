@@ -96,6 +96,19 @@ void drawDebugMenu() {
       }
       ImGui::TreePop();
     }
+    if (ImGui::TreeNode("BlockSource")) {
+      BlockSource *blockSource{};
+      if (instance != nullptr) {
+        blockSource = instance->getRegion();
+      }
+      if (ImGui::Button("get block source")) {
+        if (blockSource != nullptr) {
+          g_log_tool.message(
+              LogLevel::DEBUG, "DEBUG",
+              std::format("BlockSource: {:p}", reinterpret_cast<void *>(blockSource)));
+        }
+      }
+    }
     if (ImGui::TreeNode("ClientInstance")) {
       if (ImGui::Button("get client instance")) {
         if (instance != nullptr) {
