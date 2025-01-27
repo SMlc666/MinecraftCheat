@@ -14,8 +14,9 @@
 #include <random>
 static const std::vector<std::string> PriorityItems = {"Health", "Distance"};
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"cps", 10},     {"range", 5.0F},    {"swing", false},
-    {"attackNum", 1},   {"antibot", false},  {"fov", 180.0F}, {"failurerate", 0}, {"priority", 0}};
+    {"enabled", false}, {"shortcut", false}, {"cps", 10},        {"range", 5.0F},
+    {"swing", false},   {"attackNum", 1},    {"antibot", false}, {"fov", 180.0F},
+    {"failurerate", 0}, {"priority", 0},     {"rotation", false}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
 static std::random_device g_rd;
@@ -54,6 +55,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     gui.SliderInt("attackNum", "攻击数量", 1, 20);
     gui.CheckBox("swing", "挥手");
     gui.CheckBox("antibot", "反机器人");
+    gui.CheckBox("rotation", "转头");
     gui.SliderFloat("fov", "视角", 0.0F, 360.0F);
     gui.SliderInt("failurerate", "失败率", 0, 100);
     gui.Selectable("priority", "优先级", PriorityItems);
@@ -68,6 +70,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     int failurerate = 0;
     float fov = NAN;
     int priority = 0;
+    bool rotation = false;
     try {
       enabled = module->getGUI().Get<bool>("enabled");
       Range = module->getGUI().Get<float>("range");
@@ -78,6 +81,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       fov = module->getGUI().Get<float>("fov");
       failurerate = module->getGUI().Get<int>("failurerate");
       priority = module->getGUI().Get<int>("priority");
+      rotation = module->getGUI().Get<bool>("rotation");
     } catch (const std::exception &e) {
       return;
     }
