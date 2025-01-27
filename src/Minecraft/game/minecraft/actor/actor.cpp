@@ -36,3 +36,9 @@ void Actor::setRotation(glm::vec2 rot) {
   }
   *this->mRot = rot;
 }
+float Actor::getPitch() const {
+  return this->getRotation().x;
+}
+float Actor::getYaw() const {
+  return this->getRotation().y;
+}

@@ -27,6 +27,8 @@ public:
   float getDistance(const Actor *actor) const;
   void setRotation(glm::vec2 rot);
   [[nodiscard]] glm::vec2 getRotation() const;
+  [[nodiscard]] float getPitch() const;
+  [[nodiscard]] float getYaw() const;
 }; // namespace class Actor
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
 static_assert(offsetof(Actor, mPos) == 0x318);
