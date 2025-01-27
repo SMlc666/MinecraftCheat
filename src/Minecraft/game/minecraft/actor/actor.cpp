@@ -42,3 +42,13 @@ float Actor::getPitch() const {
 float Actor::getYaw() const {
   return this->getRotation().y;
 }
+void Actor::setPitch(float pitch) {
+  glm::vec2 rot = this->getRotation();
+  rot.x = pitch;
+  this->setRotation(rot);
+}
+void Actor::setYaw(float yaw) {
+  glm::vec2 rot = this->getRotation();
+  rot.y = yaw;
+  this->setRotation(rot);
+}
