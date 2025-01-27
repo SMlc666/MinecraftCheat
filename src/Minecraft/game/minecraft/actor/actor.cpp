@@ -61,3 +61,15 @@ bool Actor::isAlive() const {
   auto func = reinterpret_cast<function>(vtable[61]);
   return func(this);
 }
+glm::vec3 Actor::getMotion() const {
+  if (this->mPosMotion == nullptr) {
+    gsl::details::terminate();
+  }
+  return this->mPosMotion->motion;
+}
+void Actor::setMotion(glm::vec3 motion) {
+  if (this->mPosMotion == nullptr) {
+    gsl::details::terminate();
+  }
+  this->mPosMotion->motion = motion;
+}

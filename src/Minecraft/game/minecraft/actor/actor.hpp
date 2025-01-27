@@ -2,6 +2,7 @@
 #include "game/common/gamerefs/WeakRef.hpp"
 #include "game/minecraft/world/level/BlockSourceListener.hpp"
 #include <cstddef>
+#include "glm/fwd.hpp"
 #include "glm/glm.hpp"
 #include <memory>
 class Dimension;
@@ -37,6 +38,8 @@ public:
   void setYaw(float yaw);
   [[nodiscard]] int getHealth() const;
   [[nodiscard]] bool isAlive() const;
+  [[nodiscard]] glm::vec3 getMotion() const;
+  void setMotion(glm::vec3 motion);
 }; // namespace class Actor
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
 static_assert(offsetof(Actor, mPosMotion) == 0x318);
