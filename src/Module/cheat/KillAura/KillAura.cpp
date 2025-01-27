@@ -103,11 +103,18 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       return;
     }
     PlayerList.clear();
-    mDimension->forEachPlayer([mLocalPlayer, antibot](Player &player) {
+    mDimension->forEachPlayer([mLocalPlayer, antibot, Range, fov](Player &player) {
       if (&player == mLocalPlayer) {
         return true;
       }
       if (isBot(&player) && antibot) {
+        return true;
+      }
+      float mDistance = mLocalPlayer->getDistance(&player);
+      if (mDistance > Range) {
+        return true;
+      }
+      if (!isInFov(mLocalPlayer, &player, fov)) {
         return true;
       }
       PlayerList.push_back(&player);
@@ -121,8 +128,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       if (attackCount >= attackNum) {
         break;
       }
-      float mDistance = mLocalPlayer->getDistance(player);
-      if (mDistance <= Range && isInFov(mLocalPlayer, player, fov)) {
+      if (isInFov(mLocalPlayer, player, fov)) {
         attackCount++;
         if (failurerate <= 0 || g_dist(g_gen) >= failurerate) {
           mGameMode->attack(*player);
