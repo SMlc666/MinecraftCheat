@@ -35,6 +35,11 @@ static bool isInFov(LocalPlayer *mLocalPlayer, Player *target, float maxFov) {
   angleDiff = fmod(angleDiff + 180.0f, 360.0f) - 180.0f;
   return fabs(angleDiff) <= maxFov / 2.0f;
 }
+static bool isBot(Player *player) {
+  float Pitch = player->getPitch();
+  float Yaw = player->getYaw();
+  return Yaw == 0.0F && Pitch == 0.0F;
+}
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
