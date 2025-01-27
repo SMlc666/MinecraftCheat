@@ -24,3 +24,15 @@ float Actor::getDistance(const Actor *actor) const {
   glm::vec3 otherPos = actor->getPosition();
   return glm::distance(selfPos, otherPos);
 }
+glm::vec2 Actor::getRotation() const {
+  if (this->mRot == nullptr) {
+    gsl::details::terminate();
+  }
+  return *this->mRot;
+}
+void Actor::setRotation(glm::vec2 rot) {
+  if (this->mRot == nullptr) {
+    gsl::details::terminate();
+  }
+  *this->mRot = rot;
+}
