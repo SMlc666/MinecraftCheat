@@ -9,7 +9,7 @@ LocalPlayer *ClientInstance::getLocalPlayer() const {
 }
 BlockSource *ClientInstance::getRegion() const {
   using function = BlockSource *(*)(const ClientInstance *);
-  auto func = reinterpret_cast<function>(this->vtable[32]);
+  auto func = reinterpret_cast<function>(this->vtable[31]);
   return func(this);
 }
 //NOLINTEND
