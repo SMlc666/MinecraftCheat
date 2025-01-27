@@ -1,12 +1,12 @@
 #pragma once
 #include "game/minecraft/actor/actor.hpp"
-#include <cstdint>
+class BlockPos;
+class Block;
 class BlockSource {
 public:
-  uintptr_t **vtable;
-  std::byte padding8[48];
-  Dimension *mDimension;
-  std::byte padding40[248];
+public:
+  virtual ~BlockSource();
+  virtual Block *getBlock(int x, int y, int z);
+  virtual Block *getBlock(const BlockPos &pos);
+  virtual Block *getBlock(const BlockPos &pos, int);
 };
-static_assert(offsetof(BlockSource, mDimension) == 0x38);
-static_assert(sizeof(BlockSource) == 0x138);
