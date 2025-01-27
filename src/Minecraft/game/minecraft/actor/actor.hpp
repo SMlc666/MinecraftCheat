@@ -25,6 +25,8 @@ public:
   void setPosition(glm::vec3 pos);
   [[nodiscard]] float getDistance(glm::vec3 pos) const;
   float getDistance(const Actor *actor) const;
+  void setRotation(glm::vec2 rot);
+  [[nodiscard]] glm::vec2 getRotation() const;
 }; // namespace class Actor
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
 static_assert(offsetof(Actor, mPos) == 0x318);
