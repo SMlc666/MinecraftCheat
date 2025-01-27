@@ -32,6 +32,7 @@ public:
   void setPitch(float pitch);
   void setYaw(float yaw);
   [[nodiscard]] int getHealth() const;
+  [[nodiscard]] bool isAlive() const;
 }; // namespace class Actor
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
 static_assert(offsetof(Actor, mPos) == 0x318);

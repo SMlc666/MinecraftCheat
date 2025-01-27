@@ -56,3 +56,8 @@ int Actor::getHealth() const {
   auto func = getSign<function>("Actor::getHealth");
   return func(this);
 }
+bool Actor::isAlive() const {
+  using function = bool (*)(const Actor *);
+  auto func = reinterpret_cast<function>(vtable[61]);
+  return func(this);
+}
