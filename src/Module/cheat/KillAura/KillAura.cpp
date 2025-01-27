@@ -112,6 +112,10 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
         break;
       }
       float mDistance = mLocalPlayer->getDistance(player);
+      bool isBotPlayer = isBot(player);
+      if (isBotPlayer && antibot) {
+        continue;
+      }
       if (mDistance <= Range && isInFov(mLocalPlayer, player, fov)) {
         attackCount++;
         mGameMode->attack(*player);
