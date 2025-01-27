@@ -108,6 +108,7 @@ void drawDebugMenu() {
               std::format("BlockSource: {:p}", reinterpret_cast<void *>(blockSource)));
         }
       }
+      ImGui::TreePop();
     }
     if (ImGui::TreeNode("ClientInstance")) {
       if (ImGui::Button("get client instance")) {
