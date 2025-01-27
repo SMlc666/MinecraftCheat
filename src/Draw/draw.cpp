@@ -107,6 +107,7 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   ImGui_ImplScript_NewFrame();
   drawAllMenus();
   drawAllShortcuts();
+  drawAllOnDraw();
   ImGui::EndFrame();
   ImGui_ImplScript_NewFrame();
   ImGui::Render();
