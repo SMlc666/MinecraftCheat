@@ -67,6 +67,14 @@ void drawAllMenus() {
   drawMenu(COMBAT_MENU);
   drawMenu(RENDER_MENU);
 }
+void drawAllOnDraw() {
+  auto &modules = ModuleManager::getModules();
+  for (const auto &pair : modules) {
+    if (pair.second != nullptr) {
+      pair.second->onDraw();
+    }
+  }
+}
 int g_GlHeight, g_GlWidth = 0; //opengl窗口的高度和宽度
 bool is_ImguiSetup = false;
 static const std::string IniFile = "/sdcard/MinecraftCheat/imgui.ini";
