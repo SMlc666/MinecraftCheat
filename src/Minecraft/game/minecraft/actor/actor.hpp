@@ -17,6 +17,8 @@ public:
   std::byte padding2E8[0x2C];
   std::byte padding314[0x4];
   glm::vec3 *mPos;
+  std::byte padding324[0x4];
+  glm::vec2 *mRot;
 
 public:
   [[nodiscard]] glm::vec3 getPosition() const;
@@ -26,5 +28,7 @@ public:
 }; // namespace class Actor
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
 static_assert(offsetof(Actor, mPos) == 0x318);
+static_assert(offsetof(Actor, mRot) == 808);
 static_assert(sizeof(glm::vec3) == 0xC);
+static_assert(sizeof(glm::vec2) == 0x8);
 static_assert(sizeof(WeakRef<Dimension>) == 16);
