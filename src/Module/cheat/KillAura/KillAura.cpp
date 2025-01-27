@@ -17,6 +17,24 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"attackNum", 1},   {"antibot", false},  {"fov", 180.0F}, {"failurerate", 0}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
+static bool isInFov(LocalPlayer *mLocalPlayer, Player *target, float maxFov) {
+  if (maxFov >= 360.0F) {
+    return true;
+  }
+  glm::vec3 localPos = mLocalPlayer->getPosition();
+  glm::vec3 targetPos = target->getPosition();
+  glm::vec3 direction = glm::normalize(glm::vec3(targetPos.x - localPos.x,
+                                                 0, // 忽略Y轴差异
+                                                 targetPos.z - localPos.z));
+  float targetYaw = glm::degrees(atan2(direction.z, direction.x)) - 90.0F;
+  if (targetYaw < 0.0F) {
+    targetYaw += 360.0F;
+  }
+  float localYaw = mLocalPlayer->getYaw();
+  float angleDiff = fabs(localYaw - targetYaw);
+  angleDiff = fmod(angleDiff + 180.0f, 360.0f) - 180.0f;
+  return fabs(angleDiff) <= maxFov / 2.0f;
+}
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
