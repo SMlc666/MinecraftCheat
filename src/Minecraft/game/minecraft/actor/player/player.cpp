@@ -10,3 +10,8 @@ std::string &Player::getName() const {
   auto func = getSign<function>("Player::getName");
   return func(this);
 }
+ItemStack *Player::getSelectedItem() const {
+  using function = ItemStack *(*)(const Player *);
+  auto func = reinterpret_cast<function>(vtable[97]);
+  return func(this);
+}
