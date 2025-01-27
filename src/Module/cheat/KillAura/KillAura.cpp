@@ -82,7 +82,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     bool enabled = false;
     float Range = NAN;
     bool swing = false;
-    int cps = 0;
+    int mincps = 0;
+    int maxcps = 0;
     int attackNum = 0;
     bool antibot = false;
     int failurerate = 0;
@@ -96,7 +97,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       enabled = module->getGUI().Get<bool>("enabled");
       Range = module->getGUI().Get<float>("range");
       swing = module->getGUI().Get<bool>("swing");
-      cps = module->getGUI().Get<int>("mincps");
+      mincps = module->getGUI().Get<int>("mincps");
+      maxcps = module->getGUI().Get<int>("maxcps");
       attackNum = module->getGUI().Get<int>("attackNum");
       antibot = module->getGUI().Get<bool>("antibot");
       fov = module->getGUI().Get<float>("fov");
@@ -110,8 +112,10 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       return;
     }
     int attackCount = 0;
+    std::uniform_int_distribution<> cps_dist(std::min(mincps, maxcps), maxcps);
+    int random_cps = cps_dist(g_gen);
+    auto interval = std::chrono::milliseconds(1000 / random_cps);
     auto now = std::chrono::steady_clock::now();
-    auto interval = std::chrono::milliseconds(1000 / std::max(cps, 1));
     if (!enabled) {
       return;
     }
