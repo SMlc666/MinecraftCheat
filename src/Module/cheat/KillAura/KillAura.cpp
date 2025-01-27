@@ -117,6 +117,14 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       if (!isInFov(mLocalPlayer, &player, fov)) {
         return true;
       }
+      bool isAlive = player.isAlive();
+      if (!isAlive) {
+        return true;
+      }
+      int health = player.getHealth();
+      if (health <= 0) {
+        return true;
+      }
       PlayerList.push_back(&player);
       return true;
     });
