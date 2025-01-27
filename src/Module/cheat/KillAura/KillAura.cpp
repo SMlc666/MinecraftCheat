@@ -14,7 +14,7 @@
 #include <unordered_map>
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"cps", 10},        {"range", 5.0F},
-    {"swing", false},   {"attackNum", 1},    {"antibot", false},
+    {"swing", false},   {"attackNum", 1},    {"antibot", false}, {"fov", 180.0F},
 };
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
@@ -28,6 +28,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     gui.SliderInt("attackNum", "攻击数量", 1, 20);
     gui.CheckBox("swing", "挥手");
     gui.CheckBox("antibot", "反机器人");
+    gui.SliderFloat("fov", "视角", 0.0F, 360.0F);
   });
   setOnTick([](Module *module) {
     bool enabled = false;
@@ -36,6 +37,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     int cps = 0;
     int attackNum = 0;
     bool antibot = false;
+    float fov = NAN;
     try {
       enabled = module->getGUI().Get<bool>("enabled");
       Range = module->getGUI().Get<float>("range");
@@ -43,6 +45,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       cps = module->getGUI().Get<int>("cps");
       attackNum = module->getGUI().Get<int>("attackNum");
       antibot = module->getGUI().Get<bool>("antibot");
+      fov = module->getGUI().Get<float>("fov");
     } catch (const std::exception &e) {
       return;
     }
