@@ -1,6 +1,7 @@
 #include "actor.hpp"
 #include "glm/fwd.hpp"
 #include "gsl/assert"
+#include "signature.hpp"
 glm::vec3 Actor::getPosition() const {
   if (this->mPos == nullptr) {
     gsl::details::terminate();
@@ -49,4 +50,9 @@ void Actor::setYaw(float yaw) {
   glm::vec2 rot = this->getRotation();
   rot.y = yaw;
   this->setRotation(rot);
+}
+int Actor::getHealth() const {
+  using function = int (*)(const Actor *);
+  auto func = getSign<function>("Actor::getHealth");
+  return func(this);
 }
