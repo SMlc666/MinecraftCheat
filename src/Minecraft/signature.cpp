@@ -16,7 +16,9 @@ const std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"LoopbackPacketSender::send", 0x62BA068},
     {"GameMode::attack", 0x6B87228},
     {"Dimension::forEachPlayer", 0x89414F8},
-    {"Actor::getHealth", 0x724DF58}};
+    {"Actor::getHealth", 0x724DF58},
+    {"Player::getSupplies", 0x6CEABB4},
+};
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
 void signaturesInit() {
