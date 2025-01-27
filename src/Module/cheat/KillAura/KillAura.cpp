@@ -107,7 +107,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
         break;
       }
       float mDistance = mLocalPlayer->getDistance(player);
-      if (mDistance <= Range) {
+      if (mDistance <= Range && isInFov(mLocalPlayer, player, fov)) {
         attackCount++;
         mGameMode->attack(*player);
         if (swing) {
