@@ -36,8 +36,8 @@ static bool isInFov(LocalPlayer *mLocalPlayer, Player *target, float maxFov) {
   }
   float localYaw = mLocalPlayer->getYaw();
   float angleDiff = fabs(localYaw - targetYaw);
-  angleDiff = fmod(angleDiff + 180.0f, 360.0f) - 180.0f;
-  return fabs(angleDiff) <= maxFov / 2.0f;
+  angleDiff = fmod(angleDiff + 180.0F, 360.0F) - 180.0F;
+  return fabs(angleDiff) <= maxFov / 2.0F;
 }
 static bool isBot(Player *player) {
   float Pitch = player->getPitch();
@@ -91,15 +91,15 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       return;
     }
     ClientInstance *mInstance = runtimes::getClientInstance();
-    if (!mInstance) {
+    if (mInstance == nullptr) {
       return;
     }
     LocalPlayer *mLocalPlayer = mInstance->getLocalPlayer();
-    if (!mLocalPlayer) {
+    if (mLocalPlayer == nullptr) {
       return;
     }
     Dimension *mDimension = mLocalPlayer->mDimension;
-    if (!mDimension) {
+    if (mDimension == nullptr) {
       return;
     }
     PlayerList.clear();
@@ -120,7 +120,16 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       PlayerList.push_back(&player);
       return true;
     });
-    if (PlayerList.empty()) {
+    if (!PlayerList.empty()) {
+      if (priority == 0) {
+        std::sort(PlayerList.begin(), PlayerList.end(),
+                  [](Player *a, Player *b) { return a->getHealth() < b->getHealth(); });
+      } else if (priority == 1) {
+        std::sort(PlayerList.begin(), PlayerList.end(), [mLocalPlayer](Player *a, Player *b) {
+          return mLocalPlayer->getDistance(a) < mLocalPlayer->getDistance(b);
+        });
+      }
+    } else {
       return;
     }
     GameMode *mGameMode = &mLocalPlayer->getGameMode(); //LocalPlayer
