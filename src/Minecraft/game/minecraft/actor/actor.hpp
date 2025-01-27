@@ -7,6 +7,10 @@
 class Dimension;
 class Level;
 class BlockSource;
+struct PosMotion {
+  glm::vec3 pos;
+  glm::vec3 motion;
+};
 #include <cstdint>
 class Actor {
 public:
@@ -16,7 +20,7 @@ public:
   WeakRef<Dimension> WeakRef_mDimension;
   std::byte padding2E8[0x2C];
   std::byte padding314[0x4];
-  glm::vec3 *mPos;
+  PosMotion *mPosMotion;
   std::byte padding324[0x4];
   glm::vec2 *mRot;
 
@@ -35,7 +39,7 @@ public:
   [[nodiscard]] bool isAlive() const;
 }; // namespace class Actor
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
-static_assert(offsetof(Actor, mPos) == 0x318);
+static_assert(offsetof(Actor, mPosMotion) == 0x318);
 static_assert(offsetof(Actor, mRot) == 808);
 static_assert(sizeof(glm::vec3) == 0xC);
 static_assert(sizeof(glm::vec2) == 0x8);
