@@ -26,6 +26,9 @@ public:
                     const std::function<void(float, float)> &callback = nullptr);
   bool ColorEdit(const std::string &second, const std::string &text,
                  const std::function<void(Color)> &callback = nullptr);
+  bool Selectable(const std::string &second, const std::string &text,
+                  const std::vector<std::string> &items,
+                  const std::function<void(int)> &callback = nullptr);
   template <typename T> inline T Get(const std::string &second) {
     auto config = Config::getDocument()[first.c_str()].GetObject();
     if (!config.HasMember(second.c_str())) {

@@ -140,6 +140,36 @@ bool GUI::ColorEdit(const std::string &second, const std::string &text,
   }
   return active1;
 }
+bool GUI::Selectable(const std::string &second, const std::string &text,
+                     const std::vector<std::string> &items,
+                     const std::function<void(int)> &callback) {
+  auto config = Config::getDocument()[first.c_str()].GetObject();
+  validateKeyExists(second);
+  if (!config.HasMember(second.c_str())) {
+    config.AddMember(rapidjson::Value(second.c_str(), Config::getDocument().GetAllocator()).Move(),
+                     rapidjson::Value(any_cast<int>(GUIMap_orig.at(second))).Move(),
+                     Config::getDocument().GetAllocator());
+  }
+  bool active = false;
+  if (ImGui::TreeNode(text.c_str())) {
+    int v = config[second.c_str()].GetInt();
+    for (int i = 0; i < items.size(); i++) {
+      bool selected = (i == v);
+      if (ImGui::Selectable(items[i].c_str(), selected)) {
+        v = i;
+        active = true;
+      }
+    }
+    config[second.c_str()].SetInt(v);
+    if (active) {
+      if (callback) {
+        callback(v);
+      }
+    }
+    ImGui::TreePop();
+  }
+  return active;
+}
 bool GUI::Has(const std::string &second) {
   auto config = Config::getDocument()[first.c_str()].GetObject();
   return config.HasMember(second.c_str());
