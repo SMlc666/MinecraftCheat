@@ -36,7 +36,9 @@ void Module::setOnLoad(std::function<void(Module *)> func) {
 void Module::setOnDrawGUI(std::function<void(Module *)> func) {
   m_onDrawGUI = std::move(func);
 }
-
+void Module::setOnDraw(std::function<void(Module *)> func) {
+  m_onDraw = std::move(func);
+}
 void Module::onTick() {
   if (m_onTick) {
     m_onTick(this);
@@ -77,6 +79,15 @@ void Module::onDrawGUI() {
       m_onDrawGUI(this);
     }
     ImGui::TreePop();
+  }
+}
+void Module::onDraw() {
+  if (!m_onDraw) {
+    return;
+  }
+  bool isEnabled = m_gui.Get<bool>("enabled");
+  if (isEnabled) {
+    m_onDraw(this);
   }
 }
 GUI &Module::getGUI() {
