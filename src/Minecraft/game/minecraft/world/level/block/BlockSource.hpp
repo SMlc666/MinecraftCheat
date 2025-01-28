@@ -1,6 +1,5 @@
 #pragma once
 #include "game/minecraft/actor/actor.hpp"
-class BlockPos;
 class Block;
 class BlockLegacy;
 class BlockSource {
