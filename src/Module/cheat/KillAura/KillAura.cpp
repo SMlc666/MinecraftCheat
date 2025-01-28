@@ -12,7 +12,7 @@
 #include <string>
 #include <unordered_map>
 #include <random>
-static const std::vector<std::string> PriorityItems = {"Health", "Distance"};
+static const std::vector<std::string> PriorityItems = {"Health", "Distance", "Random"};
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"cps", 10},     {"range", 5.0F},    {"swing", false},
     {"attackNum", 1},   {"antibot", false},  {"fov", 180.0F}, {"failurerate", 0}, {"priority", 0}};
@@ -136,6 +136,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
         std::sort(PlayerList.begin(), PlayerList.end(), [mLocalPlayer](Player *a, Player *b) {
           return mLocalPlayer->getDistance(a) < mLocalPlayer->getDistance(b);
         });
+      } else if (priority == 2) {
+        std::shuffle(PlayerList.begin(), PlayerList.end(), g_gen);
       }
     } else {
       return;
