@@ -13,6 +13,7 @@
 #include <string>
 #include <unordered_map>
 #include <random>
+#include "Helper/Rotation/rotation.hpp"
 static const std::vector<std::string> PriorityItems = {"Health", "Distance", "Random"};
 static const std::vector<std::string> RotationItems = {"Lock", "Approximate"};
 static const std::unordered_map<std::string, std::any> ConfigData = {
@@ -25,6 +26,7 @@ static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::stead
 static std::random_device g_rd;
 static std::uniform_int_distribution<> g_dist(0, 100);
 static std::mt19937 g_gen(g_rd());
+static Player *g_Target{};
 static bool isInFov(LocalPlayer *mLocalPlayer, Player *target, float maxFov) {
   if (maxFov >= 360.0F) {
     return true;
@@ -161,6 +163,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       return;
     }
     GameMode *mGameMode = &mLocalPlayer->getGameMode(); //LocalPlayer
+    bool hasAttacked = false;
     for (auto *player : PlayerList) {
       if (attackCount >= attackNum) {
         break;
@@ -168,14 +171,21 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       attackCount++;
       if (failurerate <= 0 || g_dist(g_gen) >= failurerate) {
         mGameMode->attack(*player);
+        g_Target = player;
+        hasAttacked = true;
       }
       if (swing) {
         mLocalPlayer->swing();
       }
     }
-    LastAttackTime = std::chrono::steady_clock::now();
+    if (hasAttacked) {
+      LastAttackTime = std::chrono::steady_clock::now();
+    } else {
+      g_Target = nullptr;
+    }
   });
   setOnRender([](Module *module) {
+    using namespace Helper;
     bool enabled = false;
     bool rotation = false;
     int rotationMode = 0;
@@ -185,6 +195,38 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       rotationMode = module->getGUI().Get<int>("rotationMode");
     } catch (const std::exception &e) {
       return;
+    }
+    if (g_Target == nullptr) {
+      return;
+    }
+    if (!enabled || !rotation) {
+      return;
+    }
+    ClientInstance *mInstance = runtimes::getClientInstance();
+    if (mInstance == nullptr) {
+      return;
+    }
+    LocalPlayer *mLocalPlayer = mInstance->getLocalPlayer();
+    if (mLocalPlayer == nullptr) {
+      return;
+    }
+    glm::vec3 localPos = mLocalPlayer->getPosition();
+    glm::vec3 targetPos = g_Target->getPosition();
+    Rotation::Rotation aimTarget = Rotation::toRotation(localPos, targetPos);
+    Rotation::Rotation last = {mLocalPlayer->getPitch(), mLocalPlayer->getYaw()};
+    switch (rotationMode) {
+    case 0:
+      mLocalPlayer->setPitch(aimTarget.pitch);
+      mLocalPlayer->setYaw(aimTarget.yaw);
+      break;
+    case 1:
+      aimTarget.pitch /= 2.0F;
+      float diff = Rotation::getRotationDifference(last, aimTarget);
+      if (diff >= 50.0F) {
+        mLocalPlayer->setPitch((aimTarget.pitch - last.pitch) / 0.8F + last.pitch);
+        mLocalPlayer->setYaw((aimTarget.yaw - last.yaw) / 0.8F + last.yaw);
+      }
+      break;
     }
   });
 }
