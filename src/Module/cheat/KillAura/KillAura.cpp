@@ -167,4 +167,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     }
     LastAttackTime = std::chrono::steady_clock::now();
   });
+  setOnRender([](Module *module) {
+
+  });
 }
