@@ -26,11 +26,12 @@ static void Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
       if (instance != nullptr) {
         LocalPlayer *player = instance->getLocalPlayer();
         if (player == actor) {
+          glm::vec3 originalMotion = actor->getMotion();
           auto horizontalModify = g_md->getGUI().Get<float>("horizontalModify");
           auto verticalModify = g_md->getGUI().Get<float>("verticalModify");
-          Motion.x *= horizontalModify;
-          Motion.z *= horizontalModify;
-          Motion.y *= verticalModify;
+          Motion = {originalMotion.x + Motion.x * horizontalModify,
+                    originalMotion.y + Motion.y * verticalModify,
+                    originalMotion.z + Motion.z * horizontalModify};
         }
       }
     }
