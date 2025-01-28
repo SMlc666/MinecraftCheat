@@ -11,5 +11,6 @@ void enableModule(Module *&module);
 void disableModule(Module *&module);
 void tickAllModules();
 void loadAllModules();
+void renderAllModules();
 } // namespace ModuleManager
 void moduleSetup();
