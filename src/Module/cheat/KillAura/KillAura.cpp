@@ -173,6 +173,13 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     LastAttackTime = std::chrono::steady_clock::now();
   });
   setOnRender([](Module *module) {
-
+    bool enabled = false;
+    bool rotation = false;
+    try {
+      enabled = module->getGUI().Get<bool>("enabled");
+      rotation = module->getGUI().Get<bool>("rotation");
+    } catch (const std::exception &e) {
+      return;
+    }
   });
 }
