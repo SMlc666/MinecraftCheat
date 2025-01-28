@@ -6,6 +6,7 @@
 #include "iMsgCapture/iMsgCapture.h"
 #include <string>
 #include <vector>
+std::mutex imgui_input_mutex;
 static const int NormalInputUpdateInterval = 1000;
 static const std::vector<std::string> NormalGameActivityName = {
     "com.mojang.minecraftpe.MainActivity"};
@@ -13,14 +14,15 @@ static void (*old_Input)(void *thiz, void *ex_ab, void *ex_ac);
 static void my_Input(void *thiz, void *ex_ab, void *ex_ac) {
   // 调用原始函数
   old_Input(thiz, ex_ab, ex_ac);
-
   // 处理输入事件
   if (is_ImguiSetup) {
+    std::lock_guard<std::mutex> lock(imgui_input_mutex);
     ImGui_ImplAndroid_HandleInputEvent(static_cast<AInputEvent *>(thiz));
   }
 }
 static void CaptureInput(iMsgEvent *iMsg) {
   if (is_ImguiSetup) {
+    std::lock_guard<std::mutex> lock(imgui_input_mutex);
     ImGui_ImplAndroid_HandleInputMsg(iMsg);
   }
 }

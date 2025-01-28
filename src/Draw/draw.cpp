@@ -2,6 +2,7 @@
 #include "MemTool.hpp"
 #include "Module/shortcut.hpp"
 #include "ScriptManager.hpp"
+#include "Touch/touch.hpp"
 #include "log.hpp"
 #include "menu/menu.hpp"
 #include "my_imgui.h"
@@ -14,6 +15,7 @@
 #include <GLES3/gl3.h>
 #include <dlfcn.h>
 #include <format>
+#include <mutex>
 static bool isMainMenuActivated = false;
 void drawMenu(MenuType menuType) {
   std::string MenuName;
@@ -94,6 +96,7 @@ void imguiSetup() {
 }
 EGLBoolean (*old_eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface);
 EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
+  std::lock_guard<std::mutex> lock(imgui_input_mutex);
   eglQuerySurface(dpy, surface, EGL_WIDTH, &g_GlWidth);
   eglQuerySurface(dpy, surface, EGL_HEIGHT, &g_GlHeight);
   if (!is_ImguiSetup) {
