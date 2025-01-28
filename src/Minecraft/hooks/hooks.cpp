@@ -2,6 +2,7 @@
 #include "MemTool.hpp"
 #include "ModuleManager.hpp"
 #include "base/mcint.hpp"
+#include "game/minecraft/actor/player/localplayer.hpp"
 #include "log.hpp"
 #include "runtimes/runtimes.hpp"
 #include "signature.hpp"
@@ -9,9 +10,8 @@
 #include <format>
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include <string>
-class Minecraft;
 MemTool::Hook ClientInstance_onStartJoinGame_;
-MemTool::Hook Minecraft_update_;
+MemTool::Hook LocalPlayer_NormalTick_;
 int64 ClientInstance_onStartJoinGame(ClientInstance *self, char a1, uint8 *a2, uint a3) {
   auto ret = ClientInstance_onStartJoinGame_.call<int64>(self, a1, a2, a3);
   runtimes::setClientInstance(self);
@@ -21,13 +21,9 @@ int64 ClientInstance_onStartJoinGame(ClientInstance *self, char a1, uint8 *a2, u
                                  a3));
   return ret;
 }
-bool Minecraft_update(Minecraft *self) {
-  auto ret = Minecraft_update_.call<bool>(self);
-  ClientInstance *clientInstance = runtimes::getClientInstance();
-  if ((clientInstance != nullptr) && clientInstance->minecraftPtr == self) {
-    ModuleManager::tickAllModules();
-  }
-  return ret;
+void LocalPlayer_NormalTick(LocalPlayer *self) {
+  LocalPlayer_NormalTick_.call<void>(self);
+  ModuleManager::tickAllModules();
 }
 void hooksInit() {
   {
@@ -36,9 +32,9 @@ void hooksInit() {
         clientInstance, reinterpret_cast<void *>(ClientInstance_onStartJoinGame), nullptr, false);
   }
   {
-    void *minecraft = getSign<void *>("Minecraft::update");
-    Minecraft_update_ =
-        MemTool::Hook(minecraft, reinterpret_cast<void *>(Minecraft_update), nullptr, false);
+    void *localPlayer = getSign<void *>("LocalPlayer::NormalTick");
+    LocalPlayer_NormalTick_ = MemTool::Hook(
+        localPlayer, reinterpret_cast<void *>(LocalPlayer_NormalTick), nullptr, false);
   }
   g_log_tool.message(LogLevel::INFO, "HooksInit", "Hooks inited");
 }
