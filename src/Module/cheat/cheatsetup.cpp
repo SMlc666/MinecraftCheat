@@ -6,6 +6,7 @@
 #include "cheat/GodMode/GodMode.hpp"
 #include "cheat/KillAura/KillAura.hpp"
 #include "cheat/Network/Network.hpp"
+#include "cheat/Scaffold/Scaffold.hpp"
 #include "cheat/Seckill/Seckill.hpp"
 #include "cheat/Timer/Timer.hpp"
 #include "cheat/Velocity/Velocity.hpp"
@@ -19,4 +20,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Seckill);
   ModuleManager::addModule(new cheat::KillAura);
   ModuleManager::addModule(new cheat::Velocity);
+  ModuleManager::addModule(new cheat::Scaffold);
 }
