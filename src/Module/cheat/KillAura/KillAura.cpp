@@ -6,6 +6,7 @@
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
+#include "imgui/imgui.h"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include <chrono>
@@ -16,7 +17,7 @@ static const std::vector<std::string> PriorityItems = {"Health", "Distance", "Ra
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"mincps", 10},   {"maxcps", 20},
     {"range", 5.0F},    {"swing", false},    {"attackNum", 1}, {"antibot", false},
-    {"fov", 180.0F},    {"failurerate", 0},  {"priority", 0}};
+    {"fov", 180.0F},    {"failurerate", 0},  {"priority", 0},  {"rotation", false}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
 static std::random_device g_rd;
@@ -64,6 +65,10 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     gui.SliderFloat("fov", "视角", 0.0F, 360.0F);
     gui.SliderInt("failurerate", "失败率", 0, 100);
     gui.Selectable("priority", "优先级", PriorityItems);
+    if (ImGui::TreeNode("Rotation")) {
+      gui.CheckBox("rotation", "转头");
+      ImGui::TreePop();
+    }
   });
   setOnTick([](Module *module) {
     bool enabled = false;
