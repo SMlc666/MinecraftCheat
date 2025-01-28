@@ -19,6 +19,7 @@ const std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"Actor::getHealth", 0x724DF58},
     {"Player::getSupplies", 0x6CEABB4},
     {"ItemStackBase::isBlock", 0x858FC20},
+    {"ItemStackBase::isNull", 0x858E888},
     {"LevelRenderer::renderLevel", 0x4BA4690},
     {"LocalPlayer::NormalTick", 0x5579B68},
     {"Actor::lerpMotion", 0x7252FA4},
