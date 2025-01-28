@@ -4,6 +4,7 @@
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/minecraft.hpp"
+#include "game/minecraft/world/item/ItemStack.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
 #include "game/minecraft/world/level/block/BlockSource.hpp"
 #include "imgui/imgui.h"
@@ -115,6 +116,26 @@ void drawDebugMenu() {
           g_log_tool.message(
               LogLevel::DEBUG, "DEBUG",
               std::format("BlockSource: {:p}", reinterpret_cast<void *>(blockSource)));
+        }
+      }
+      ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Item")) {
+      ItemStack *item{};
+      if (localPlayer != nullptr) {
+        item = localPlayer->getSelectedItem();
+      }
+      if (ImGui::Button("get selected item")) {
+        if (item != nullptr) {
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("Item: {:p}", reinterpret_cast<void *>(item)));
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("isBlock")) {
+        if (item != nullptr) {
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("Item isBlock: {}", item->isBlock()));
         }
       }
       ImGui::TreePop();
