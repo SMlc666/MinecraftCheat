@@ -19,7 +19,7 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"verticalModify", 0.0F},
 };
 MemTool::Hook Actor_lerpMotion_;
-static float Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
+static float Actor_lerpMotion(Actor *actor, glm::vec3 *Motion) {
   try {
     bool enabled = g_md->getGUI().Get<bool>("enabled");
     if (enabled) {
@@ -30,9 +30,9 @@ static float Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
           glm::vec3 originalMotion = actor->getMotion();
           auto horizontalModify = g_md->getGUI().Get<float>("horizontalModify");
           auto verticalModify = g_md->getGUI().Get<float>("verticalModify");
-          Motion = {originalMotion.x + Motion.x * horizontalModify,
-                    originalMotion.y + Motion.y * verticalModify,
-                    originalMotion.z + Motion.z * horizontalModify};
+          *Motion = glm::vec3(originalMotion.x + Motion->x * horizontalModify,
+                              originalMotion.y + Motion->y * verticalModify,
+                              originalMotion.z + Motion->z * horizontalModify);
         }
       }
     }
