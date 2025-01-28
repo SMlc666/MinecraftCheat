@@ -52,7 +52,7 @@ static bool isBot(Player *player) {
 }
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
-  setOnDisable([](Module *module) {});
+  setOnDisable([](Module *module) { g_Target = nullptr; });
   setOnDrawGUI([](Module *module) {
     auto &gui = module->getGUI();
     gui.SliderFloat("range", "范围", 0.0F, 10.0F);
