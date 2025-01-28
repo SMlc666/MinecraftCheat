@@ -28,7 +28,7 @@ public:
   //vtable index: 5
   virtual void startBuildBlock(BlockPos const &pos, uchar face);
   //vtable index: 6
-  virtual bool buildBlock(BlockPos const &pos, uchar face, bool const isSimTick);
+  virtual bool buildBlock(BlockPos const &pos, uchar face);
   //vtable index: 7
   virtual void continueBuildBlock(BlockPos const &pos, uchar face);
   //vtable index: 8
