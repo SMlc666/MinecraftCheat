@@ -19,21 +19,24 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
 };
 MemTool::Hook Actor_lerpMotion_;
 static void Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
-  bool enabled = g_md->getGUI().Get<bool>("enabled");
-  if (enabled) {
-    ClientInstance *instance = runtimes::getClientInstance();
-    if (instance != nullptr) {
-      LocalPlayer *player = instance->getLocalPlayer();
-      if (player != nullptr) {
-        if (player == actor) {
-          auto horizontalModify = g_md->getGUI().Get<float>("horizontalModify");
-          auto verticalModify = g_md->getGUI().Get<float>("verticalModify");
-          Motion.x *= horizontalModify;
-          Motion.z *= horizontalModify;
-          Motion.y *= verticalModify;
+  try {
+    bool enabled = g_md->getGUI().Get<bool>("enabled");
+    if (enabled) {
+      ClientInstance *instance = runtimes::getClientInstance();
+      if (instance != nullptr) {
+        LocalPlayer *player = instance->getLocalPlayer();
+        if (player != nullptr) {
+          if (player == actor) {
+            auto horizontalModify = g_md->getGUI().Get<float>("horizontalModify");
+            auto verticalModify = g_md->getGUI().Get<float>("verticalModify");
+            Motion.x *= horizontalModify;
+            Motion.z *= horizontalModify;
+            Motion.y *= verticalModify;
+          }
         }
       }
     }
+  } catch (const std::exception &e) {
   }
   Actor_lerpMotion_.call<void>(actor, Motion);
 }
