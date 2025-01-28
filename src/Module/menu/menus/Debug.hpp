@@ -1,7 +1,9 @@
 #pragma once
+#include "game/minecraft/actor/actor.hpp"
 #include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/actor/player/player.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
+#include "game/minecraft/actor/provider/ActorCollision.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/minecraft.hpp"
 #include "game/minecraft/world/item/ItemStack.hpp"
@@ -73,6 +75,13 @@ void drawDebugMenu() {
         g_log_tool.message(
             LogLevel::DEBUG, "DEBUG",
             std::format("LocalPlayer Motion: {} , {} , {}", motion.x, motion.y, motion.z));
+      }
+    }
+    if (ImGui::Button("isOnGround")) {
+      if (localPlayer != nullptr) {
+        g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                           std::format("LocalPlayer isOnGround: {}",
+                                       ActorCollision::isOnGround(localPlayer->mEntityContext)));
       }
     }
     if (ImGui::TreeNode("Dimension")) {
