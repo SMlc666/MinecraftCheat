@@ -1,6 +1,7 @@
 #include "Velocity.hpp"
 #include "MemTool.hpp"
 #include "Module.hpp"
+#include "base/mcint.hpp"
 #include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "glm/ext/vector_float3.hpp"
@@ -18,7 +19,7 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"verticalModify", 0.0F},
 };
 MemTool::Hook Actor_lerpMotion_;
-static float Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
+static int64 Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
   try {
     bool enabled = g_md->getGUI().Get<bool>("enabled");
     if (enabled) {
@@ -37,7 +38,7 @@ static float Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
     }
   } catch (const std::exception &e) {
   }
-  auto ret = Actor_lerpMotion_.call<float>(actor, Motion);
+  auto ret = Actor_lerpMotion_.call<int64>(actor, Motion);
   return ret;
 }
 cheat::Velocity::Velocity() : Module("Velocity", MenuType::COMBAT_MENU, ConfigData) {
