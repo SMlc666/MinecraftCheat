@@ -65,6 +65,15 @@ void drawDebugMenu() {
         localPlayer->getGameMode().attack(*localPlayer);
       }
     }
+    ImGui::SameLine();
+    if (ImGui::Button("get motion")) {
+      if (localPlayer != nullptr) {
+        auto motion = localPlayer->getMotion();
+        g_log_tool.message(
+            LogLevel::DEBUG, "DEBUG",
+            std::format("LocalPlayer Motion: {} , {} , {}", motion.x, motion.y, motion.z));
+      }
+    }
     if (ImGui::TreeNode("Dimension")) {
       Dimension *dimension{};
       if (localPlayer != nullptr) {
