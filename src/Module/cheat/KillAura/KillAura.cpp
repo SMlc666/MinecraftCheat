@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include <random>
 static const std::vector<std::string> PriorityItems = {"Health", "Distance", "Random"};
+static const std::vector<std::string> RotationItems = {"Lock", "Approximate"};
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"mincps", 10},   {"maxcps", 20},
     {"range", 5.0F},    {"swing", false},    {"attackNum", 1}, {"antibot", false},
