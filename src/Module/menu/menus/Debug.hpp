@@ -133,67 +133,92 @@ void drawDebugMenu() {
       if (ImGui::Button("get block")) {
         if (blockSource != nullptr) {
           glm::ivec3 pos = localPlayer->getPosition();
-          auto block = blockSource->getBlock(pos.x, pos.y, pos.z);
+          auto *block = blockSource->getBlock(pos.x, pos.y - 2, pos.z);
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("Block: {:p}", reinterpret_cast<void *>(block)));
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("get block legacy")) {
+        if (blockSource != nullptr) {
+          glm::ivec3 pos = localPlayer->getPosition();
+          auto *block = blockSource->getBlock(pos.x, pos.y - 2, pos.z);
           if (block != nullptr) {
-            g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                               std::format("Block: {}", block->mBlockLegacy->getName()));
-          }
-          ImGui::TreePop();
-        }
-      }
-      if (ImGui::TreeNode("Item")) {
-        ItemStack *item{};
-        if (localPlayer != nullptr) {
-          item = localPlayer->getSelectedItem();
-        }
-        if (ImGui::Button("get selected item")) {
-          if (item != nullptr) {
-            g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                               std::format("Item: {:p}", reinterpret_cast<void *>(item)));
-          }
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("isBlock")) {
-          if (item != nullptr) {
-            g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                               std::format("Item isBlock: {}", item->isBlock()));
-          }
-        }
-        ImGui::TreePop();
-      }
-      if (ImGui::TreeNode("ClientInstance")) {
-        if (ImGui::Button("get client instance")) {
-          if (instance != nullptr) {
+            auto *blockLegacy = block->mBlockLegacy;
             g_log_tool.message(
                 LogLevel::DEBUG, "DEBUG",
-                std::format("ClientInstance: {:p}", reinterpret_cast<void *>(instance)));
+                std::format("BlockLegacy: {:p}", reinterpret_cast<void *>(blockLegacy)));
           }
         }
-        ImGui::SameLine();
-        if (ImGui::Button("get minecraft")) {
-          if (instance != nullptr) {
-            Minecraft *minecraft = instance->minecraftPtr;
-            if (minecraft != nullptr) {
-              g_log_tool.message(
-                  LogLevel::DEBUG, "DEBUG",
-                  std::format("Minecraft: {:p}", reinterpret_cast<void *>(minecraft)));
-            }
-          }
-        }
-        ImGui::TreePop();
       }
-      if (ImGui::TreeNode("Minecraft")) {
-        if (ImGui::Button("getSimPaused")) {
-          if (instance != nullptr) {
-            Minecraft *minecraft = instance->minecraftPtr;
-            if (minecraft != nullptr) {
+      ImGui::SameLine();
+      if (ImGui::Button("get block name")) {
+        if (blockSource != nullptr) {
+          glm::ivec3 pos = localPlayer->getPosition();
+          auto *block = blockSource->getBlock(pos.x, pos.y - 2, pos.z);
+          if (block != nullptr) {
+            auto *blockLegacy = block->mBlockLegacy;
+            if (blockLegacy != nullptr) {
               g_log_tool.message(LogLevel::DEBUG, "DEBUG",
-                                 std::format("getSimPaused: {}", minecraft->getSimPaused()));
+                                 std::format("BlockLegacy Name: {}", blockLegacy->getName()));
             }
           }
         }
-        ImGui::TreePop();
       }
       ImGui::TreePop();
     }
+    if (ImGui::TreeNode("Item")) {
+      ItemStack *item{};
+      if (localPlayer != nullptr) {
+        item = localPlayer->getSelectedItem();
+      }
+      if (ImGui::Button("get selected item")) {
+        if (item != nullptr) {
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("Item: {:p}", reinterpret_cast<void *>(item)));
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("isBlock")) {
+        if (item != nullptr) {
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("Item isBlock: {}", item->isBlock()));
+        }
+      }
+      ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("ClientInstance")) {
+      if (ImGui::Button("get client instance")) {
+        if (instance != nullptr) {
+          g_log_tool.message(
+              LogLevel::DEBUG, "DEBUG",
+              std::format("ClientInstance: {:p}", reinterpret_cast<void *>(instance)));
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("get minecraft")) {
+        if (instance != nullptr) {
+          Minecraft *minecraft = instance->minecraftPtr;
+          if (minecraft != nullptr) {
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                               std::format("Minecraft: {:p}", reinterpret_cast<void *>(minecraft)));
+          }
+        }
+      }
+      ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Minecraft")) {
+      if (ImGui::Button("getSimPaused")) {
+        if (instance != nullptr) {
+          Minecraft *minecraft = instance->minecraftPtr;
+          if (minecraft != nullptr) {
+            g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                               std::format("getSimPaused: {}", minecraft->getSimPaused()));
+          }
+        }
+      }
+      ImGui::TreePop();
+    }
+    ImGui::TreePop();
   }
+}
