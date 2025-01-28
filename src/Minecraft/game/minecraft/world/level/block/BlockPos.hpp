@@ -1,3 +1,3 @@
 #pragma once
 #include "glm/glm.hpp"
-using BlockPos = glm::vec3;
+using BlockPos = glm::ivec3;
