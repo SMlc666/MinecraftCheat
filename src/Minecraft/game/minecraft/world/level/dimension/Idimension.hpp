@@ -1,7 +1,7 @@
 #pragma once
 
+#include "game/minecraft/world/level/block/BlockPos.hpp"
 #include <functional>
-class BlockPos;
 class Packet;
 class Player;
 class Vec3;

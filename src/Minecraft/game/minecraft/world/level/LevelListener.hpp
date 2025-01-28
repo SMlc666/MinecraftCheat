@@ -5,7 +5,6 @@
 enum class ParticleType;
 struct ResolvedItemIconInfo;
 class HashedString;
-class BlockPos;
 class CompoundTag;
 class MolangVariableMap;
 struct ScreenshotOptions;

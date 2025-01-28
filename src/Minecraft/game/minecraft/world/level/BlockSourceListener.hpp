@@ -2,13 +2,12 @@
 
 #include "base/mcint.hpp"
 #include "BlockChangedEventTarget.hpp"
+#include "game/minecraft/world/level/block/BlockPos.hpp"
 class BlockSource;
 class BlockActor;
 class Actor;
 class Block;
-class BlockPos;
 struct ActorBlockSyncMessage;
-class BlockPos;
 
 class BlockSourceListener {
 public:

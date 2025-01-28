@@ -29,15 +29,14 @@ public:
   virtual ~Dimension();
   virtual bool isNaturalDimension() const;
   virtual DimensionType getDimensionId() const;
-  virtual void sendPacketForPosition(class BlockPos const &, class Packet const &,
-                                     class Player const *);
+  virtual void sendPacketForPosition(BlockPos const &, Packet const &, Player const *);
   virtual void flushLevelChunkGarbageCollector();
-  virtual void initializeWithLevelStorageManager(class LevelStorageManager &);
+  virtual void initializeWithLevelStorageManager(LevelStorageManager &);
   virtual void init();
   virtual void tick();
   virtual void tickRedstone();
   virtual std::unique_ptr<class WorldGenerator> createGenerator() = 0;
-  virtual void upgradeLevelChunk(class ChunkSource &, class LevelChunk &, class LevelChunk &) = 0;
+  virtual void upgradeLevelChunk(class ChunkSource &, LevelChunk &, LevelChunk &) = 0;
   virtual void fixWallChunk(class ChunkSource &, class LevelChunk &) = 0;
   virtual bool levelChunkNeedsUpgrade(class LevelChunk const &) const = 0;
   virtual bool isValidSpawn(int, int) const;
@@ -48,7 +47,7 @@ public:
   virtual class HashedString getDefaultBiome() const;
   virtual bool mayRespawnViaBed() const;
   virtual bool hasGround() const;
-  virtual class BlockPos getSpawnPos() const;
+  virtual BlockPos getSpawnPos() const;
   virtual int getSpawnYPosition() const;
   virtual bool hasBedrockFog();
   virtual float getClearColorScale();
@@ -59,7 +58,7 @@ public:
   virtual bool forceCheckAllNeighChunkSavedStat() const;
   virtual class Vec3 translatePosAcrossDimension(class Vec3 const &, DimensionType) const = 0;
   virtual void sendBroadcast(class Packet const &, class Player *);
-  virtual bool is2DPositionRelevantForPlayer(class BlockPos const &, class Player &) const;
+  virtual bool is2DPositionRelevantForPlayer(BlockPos const &, class Player &) const;
   virtual bool isActorRelevantForPlayer(class Player &, class Actor const &) const;
   virtual class BaseLightTextureImageBuilder *getLightTextureImageBuilder() const;
   virtual class DimensionBrightnessRamp const &getBrightnessRamp() const;
@@ -68,7 +67,7 @@ public:
   virtual void _upgradeOldLimboEntity(class CompoundTag &, LimboEntitiesVersion) = 0;
   virtual std::unique_ptr<class ChunkSource>
       _wrapStorageForVersionCompatibility(std::unique_ptr<class ChunkSource>, StorageVersion) = 0;
-  virtual void onBlockChanged(class BlockSource &source, class BlockPos const &pos, uint layer,
+  virtual void onBlockChanged(class BlockSource &source, BlockPos const &pos, uint layer,
                               class Block const &block, class Block const &oldBlock,
                               int updateFlags, struct ActorBlockSyncMessage const *syncMsg,
                               BlockChangedEventTarget eventTarget, class Actor *blockChangeSource);

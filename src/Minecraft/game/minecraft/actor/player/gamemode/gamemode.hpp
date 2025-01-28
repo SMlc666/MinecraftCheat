@@ -2,7 +2,6 @@
 #include "base/mcint.hpp"
 #include "game/minecraft/actor/player/player.hpp"
 #include <functional>
-class BlockPos;
 class Vec3;
 class InputMode;
 class ItemStack;
