@@ -21,12 +21,14 @@ public:
   void setOnLoad(std::function<void(Module *)> func);
   void setOnDrawGUI(std::function<void(Module *)> func);
   void setOnDraw(std::function<void(Module *)> func);
+  void setOnRender(std::function<void(Module *)> func);
   void onTick();
   void onEnable();
   void onDisable();
   void onLoad();
   void onDrawGUI();
   void onDraw();
+  void onRender();
   GUI &getGUI();
 
 private:
@@ -39,5 +41,6 @@ private:
   std::function<void(Module *)> m_onLoad;
   std::function<void(Module *)> m_onDrawGUI;
   std::function<void(Module *)> m_onDraw;
+  std::function<void(Module *)> m_onRender;
   GUI m_gui;
 };

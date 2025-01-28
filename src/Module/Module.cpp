@@ -1,6 +1,7 @@
 #include "Module.hpp"
 #include "gui/gui.hpp"
 #include "imgui/imgui.h"
+#include <functional>
 #include <unordered_map>
 #include <utility>
 Module::Module(std::string name, MenuType type, std::unordered_map<std::string, std::any> configMap)
@@ -38,6 +39,9 @@ void Module::setOnDrawGUI(std::function<void(Module *)> func) {
 }
 void Module::setOnDraw(std::function<void(Module *)> func) {
   m_onDraw = std::move(func);
+}
+void Module::onRender(std::function<void(Module *)> func) {
+  m_onRender = std::move(func);
 }
 void Module::onTick() {
   if (m_onTick) {
@@ -88,6 +92,15 @@ void Module::onDraw() {
   bool isEnabled = m_gui.Get<bool>("enabled");
   if (isEnabled) {
     m_onDraw(this);
+  }
+}
+void Module::onRender() {
+  if (!m_onRender) {
+    return;
+  }
+  bool isEnabled = m_gui.Get<bool>("enabled");
+  if (isEnabled) {
+    m_onRender(this);
   }
 }
 GUI &Module::getGUI() {
