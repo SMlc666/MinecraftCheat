@@ -262,6 +262,9 @@ static ImGuiKey ImGui_ImplAndroid_KeyCodeToImGuiKey(int32_t key_code) {
 }
 
 int32_t ImGui_ImplAndroid_HandleInputEvent(const AInputEvent *input_event) {
+  if (input_event == nullptr) {
+    return 0;
+  }
   ImGuiIO &io = ImGui::GetIO();
   int32_t event_type = AInputEvent_getType(input_event);
   switch (event_type) {
