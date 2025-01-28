@@ -1,5 +1,6 @@
 #pragma once
 #include "game/common/gamerefs/WeakRef.hpp"
+#include "game/minecraft/world/entity/EntityContext.hpp"
 #include "game/minecraft/world/level/BlockSourceListener.hpp"
 #include <cstddef>
 #include "glm/fwd.hpp"
@@ -18,7 +19,8 @@ static_assert(offsetof(PosMotion, motion) == 24);
 class Actor {
 public:
   uintptr_t **vtable;
-  std::byte padding8[0x2C8];
+  EntityContext mEntityContext;
+  std::byte padding8[0x2B0];
   Dimension *mDimension;
   WeakRef<Dimension> WeakRef_mDimension;
   std::byte padding2E8[0x2C];
@@ -43,6 +45,7 @@ public:
   [[nodiscard]] glm::vec3 getMotion() const;
   void setMotion(glm::vec3 motion);
 }; // namespace class Actor
+static_assert(sizeof(EntityContext) == 24);
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
 static_assert(offsetof(Actor, mPosMotion) == 0x318);
 static_assert(offsetof(Actor, mRot) == 808);
