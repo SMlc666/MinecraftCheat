@@ -178,9 +178,11 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
   setOnRender([](Module *module) {
     bool enabled = false;
     bool rotation = false;
+    int rotationMode = 0;
     try {
       enabled = module->getGUI().Get<bool>("enabled");
       rotation = module->getGUI().Get<bool>("rotation");
+      rotationMode = module->getGUI().Get<int>("rotationMode");
     } catch (const std::exception &e) {
       return;
     }
