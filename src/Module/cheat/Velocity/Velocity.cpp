@@ -18,7 +18,7 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"verticalModify", 0.0F},
 };
 MemTool::Hook Actor_lerpMotion_;
-static void Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
+static float Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
   try {
     bool enabled = g_md->getGUI().Get<bool>("enabled");
     if (enabled) {
@@ -37,7 +37,8 @@ static void Actor_lerpMotion(Actor *actor, glm::vec3 &Motion) {
     }
   } catch (const std::exception &e) {
   }
-  Actor_lerpMotion_.call<void>(actor, Motion);
+  auto ret = Actor_lerpMotion_.call<float>(actor, Motion);
+  return ret;
 }
 cheat::Velocity::Velocity() : Module("Velocity", MenuType::COMBAT_MENU, ConfigData) {
   setOnLoad([](Module *module) {
