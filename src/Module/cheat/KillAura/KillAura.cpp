@@ -86,7 +86,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     int failurerate = 0;
     float fov = NAN;
     int priority = 0;
-    g_Target = nullptr;
     try {
       enabled = module->getGUI().Get<bool>("enabled");
       Range = module->getGUI().Get<float>("range");
@@ -150,6 +149,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       return true;
     });
     if (!PlayerList.empty()) {
+      g_Target = nullptr;
       if (priority == 0) {
         std::sort(PlayerList.begin(), PlayerList.end(),
                   [](Player *a, Player *b) { return a->getHealth() < b->getHealth(); });
