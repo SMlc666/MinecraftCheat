@@ -14,8 +14,9 @@
 #include <random>
 static const std::vector<std::string> PriorityItems = {"Health", "Distance", "Random"};
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"cps", 10},     {"range", 5.0F},    {"swing", false},
-    {"attackNum", 1},   {"antibot", false},  {"fov", 180.0F}, {"failurerate", 0}, {"priority", 0}};
+    {"enabled", false}, {"shortcut", false}, {"mincps", 10},   {"maxcps", 20},
+    {"range", 5.0F},    {"swing", false},    {"attackNum", 1}, {"antibot", false},
+    {"fov", 180.0F},    {"failurerate", 0},  {"priority", 0}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
 static std::random_device g_rd;
@@ -50,7 +51,13 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
   setOnDrawGUI([](Module *module) {
     auto &gui = module->getGUI();
     gui.SliderFloat("range", "范围", 0.0F, 10.0F);
-    gui.SliderInt("cps", "攻击速度", 1, 20);
+    gui.SliderInt("mincps", "最小攻击速度", 1, 20, [module](int value) {
+      int maxcps = module->getGUI().Get<int>("maxcps");
+      if (value > maxcps) {
+        module->getGUI().Set<int>("maxcps", value);
+      }
+    });
+    gui.SliderInt("maxcps", "最大攻击速度", 1, 20);
     gui.SliderInt("attackNum", "攻击数量", 1, 20);
     gui.CheckBox("swing", "挥手");
     gui.CheckBox("antibot", "反机器人");
@@ -62,7 +69,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     bool enabled = false;
     float Range = NAN;
     bool swing = false;
-    int cps = 0;
+    int mincps = 0;
+    int maxcps = 0;
     int attackNum = 0;
     bool antibot = false;
     int failurerate = 0;
@@ -72,18 +80,20 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       enabled = module->getGUI().Get<bool>("enabled");
       Range = module->getGUI().Get<float>("range");
       swing = module->getGUI().Get<bool>("swing");
-      cps = module->getGUI().Get<int>("cps");
+      mincps = module->getGUI().Get<int>("mincps");
+      maxcps = module->getGUI().Get<int>("maxcps");
       attackNum = module->getGUI().Get<int>("attackNum");
       antibot = module->getGUI().Get<bool>("antibot");
-      fov = module->getGUI().Get<float>("fov");
       failurerate = module->getGUI().Get<int>("failurerate");
+      fov = module->getGUI().Get<float>("fov");
       priority = module->getGUI().Get<int>("priority");
     } catch (const std::exception &e) {
       return;
     }
     int attackCount = 0;
     auto now = std::chrono::steady_clock::now();
-    auto interval = std::chrono::milliseconds(1000 / std::max(cps, 1));
+    int rmcps = std::uniform_int_distribution<>(std::min(mincps, maxcps), maxcps)(g_gen);
+    auto interval = std::chrono::milliseconds(1000 / rmcps);
     if (!enabled) {
       return;
     }
