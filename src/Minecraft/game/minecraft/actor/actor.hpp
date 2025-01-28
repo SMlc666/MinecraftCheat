@@ -10,8 +10,10 @@ class Level;
 class BlockSource;
 struct PosMotion {
   glm::vec3 pos;
+  glm::vec3 paddingpos;
   glm::vec3 motion;
 };
+static_assert(offsetof(PosMotion, motion) == 24);
 #include <cstdint>
 class Actor {
 public:
