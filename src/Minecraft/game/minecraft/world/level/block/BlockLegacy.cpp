@@ -1,4 +1,6 @@
 #include "BlockLegacy.hpp"
+#include <string>
 std::string BlockLegacy::getName() const {
-  return *name;
+  const std::string a = *name;
+  return a;
 }
