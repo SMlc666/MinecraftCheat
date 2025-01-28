@@ -8,6 +8,7 @@
 #include "cheat/Network/Network.hpp"
 #include "cheat/Seckill/Seckill.hpp"
 #include "cheat/Timer/Timer.hpp"
+#include "cheat/Velocity/Velocity.hpp"
 void cheatSetup() {
   ModuleManager::addModule(new cheat::SpinAttack);
   ModuleManager::addModule(new cheat::Blink);
@@ -17,4 +18,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::ClickGUI);
   ModuleManager::addModule(new cheat::Seckill);
   ModuleManager::addModule(new cheat::KillAura);
+  ModuleManager::addModule(new cheat::Velocity);
 }
