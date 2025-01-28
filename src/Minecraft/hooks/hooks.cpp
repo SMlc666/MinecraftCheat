@@ -12,6 +12,7 @@
 #include <string>
 MemTool::Hook ClientInstance_onStartJoinGame_;
 MemTool::Hook LocalPlayer_NormalTick_;
+MemTool::Hook LevelRenderer_renderLevel_;
 int64 ClientInstance_onStartJoinGame(ClientInstance *self, char a1, uint8 *a2, uint a3) {
   auto ret = ClientInstance_onStartJoinGame_.call<int64>(self, a1, a2, a3);
   runtimes::setClientInstance(self);
@@ -25,6 +26,11 @@ void LocalPlayer_NormalTick(LocalPlayer *self) {
   LocalPlayer_NormalTick_.call<void>(self);
   ModuleManager::tickAllModules();
 }
+int64 LevelRenderer_renderLevel(int64 a1, int64 a2, int64 a3) {
+  ModuleManager::renderAllModules();
+  auto ret = LevelRenderer_renderLevel_.call<int64>(a1, a2, a3);
+  return ret;
+}
 void hooksInit() {
   {
     void *clientInstance = getSign<void *>("ClientInstance::onStartJoinGame");
@@ -35,6 +41,11 @@ void hooksInit() {
     void *localPlayer = getSign<void *>("LocalPlayer::NormalTick");
     LocalPlayer_NormalTick_ = MemTool::Hook(
         localPlayer, reinterpret_cast<void *>(LocalPlayer_NormalTick), nullptr, false);
+  }
+  {
+    void *levelRenderer = getSign<void *>("LevelRenderer::renderLevel");
+    LevelRenderer_renderLevel_ = MemTool::Hook(
+        levelRenderer, reinterpret_cast<void *>(LevelRenderer_renderLevel), nullptr, false);
   }
   g_log_tool.message(LogLevel::INFO, "HooksInit", "Hooks inited");
 }
