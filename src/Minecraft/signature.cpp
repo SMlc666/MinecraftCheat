@@ -23,6 +23,7 @@ const std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"LevelRenderer::renderLevel", 0x4BA4690},
     {"LocalPlayer::NormalTick", 0x5579B68},
     {"Actor::lerpMotion", 0x7252FA4},
+    {"ActorCollision::isOnGround", 0x6CF032C},
 };
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
