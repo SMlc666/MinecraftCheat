@@ -40,7 +40,7 @@ void Module::setOnDrawGUI(std::function<void(Module *)> func) {
 void Module::setOnDraw(std::function<void(Module *)> func) {
   m_onDraw = std::move(func);
 }
-void Module::onRender(std::function<void(Module *)> func) {
+void Module::setOnRender(std::function<void(Module *)> func) {
   m_onRender = std::move(func);
 }
 void Module::onTick() {
