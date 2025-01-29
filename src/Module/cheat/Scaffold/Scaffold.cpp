@@ -69,7 +69,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       } else {
         face = (diff.z > 0) ? 2 : 3;
       }
-      buildBlock(player, placePos, face);
+      buildScaffold(player, placePos, face);
     }
     if (motion.y > 0) {
       glm::vec3 upTargetPos = playerPos;
@@ -78,7 +78,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       if (canPlace(upTargetPos)) {
         BlockPos upPlacePos(static_cast<int>(upTargetPos.x), static_cast<int>(upTargetPos.y),
                             static_cast<int>(upTargetPos.z));
-        buildBlock(player, upPlacePos, 0);
+        buildScaffold(player, upPlacePos, 0);
       }
     }
   });
