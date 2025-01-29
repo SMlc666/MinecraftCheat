@@ -5,7 +5,6 @@
 #include <cstddef>
 #include "glm/fwd.hpp"
 #include "glm/glm.hpp"
-#include <memory>
 class Dimension;
 class Level;
 class BlockSource;
