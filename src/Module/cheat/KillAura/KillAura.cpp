@@ -50,6 +50,27 @@ static bool isBot(Player *player) {
   float Yaw = player->getYaw();
   return Yaw == 0.0F && Pitch == 0.0F;
 }
+static bool ProcessPlayer(Player &player, LocalPlayer *localPlayer, bool antibot, float range,
+                          float fov, std::vector<Player *> &playerList) {
+  if (&player == localPlayer)
+    return true;
+
+  if (isBot(&player) && antibot)
+    return true;
+
+  const float distance = localPlayer->getDistance(&player);
+  if (distance > range)
+    return true;
+
+  if (!isInFov(localPlayer, &player, fov))
+    return true;
+
+  if (!player.isAlive() || player.getHealth() <= 0)
+    return true;
+
+  playerList.push_back(&player);
+  return true;
+}
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) { g_Target = nullptr; });
@@ -123,30 +144,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       return;
     }
     PlayerList.clear();
-    mDimension->forEachPlayer([mLocalPlayer, antibot, Range, fov](Player &player) {
-      if (&player == mLocalPlayer) {
-        return true;
-      }
-      if (isBot(&player) && antibot) {
-        return true;
-      }
-      float mDistance = mLocalPlayer->getDistance(&player);
-      if (mDistance > Range) {
-        return true;
-      }
-      if (!isInFov(mLocalPlayer, &player, fov)) {
-        return true;
-      }
-      bool isAlive = player.isAlive();
-      if (!isAlive) {
-        return true;
-      }
-      int health = player.getHealth();
-      if (health <= 0) {
-        return true;
-      }
-      PlayerList.push_back(&player);
-      return true;
+    mDimension->forEachPlayer([=](Player &player) {
+      return ProcessPlayer(player, mLocalPlayer, antibot, Range, fov, PlayerList);
     });
     if (!PlayerList.empty()) {
       g_Target = nullptr;
