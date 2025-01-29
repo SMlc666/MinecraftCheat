@@ -1,6 +1,7 @@
 #pragma once
 #include "menu/menu.hpp"
 #include <any>
+#include <functional>
 #include <unordered_map>
 #include "gui/gui.hpp"
 class Module {
@@ -22,6 +23,7 @@ public:
   void setOnDrawGUI(std::function<void(Module *)> func);
   void setOnDraw(std::function<void(Module *)> func);
   void setOnRender(std::function<void(Module *)> func);
+  void setOnPostRender(std::function<void(Module *)> func);
   void onTick();
   void onEnable();
   void onDisable();
@@ -29,6 +31,7 @@ public:
   void onDrawGUI();
   void onDraw();
   void onRender();
+  void onPostRender();
   GUI &getGUI();
 
 private:
