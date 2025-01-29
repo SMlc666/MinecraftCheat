@@ -11,6 +11,7 @@
 #include "game/minecraft/world/level/block/BlockLegacy.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
 #include "game/minecraft/world/level/block/BlockSource.hpp"
+#include "gsl/pointers"
 #include "imgui/imgui.h"
 #include "runtimes/runtimes.hpp"
 #include "log.hpp"
@@ -144,7 +145,7 @@ void drawDebugMenu() {
           glm::ivec3 pos = localPlayer->getPosition();
           auto *block = blockSource->getBlock(pos.x, pos.y - 2, pos.z);
           if (block != nullptr) {
-            auto *blockLegacy = block->mBlockLegacy;
+            gsl::not_null<BlockLegacy *> blockLegacy = block->mBlockLegacy;
             g_log_tool.message(
                 LogLevel::DEBUG, "DEBUG",
                 std::format("BlockLegacy: {:p}", reinterpret_cast<void *>(blockLegacy)));
@@ -157,7 +158,7 @@ void drawDebugMenu() {
           glm::ivec3 pos = localPlayer->getPosition();
           auto *block = blockSource->getBlock(pos.x, pos.y - 2, pos.z);
           if (block != nullptr) {
-            auto *blockLegacy = block->mBlockLegacy;
+            gsl::not_null<BlockLegacy *> blockLegacy = block->mBlockLegacy;
             if (blockLegacy != nullptr) {
               g_log_tool.message(LogLevel::DEBUG, "DEBUG",
                                  std::format("BlockLegacy Name: {}", blockLegacy->getName()));
