@@ -53,9 +53,17 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     glm::vec3 motion = player->getMotion();
     glm::vec3 targetPos = playerPos;
     targetPos.y -= 1.0f;
-    if (std::abs(motion.x) > 0.01f || std::abs(motion.z) > 0.01f) {
-      targetPos.x += (motion.x > 0 ? 1.0f : (motion.x < 0 ? -1.0f : 0.0f));
-      targetPos.z += (motion.z > 0 ? 1.0f : (motion.z < 0 ? -1.0f : 0.0f));
+
+    // 修改后的移动方向处理逻辑
+    float absX = std::abs(motion.x);
+    float absZ = std::abs(motion.z);
+    if (absX > 0.01f || absZ > 0.01f) {
+      // 只处理主要移动方向
+      if (absX > absZ) {
+        targetPos.x += (motion.x > 0 ? 1.0f : -1.0f);
+      } else {
+        targetPos.z += (motion.z > 0 ? 1.0f : -1.0f);
+      }
     }
     if (canPlace(targetPos)) {
       BlockPos placePos(static_cast<int>(targetPos.x), static_cast<int>(targetPos.y),
