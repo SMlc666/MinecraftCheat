@@ -148,7 +148,8 @@ void drawDebugMenu() {
             gsl::not_null<BlockLegacy *> blockLegacy = block->mBlockLegacy;
             g_log_tool.message(
                 LogLevel::DEBUG, "DEBUG",
-                std::format("BlockLegacy: {:p}", reinterpret_cast<void *>(blockLegacy)));
+                std::format("BlockLegacy: {:p}",
+                            reinterpret_cast<void *>(static_cast<BlockLegacy *>(blockLegacy))));
           }
         }
       }
