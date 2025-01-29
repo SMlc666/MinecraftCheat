@@ -52,24 +52,41 @@ static bool isBot(Player *player) {
 }
 static bool ProcessPlayer(Player &player, LocalPlayer *localPlayer, bool antibot, float range,
                           float fov, std::vector<Player *> &playerList) {
-  if (&player == localPlayer)
+  if (&player == localPlayer) {
     return true;
+  }
 
-  if (isBot(&player) && antibot)
+  if (isBot(&player) && antibot) {
     return true;
+  }
 
   const float distance = localPlayer->getDistance(&player);
-  if (distance > range)
+  if (distance > range) {
     return true;
+  }
 
-  if (!isInFov(localPlayer, &player, fov))
+  if (!isInFov(localPlayer, &player, fov)) {
     return true;
+  }
 
-  if (!player.isAlive() || player.getHealth() <= 0)
+  if (!player.isAlive() || player.getHealth() <= 0) {
     return true;
+  }
 
   playerList.push_back(&player);
   return true;
+}
+static bool hasPlayer(Dimension *dimension, LocalPlayer *localPlayer, bool antibot, float range,
+                      float fov) {
+  bool foundPlayer = false;
+  std::vector<Player *> playerList;
+  dimension->forEachPlayer([&](Player &player) {
+    if (ProcessPlayer(player, localPlayer, antibot, range, fov, playerList)) {
+      foundPlayer = true;
+    }
+    return true;
+  });
+  return foundPlayer;
 }
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
