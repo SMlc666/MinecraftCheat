@@ -19,15 +19,12 @@ static bool canPlace(const glm::vec3 &pos) {
   }
   return block->mBlockLegacy->getName().find("air") != std::string::npos;
 }
-void buildBlock(LocalPlayer *player, BlockPos pos, uchar face) {
-  bool swing = g_md->getGUI().Get<bool>("swing");
-  GameMode *gameMode = &player->getGameMode();
-  if (gameMode == nullptr) {
-    return;
-  }
-  gameMode->buildBlock(pos, face);
-  if (swing) {
-    player->swing();
+static void buildScaffold(LocalPlayer *player, const BlockPos &pos, uchar face) {
+  if (auto *gameMode = &player->getGameMode(); gameMode != nullptr) {
+    gameMode->buildBlock(pos, face);
+    if (g_md->getGUI().Get<bool>("swing")) {
+      player->swing();
+    }
   }
 }
 
