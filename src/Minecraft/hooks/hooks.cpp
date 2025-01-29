@@ -33,6 +33,7 @@ void LocalPlayer_NormalTick(LocalPlayer *self) {
 int64 LevelRenderer_renderLevel(int64 a1, int64 a2, int64 a3) {
   ModuleManager::renderAllModules();
   auto ret = LevelRenderer_renderLevel_.call<int64>(a1, a2, a3);
+  ModuleManager::postRenderAllModules();
   return ret;
 }
 void Network_LoopbackPacketSender_send(LoopbackPacketSender *self, Packet *packet) {
