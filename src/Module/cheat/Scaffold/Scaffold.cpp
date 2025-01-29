@@ -11,20 +11,15 @@
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"swing", false}};
-static bool canPlace(glm::vec3 pos) {
+static bool canPlace(const glm::vec3 &pos) {
   Block *block = runtimes::getClientInstance()->getRegion()->getBlock(
       static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(pos.z));
-  if (block == nullptr) {
+  if ((block == nullptr) || (block->mBlockLegacy == nullptr)) {
     return false;
   }
-  BlockLegacy *blockLegacy = block->mBlockLegacy;
-  if (blockLegacy == nullptr) {
-    return false;
-  }
-  std::string name = blockLegacy->getName();
-  return !(name.find("air") == std::string::npos);
+  return block->mBlockLegacy->getName().find("air") != std::string::npos;
 }
-static void buildBlock(LocalPlayer *player, BlockPos pos, uchar face) {
+void buildBlock(LocalPlayer *player, BlockPos pos, uchar face) {
   bool swing = g_md->getGUI().Get<bool>("swing");
   GameMode *gameMode = &player->getGameMode();
   if (gameMode == nullptr) {
