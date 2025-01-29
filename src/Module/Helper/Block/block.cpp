@@ -17,16 +17,16 @@ static const std::unordered_map<glm::ivec3, bool> mustPlaceMap = {
 };
 static const std::unordered_map<glm::ivec3, bool> canPlaceMap = {
     //以我的世界北方向为准
-    {glm::ivec3(0, -1, 0), true}, //下方
-    {glm::ivec3(0, 1, 0), true},  //上方
-    {glm::ivec3(0, 0, -1), true}, //前方
-    {glm::ivec3(0, 0, 1), true},  //后方
-    {glm::ivec3(-1, 0, 0), true}, //左侧
-    {glm::ivec3(1, 0, 0), true},  //右侧
-    {glm::ivec3(1, 0, -1), true}  //右上方
-    {glm::ivec3(1, 0, 1), true}   //右下方
-    {glm::ivec3(-1, 0, -1), true} //左上方
-    {glm::ivec3(-1, 0, 1), true}  //左下方
+    {glm::ivec3(0, -1, 0), true},  //下方
+    {glm::ivec3(0, 1, 0), true},   //上方
+    {glm::ivec3(0, 0, -1), true},  //前方
+    {glm::ivec3(0, 0, 1), true},   //后方
+    {glm::ivec3(-1, 0, 0), true},  //左侧
+    {glm::ivec3(1, 0, 0), true},   //右侧
+    {glm::ivec3(1, 0, -1), true},  //右上方
+    {glm::ivec3(1, 0, 1), true},   //右下方
+    {glm::ivec3(-1, 0, -1), true}, //左上方
+    {glm::ivec3(-1, 0, 1), true}   //左下方
 };
 
 bool Helper::Block::isAirBlock(const glm::ivec3 &pos) {
