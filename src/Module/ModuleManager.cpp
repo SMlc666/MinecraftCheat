@@ -63,6 +63,14 @@ void renderAllModules() {
     }
   }
 }
+void postRenderAllModules() {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  for (auto &pair : modules) {
+    if (pair.second != nullptr) {
+      pair.second->onPostRender();
+    }
+  }
+}
 void loadAllModules() {
   std::lock_guard<std::mutex> lockGuard(moduleMutex);
   for (auto &pair : modules) {
