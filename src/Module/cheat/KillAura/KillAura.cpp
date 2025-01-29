@@ -17,10 +17,10 @@
 static const std::vector<std::string> PriorityItems = {"Health", "Distance", "Random"};
 static const std::vector<std::string> RotationItems = {"Lock", "Approximate"};
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"mincps", 10},   {"maxcps", 20},
-    {"range", 5.0F},    {"swing", false},    {"attackNum", 1}, {"antibot", false},
-    {"fov", 180.0F},    {"failurerate", 0},  {"priority", 0},  {"rotation", false},
-    {"rotationMode", 0}};
+    {"enabled", false},  {"shortcut", false},      {"mincps", 10},   {"maxcps", 20},
+    {"range", 5.0F},     {"swing", false},         {"attackNum", 1}, {"antibot", false},
+    {"fov", 180.0F},     {"failurerate", 0},       {"priority", 0},  {"rotation", false},
+    {"rotationMode", 0}, {"rotationSlient", false}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
 static std::random_device g_rd;
@@ -113,6 +113,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     if (ImGui::TreeNode("Rotation")) {
       gui.CheckBox("rotation", "转头");
       gui.Selectable("rotationMode", "转头模式", RotationItems);
+      gui.CheckBox("rotationSlient", "无声转头");
       ImGui::TreePop();
     }
   });
