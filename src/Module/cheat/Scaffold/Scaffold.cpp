@@ -43,50 +43,100 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       return;
     }
     ItemStack *item = player->getSelectedItem();
-    if (item == nullptr) {
+    if (item == nullptr || !item->isBlock()) {
       return;
     }
-    if (!item->isBlock()) {
-      return;
-    }
+
     glm::vec3 playerPos = player->getPosition();
     glm::vec3 motion = player->getMotion();
-    glm::vec3 targetPos = playerPos;
-    targetPos.y -= 1.0f;
 
-    // 修改后的移动方向处理逻辑
-    float absX = std::abs(motion.x);
-    float absZ = std::abs(motion.z);
-    if (absX > 0.01f || absZ > 0.01f) {
-      // 只处理主要移动方向
-      if (absX > absZ) {
-        targetPos.x += (motion.x > 0 ? 1.0f : -1.0f);
-      } else {
-        targetPos.z += (motion.z > 0 ? 1.0f : -1.0f);
-      }
+    // 获取玩家视角
+    float yaw = player->getYaw();
+    // 将角度转换为弧度
+    float yawRad = yaw * (M_PI / 180.0f);
+
+    // 计算主要朝向 (-180到180度分为8个区域)
+    int direction = static_cast<int>((yaw + 180.0f + 22.5f) / 45.0f) % 8;
+
+    // 可能的放置位置
+    std::vector<glm::vec3> possiblePositions;
+    glm::vec3 basePos = playerPos;
+    basePos.y -= 1.0f; // 脚下位置
+
+    // 根据朝向添加主要方向和相邻方向的方块位置
+    switch (direction) {
+    case 0:                                                                   // 北 (Z-)
+      possiblePositions.push_back({basePos.x, basePos.y, basePos.z - 1});     // 前
+      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z - 1}); // 左前
+      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z - 1}); // 右前
+      break;
+
+    case 1:                                                                   // 东北
+      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z - 1}); // 右前
+      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z});     // 右
+      possiblePositions.push_back({basePos.x, basePos.y, basePos.z - 1});     // 前
+      break;
+
+    case 2:                                                                   // 东 (X+)
+      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z});     // 右
+      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z - 1}); // 右前
+      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z + 1}); // 右后
+      break;
+
+    case 3:                                                                   // 东南
+      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z + 1}); // 右后
+      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z});     // 右
+      possiblePositions.push_back({basePos.x, basePos.y, basePos.z + 1});     // 后
+      break;
+
+    case 4:                                                                   // 南 (Z+)
+      possiblePositions.push_back({basePos.x, basePos.y, basePos.z + 1});     // 后
+      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z + 1}); // 左后
+      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z + 1}); // 右后
+      break;
+
+    case 5:                                                                   // 西南
+      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z + 1}); // 左后
+      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z});     // 左
+      possiblePositions.push_back({basePos.x, basePos.y, basePos.z + 1});     // 后
+      break;
+
+    case 6:                                                                   // 西 (X-)
+      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z});     // 左
+      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z - 1}); // 左前
+      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z + 1}); // 左后
+      break;
+
+    case 7:                                                                   // 西北
+      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z - 1}); // 左前
+      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z});     // 左
+      possiblePositions.push_back({basePos.x, basePos.y, basePos.z - 1});     // 前
+      break;
     }
-    if (canPlace(targetPos)) {
-      BlockPos placePos(static_cast<int>(targetPos.x), static_cast<int>(targetPos.y),
-                        static_cast<int>(targetPos.z));
-      uchar face = 1;
-      glm::vec3 diff = playerPos - targetPos;
-      if (std::abs(diff.y) > std::abs(diff.x) && std::abs(diff.y) > std::abs(diff.z)) {
-        face = (diff.y > 0) ? 0 : 1;
-      } else if (std::abs(diff.x) > std::abs(diff.z)) {
-        face = (diff.x > 0) ? 4 : 5;
-      } else {
-        face = (diff.z > 0) ? 2 : 3;
-      }
-      buildScaffold(player, placePos, face);
-    }
+
+    // 添加脚下的方块（当玩家上升时）
     if (motion.y > 0) {
-      glm::vec3 upTargetPos = playerPos;
-      upTargetPos.y += 2.0f;
+      possiblePositions.push_back(basePos);
+    }
 
-      if (canPlace(upTargetPos)) {
-        BlockPos upPlacePos(static_cast<int>(upTargetPos.x), static_cast<int>(upTargetPos.y),
-                            static_cast<int>(upTargetPos.z));
-        buildScaffold(player, upPlacePos, 0);
+    // 遍历所有可能的位置并尝试放置方块
+    for (const auto &pos : possiblePositions) {
+      if (canPlace(pos)) {
+        BlockPos placePos(static_cast<int>(pos.x), static_cast<int>(pos.y),
+                          static_cast<int>(pos.z));
+
+        // 计算放置面
+        uchar face = 1; // 默认向上
+        glm::vec3 diff = playerPos - pos;
+        if (std::abs(diff.y) > std::abs(diff.x) && std::abs(diff.y) > std::abs(diff.z)) {
+          face = (diff.y > 0) ? 0 : 1;
+        } else if (std::abs(diff.x) > std::abs(diff.z)) {
+          face = (diff.x > 0) ? 4 : 5;
+        } else {
+          face = (diff.z > 0) ? 2 : 3;
+        }
+
+        buildScaffold(player, placePos, face);
       }
     }
   });
