@@ -27,7 +27,42 @@ static void buildScaffold(LocalPlayer *player, const BlockPos &pos, uchar face) 
     }
   }
 }
+static std::pair<bool, uchar> getSupportFace(const BlockPos &pos) {
+  ClientInstance *instance = runtimes::getClientInstance();
+  auto *region = instance->getRegion();
 
+  Block *downBlock = region->getBlock(pos.x, pos.y - 1, pos.z);
+  if (downBlock && downBlock->mBlockLegacy &&
+      downBlock->mBlockLegacy->getName().find("air") == std::string::npos)
+    return {true, 1}; // UP face
+
+  Block *eastBlock = region->getBlock(pos.x + 1, pos.y, pos.z);
+  if (eastBlock && eastBlock->mBlockLegacy &&
+      eastBlock->mBlockLegacy->getName().find("air") == std::string::npos)
+    return {true, 4}; // WEST face
+
+  Block *westBlock = region->getBlock(pos.x - 1, pos.y, pos.z);
+  if (westBlock && westBlock->mBlockLegacy &&
+      westBlock->mBlockLegacy->getName().find("air") == std::string::npos)
+    return {true, 5}; // EAST face
+
+  Block *southBlock = region->getBlock(pos.x, pos.y, pos.z + 1);
+  if (southBlock && southBlock->mBlockLegacy &&
+      southBlock->mBlockLegacy->getName().find("air") == std::string::npos)
+    return {true, 2}; // NORTH face
+
+  Block *northBlock = region->getBlock(pos.x, pos.y, pos.z - 1);
+  if (northBlock && northBlock->mBlockLegacy &&
+      northBlock->mBlockLegacy->getName().find("air") == std::string::npos)
+    return {true, 3}; // SOUTH face
+
+  Block *upBlock = region->getBlock(pos.x, pos.y + 1, pos.z);
+  if (upBlock && upBlock->mBlockLegacy &&
+      upBlock->mBlockLegacy->getName().find("air") == std::string::npos)
+    return {true, 0}; // DOWN face
+
+  return {false, 0};
+}
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
   setOnLoad([](Module *module) { g_md = module; });
   setOnEnable([](Module *module) {});
@@ -38,105 +73,50 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     if (instance == nullptr) {
       return;
     }
-    auto *player = instance->getLocalPlayer();
-    if (player == nullptr) {
+    LocalPlayer *player = instance->getLocalPlayer();
+    if ((player == nullptr) || player->getMotion().y <= 0) {
       return;
     }
+
     ItemStack *item = player->getSelectedItem();
-    if (item == nullptr || !item->isBlock()) {
+    if ((item == nullptr) || !item->isBlock()) {
       return;
     }
 
     glm::vec3 playerPos = player->getPosition();
-    glm::vec3 motion = player->getMotion();
+    BlockPos currentPos(static_cast<int>(std::floor(playerPos.x)),
+                        static_cast<int>(std::floor(playerPos.y - 1)),
+                        static_cast<int>(std::floor(playerPos.z)));
 
-    // 获取玩家视角
-    float yaw = player->getYaw();
-    // 将角度转换为弧度
-    float yawRad = yaw * (M_PI / 180.0f);
-
-    // 计算主要朝向 (-180到180度分为8个区域)
-    int direction = static_cast<int>((yaw + 180.0f + 22.5f) / 45.0f) % 8;
-
-    // 可能的放置位置
-    std::vector<glm::vec3> possiblePositions;
-    glm::vec3 basePos = playerPos;
-    basePos.y -= 1.0f; // 脚下位置
-
-    // 根据朝向添加主要方向和相邻方向的方块位置
-    switch (direction) {
-    case 0:                                                                   // 北 (Z-)
-      possiblePositions.push_back({basePos.x, basePos.y, basePos.z - 1});     // 前
-      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z - 1}); // 左前
-      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z - 1}); // 右前
-      break;
-
-    case 1:                                                                   // 东北
-      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z - 1}); // 右前
-      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z});     // 右
-      possiblePositions.push_back({basePos.x, basePos.y, basePos.z - 1});     // 前
-      break;
-
-    case 2:                                                                   // 东 (X+)
-      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z});     // 右
-      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z - 1}); // 右前
-      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z + 1}); // 右后
-      break;
-
-    case 3:                                                                   // 东南
-      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z + 1}); // 右后
-      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z});     // 右
-      possiblePositions.push_back({basePos.x, basePos.y, basePos.z + 1});     // 后
-      break;
-
-    case 4:                                                                   // 南 (Z+)
-      possiblePositions.push_back({basePos.x, basePos.y, basePos.z + 1});     // 后
-      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z + 1}); // 左后
-      possiblePositions.push_back({basePos.x + 1, basePos.y, basePos.z + 1}); // 右后
-      break;
-
-    case 5:                                                                   // 西南
-      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z + 1}); // 左后
-      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z});     // 左
-      possiblePositions.push_back({basePos.x, basePos.y, basePos.z + 1});     // 后
-      break;
-
-    case 6:                                                                   // 西 (X-)
-      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z});     // 左
-      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z - 1}); // 左前
-      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z + 1}); // 左后
-      break;
-
-    case 7:                                                                   // 西北
-      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z - 1}); // 左前
-      possiblePositions.push_back({basePos.x - 1, basePos.y, basePos.z});     // 左
-      possiblePositions.push_back({basePos.x, basePos.y, basePos.z - 1});     // 前
-      break;
+    if (canPlace(currentPos)) {
+      auto [supported, face] = getSupportFace(currentPos);
+      if (supported) {
+        buildScaffold(player, currentPos, face);
+        return;
+      }
     }
 
-    // 添加脚下的方块（当玩家上升时）
-    if (motion.y > 0) {
-      possiblePositions.push_back(basePos);
-    }
+    float yawRad = glm::radians(player->getYaw());
+    glm::vec3 frontDir(-sin(yawRad), 0, cos(yawRad));
 
-    // 遍历所有可能的位置并尝试放置方块
-    for (const auto &pos : possiblePositions) {
-      if (canPlace(pos)) {
-        BlockPos placePos(static_cast<int>(pos.x), static_cast<int>(pos.y),
-                          static_cast<int>(pos.z));
+    auto quantize = [](float f) { return f > 0 ? 1 : (f < 0 ? -1 : 0); };
+    BlockPos frontOffset(quantize(frontDir.x), 0, quantize(frontDir.z));
+    BlockPos rightOffset(frontOffset.z, 0, -frontOffset.x);
+    BlockPos leftOffset(-frontOffset.z, 0, frontOffset.x);
+    BlockPos backOffset(-frontOffset.x, 0, -frontOffset.z);
 
-        // 计算放置面
-        uchar face = 1; // 默认向上
-        glm::vec3 diff = playerPos - pos;
-        if (std::abs(diff.y) > std::abs(diff.x) && std::abs(diff.y) > std::abs(diff.z)) {
-          face = (diff.y > 0) ? 0 : 1;
-        } else if (std::abs(diff.x) > std::abs(diff.z)) {
-          face = (diff.x > 0) ? 4 : 5;
-        } else {
-          face = (diff.z > 0) ? 2 : 3;
-        }
+    std::vector<BlockPos> candidates = {currentPos + frontOffset, currentPos + rightOffset,
+                                        currentPos + leftOffset, currentPos + backOffset};
 
-        buildScaffold(player, placePos, face);
+    for (const auto &candidate : candidates) {
+      if (!canPlace(candidate)) {
+        continue;
+      }
+
+      auto [supported, face] = getSupportFace(candidate);
+      if (supported) {
+        buildScaffold(player, candidate, face);
+        return;
       }
     }
   });
