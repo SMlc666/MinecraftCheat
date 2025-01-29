@@ -43,6 +43,10 @@ void Module::setOnDraw(std::function<void(Module *)> func) {
 void Module::setOnRender(std::function<void(Module *)> func) {
   m_onRender = std::move(func);
 }
+void Module::setOnPostRender(std::function<void(Module *)> func) {
+  m_onPostRender = std::move(func);
+}
+
 void Module::onTick() {
   if (m_onTick) {
     m_onTick(this);
@@ -101,6 +105,15 @@ void Module::onRender() {
   bool isEnabled = m_gui.Get<bool>("enabled");
   if (isEnabled) {
     m_onRender(this);
+  }
+}
+void Module::onPostRender() {
+  if (!m_onPostRender) {
+    return;
+  }
+  bool isEnabled = m_gui.Get<bool>("enabled");
+  if (isEnabled) {
+    m_onPostRender(this);
   }
 }
 GUI &Module::getGUI() {

@@ -45,5 +45,6 @@ private:
   std::function<void(Module *)> m_onDrawGUI;
   std::function<void(Module *)> m_onDraw;
   std::function<void(Module *)> m_onRender;
+  std::function<void(Module *)> m_onPostRender;
   GUI m_gui;
 };
