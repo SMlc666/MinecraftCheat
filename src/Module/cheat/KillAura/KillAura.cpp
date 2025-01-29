@@ -76,18 +76,21 @@ static bool ProcessPlayer(Player &player, LocalPlayer *localPlayer, bool antibot
   playerList.push_back(&player);
   return true;
 }
-static bool hasPlayer(Dimension *dimension, LocalPlayer *localPlayer, bool antibot, float range,
-                      float fov) {
+bool hasPlayer(Dimension *dimension, Player *targetPlayer, LocalPlayer *localPlayer, bool antibot,
+               float range, float fov) {
   bool foundPlayer = false;
   std::vector<Player *> playerList;
   dimension->forEachPlayer([&](Player &player) {
-    if (ProcessPlayer(player, localPlayer, antibot, range, fov, playerList)) {
+    if (&player == targetPlayer &&
+        ProcessPlayer(player, localPlayer, antibot, range, fov, playerList)) {
       foundPlayer = true;
     }
     return true;
   });
+
   return foundPlayer;
 }
+
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) { g_Target = nullptr; });
@@ -203,11 +206,17 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     using namespace Helper;
     bool enabled = false;
     bool rotation = false;
+    bool antibot = false;
+    float fov = NAN;
+    float Range = NAN;
     int rotationMode = 0;
     try {
       enabled = module->getGUI().Get<bool>("enabled");
       rotation = module->getGUI().Get<bool>("rotation");
       rotationMode = module->getGUI().Get<int>("rotationMode");
+      antibot = module->getGUI().Get<bool>("antibot");
+      fov = module->getGUI().Get<float>("fov");
+      Range = module->getGUI().Get<float>("range");
     } catch (const std::exception &e) {
       return;
     }
@@ -224,6 +233,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     LocalPlayer *mLocalPlayer = mInstance->getLocalPlayer();
     if (mLocalPlayer == nullptr) {
       return;
+    }
+    if (hasPlayer(mLocalPlayer->mDimension, mLocalPlayer, antibot, Range, fov)) {
     }
     glm::vec3 localPos = mLocalPlayer->getPosition();
     glm::vec3 targetPos = g_Target->getPosition();
