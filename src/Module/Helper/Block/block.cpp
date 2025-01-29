@@ -6,27 +6,27 @@
 #include "game/minecraft/world/level/block/BlockPos.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include <vector>
-static const std::unordered_map<glm::ivec3, bool> mustPlaceMap = {
+static const std::vector<glm::ivec3> mustPlaceMap = {
     //以我的世界北方向为准
-    {glm::ivec3(0, -1, 0), true}, //下方
-    {glm::ivec3(0, 1, 0), true},  //上方
-    {glm::ivec3(0, 0, -1), true}, //前方
-    {glm::ivec3(0, 0, 1), true},  //后方
-    {glm::ivec3(-1, 0, 0), true}, //左侧
-    {glm::ivec3(1, 0, 0), true},  //右侧
+    glm::ivec3(0, -1, 0), //下方
+    glm::ivec3(0, 1, 0),  //上方
+    glm::ivec3(0, 0, -1), //前方
+    glm::ivec3(0, 0, 1),  //后方
+    glm::ivec3(-1, 0, 0), //左侧
+    glm::ivec3(1, 0, 0),  //右侧
 };
-static const std::unordered_map<glm::ivec3, bool> canPlaceMap = {
+static const std::vector<glm::ivec3> canPlaceMap = {
     //以我的世界北方向为准
-    {glm::ivec3(0, -1, 0), true},  //下方
-    {glm::ivec3(0, 1, 0), true},   //上方
-    {glm::ivec3(0, 0, -1), true},  //前方
-    {glm::ivec3(0, 0, 1), true},   //后方
-    {glm::ivec3(-1, 0, 0), true},  //左侧
-    {glm::ivec3(1, 0, 0), true},   //右侧
-    {glm::ivec3(1, 0, -1), true},  //右上方
-    {glm::ivec3(1, 0, 1), true},   //右下方
-    {glm::ivec3(-1, 0, -1), true}, //左上方
-    {glm::ivec3(-1, 0, 1), true}   //左下方
+    glm::ivec3(0, -1, 0),  //下方
+    glm::ivec3(0, 1, 0),   //上方
+    glm::ivec3(0, 0, -1),  //前方
+    glm::ivec3(0, 0, 1),   //后方
+    glm::ivec3(-1, 0, 0),  //左侧
+    glm::ivec3(1, 0, 0),   //右侧
+    glm::ivec3(1, 0, -1),  //右上方
+    glm::ivec3(1, 0, 1),   //右下方
+    glm::ivec3(-1, 0, -1), //左上方
+    glm::ivec3(-1, 0, 1),  //左下方
 };
 
 bool Helper::Block::isAirBlock(const glm::ivec3 &pos) {
@@ -44,7 +44,7 @@ bool Helper::Block::canPlaceBlock(const glm::ivec3 &pos) {
   }
   glm::ivec3 blockPos = pos;
   for (auto const &pair : mustPlaceMap) {
-    blockPos = pos + glm::ivec3(pair.first);
+    blockPos = pos + glm::ivec3(pair);
     if (!isAirBlock(glm::ivec3(blockPos))) {
       can = true;
       break;
@@ -64,7 +64,7 @@ void Helper::Block::buildBlock(Player *player, const BlockPos &pos, uchar face, 
 std::vector<glm::ivec3> Helper::Block::getCanBuildBlocks(Player *player, const glm::ivec3 &pos) {
   std::vector<glm::ivec3> canBuildBlocks;
   for (auto const &pair : canPlaceMap) {
-    glm::ivec3 blockPos = pos + glm::ivec3(pair.first);
+    glm::ivec3 blockPos = pos + glm::ivec3(pair);
     if (canPlaceBlock(blockPos)) {
       canBuildBlocks.push_back(blockPos);
     }
