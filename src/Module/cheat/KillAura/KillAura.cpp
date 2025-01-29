@@ -234,7 +234,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     if (mLocalPlayer == nullptr) {
       return;
     }
-    if (hasPlayer(mLocalPlayer->mDimension, mLocalPlayer, antibot, Range, fov)) {
+    if (!hasPlayer(mLocalPlayer->mDimension, g_Target, mLocalPlayer, antibot, Range, fov)) {
+      return;
     }
     glm::vec3 localPos = mLocalPlayer->getPosition();
     glm::vec3 targetPos = g_Target->getPosition();
