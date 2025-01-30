@@ -53,12 +53,9 @@ bool Helper::Block::canPlaceBlock(const glm::ivec3 &pos) {
   return can;
 }
 
-void Helper::Block::buildBlock(Player *player, const BlockPos &pos, uchar face, bool swing) {
+void Helper::Block::buildBlock(Player *player, const BlockPos &pos, uchar face) {
   if (auto *gameMode = &player->getGameMode(); gameMode != nullptr) {
     gameMode->buildBlock(pos, face);
-    if (swing) {
-      player->swing();
-    }
   }
 }
 std::vector<glm::ivec3> Helper::Block::getCanBuildBlocks(Player *player, const glm::ivec3 &pos) {
