@@ -71,7 +71,6 @@ bool Helper::Block::isValidPlacementPosition(const glm::ivec3 &pos) {
 
 void Helper::Block::placeBlock(Player *player, const BlockPos &pos, uchar face) {
   if (auto *gameMode = &player->getGameMode(); gameMode != nullptr) {
-    uchar face = determineFaceToPlace(pos);
     gameMode->buildBlock(pos, face);
   }
 }
@@ -97,7 +96,8 @@ bool Helper::Block::predictBlock(Player *player, const glm::ivec3 &pos, int dist
   return std::ranges::any_of(offsets, [&](const auto &offset) {
     glm::ivec3 targetPos = pos + offset;
     if (isValidPlacementPosition(targetPos)) {
-      placeBlock(player, targetPos, 0);
+      uchar face = determineFaceToPlace(targetPos);
+      placeBlock(player, targetPos, face);
       return true;
     }
     return false;
