@@ -6,7 +6,7 @@
 #include "game/minecraft/world/level/block/BlockPos.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include <vector>
-static const std::vector<glm::ivec3> mustPlaceMap = {
+static const std::vector<glm::ivec3> requiredAdjacencyOffsets = {
     //以我的世界北方向为准
     glm::ivec3(0, -1, 0), //下方
     glm::ivec3(0, 1, 0),  //上方
@@ -15,7 +15,7 @@ static const std::vector<glm::ivec3> mustPlaceMap = {
     glm::ivec3(-1, 0, 0), //左侧
     glm::ivec3(1, 0, 0),  //右侧
 };
-static const std::vector<glm::ivec3> canPlaceMap = {
+static const std::vector<glm::ivec3> potentialPlacementOffsets = {
     //以我的世界北方向为准
     glm::ivec3(0, -1, 0),  //下方
     glm::ivec3(0, 1, 0),   //上方
@@ -37,13 +37,13 @@ bool Helper::Block::isAirBlock(const glm::ivec3 &pos) {
   }
   return block->mBlockLegacy->getName().find("air") != std::string::npos;
 }
-bool Helper::Block::canPlaceBlock(const glm::ivec3 &pos) {
+bool Helper::Block::isValidPlacementPosition(const glm::ivec3 &pos) {
   bool can = false;
   if (!isAirBlock(pos)) {
     return false;
   }
   glm::ivec3 blockPos = pos;
-  for (auto const &pair : mustPlaceMap) {
+  for (auto const &pair : requiredAdjacencyOffsets) {
     blockPos = pos + glm::ivec3(pair);
     if (!isAirBlock(glm::ivec3(blockPos))) {
       can = true;
@@ -53,16 +53,17 @@ bool Helper::Block::canPlaceBlock(const glm::ivec3 &pos) {
   return can;
 }
 
-void Helper::Block::buildBlock(Player *player, const BlockPos &pos, uchar face) {
+void Helper::Block::placeBlock(Player *player, const BlockPos &pos, uchar face) {
   if (auto *gameMode = &player->getGameMode(); gameMode != nullptr) {
     gameMode->buildBlock(pos, face);
   }
 }
-std::vector<glm::ivec3> Helper::Block::getCanBuildBlocks(Player *player, const glm::ivec3 &pos) {
+std::vector<glm::ivec3> Helper::Block::getValidPlacementPositions(Player *player,
+                                                                  const glm::ivec3 &pos) {
   std::vector<glm::ivec3> canBuildBlocks;
-  for (auto const &pair : canPlaceMap) {
+  for (auto const &pair : potentialPlacementOffsets) {
     glm::ivec3 blockPos = pos + glm::ivec3(pair);
-    if (canPlaceBlock(blockPos)) {
+    if (isValidPlacementPosition(blockPos)) {
       canBuildBlocks.push_back(blockPos);
     }
   }

@@ -4,7 +4,7 @@
 #include "glm/fwd.hpp"
 namespace Helper::Block {
 bool isAirBlock(const glm::ivec3 &pos);
-bool canPlaceBlock(const glm::ivec3 &pos);
-void buildBlock(Player *player, const glm::ivec3 &pos, uchar face);
-std::vector<glm::ivec3> getCanBuildBlocks(Player *player, const glm::ivec3 &pos);
+bool isValidPlacementPosition(const glm::ivec3 &pos);
+void placeBlock(Player *player, const glm::ivec3 &pos, uchar face);
+std::vector<glm::ivec3> getValidPlacementPositions(Player *player, const glm::ivec3 &pos);
 } // namespace Helper::Block

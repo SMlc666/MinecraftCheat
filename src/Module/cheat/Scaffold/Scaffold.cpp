@@ -31,9 +31,10 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     }
 
     glm::vec3 pos = player->getPosition();
-    auto canBuildBlocks = Helper::Block::getCanBuildBlocks(player, pos);
+    auto canBuildBlocks = Helper::Block::getValidPlacementPositions(player, pos);
     if (canBuildBlocks.empty()) {
       return;
     }
+    glm::vec3 motion = player->getMotion();
   });
 }
