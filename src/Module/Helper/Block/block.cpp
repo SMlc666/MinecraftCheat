@@ -55,8 +55,10 @@ void Helper::Block::predictBlock(glm::ivec3 pos, GameMode *gameMode, float dista
       }
     }
   }
-  std::sort(blocks.begin(), blocks.end(),
-            [](glm::ivec3 start, glm::ivec3 end) { return glm::length(start) < glm::length(end); });
+  std::sort(blocks.begin(), blocks.end(), [](const glm::ivec3 &start, const glm::ivec3 &end) {
+    return glm::length(glm::vec3(start)) < glm::length(glm::vec3(end));
+  });
+
   for (const glm::ivec3 &offset : blocks) {
     glm::ivec3 currentBlock = pos + offset;
     if (buildBlock(currentBlock, gameMode)) {
