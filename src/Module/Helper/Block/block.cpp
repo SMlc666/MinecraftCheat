@@ -58,6 +58,34 @@ void Helper::Block::placeBlock(Player *player, const BlockPos &pos, uchar face) 
     gameMode->buildBlock(pos, face);
   }
 }
+bool Helper::Block::predictBlock(Player *player, const glm::ivec3 &pos, int distance) {
+  std::vector<glm::ivec3> offsets;
+  for (int y = -distance; y <= 0; ++y) {
+    for (int x = -distance; x <= 0; ++x) {
+      for (int z = -distance; z <= 0; ++z) {
+        if (x == 0 && y == 0 && z == 0) {
+          continue;
+        }
+        offsets.emplace_back(x, y, z);
+      }
+    }
+  }
+
+  std::sort(offsets.begin(), offsets.end(), [](const glm::ivec3 &a, const glm::ivec3 &b) {
+    float distA = sqrtf(a.x * a.x + a.y * a.y + a.z * a.z);
+    float distB = sqrtf(b.x * b.x + b.y * b.y + b.z * b.z);
+    return distA < distB;
+  });
+
+  return std::ranges::any_of(offsets, [&](const auto &offset) {
+    glm::ivec3 targetPos = pos + offset;
+    if (isValidPlacementPosition(targetPos)) {
+      placeBlock(player, targetPos, 0);
+      return true;
+    }
+    return false;
+  });
+}
 std::vector<glm::ivec3> Helper::Block::getValidPlacementPositions(Player *player,
                                                                   const glm::ivec3 &pos) {
   std::vector<glm::ivec3> canBuildBlocks;
