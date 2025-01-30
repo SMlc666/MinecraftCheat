@@ -28,7 +28,23 @@ static const std::vector<glm::ivec3> potentialPlacementOffsets = {
     glm::ivec3(-1, 0, -1), //左上方
     glm::ivec3(-1, 0, 1),  //左下方
 };
-
+static const std::vector<std::pair<glm::ivec3, uchar>> neighborOffsetsAndFaces = {
+    {glm::ivec3(0, 1, 0), 0},  // 上方
+    {glm::ivec3(0, -1, 0), 1}, // 下方
+    {glm::ivec3(0, 0, 1), 2},  // 后方
+    {glm::ivec3(0, 0, -1), 3}, // 前方
+    {glm::ivec3(1, 0, 0), 4},  // 右侧
+    {glm::ivec3(-1, 0, 0), 5}  // 左侧
+};
+uchar Helper::Block::determineFaceToPlace(const glm::ivec3 &pos) {
+  for (const auto &pair : neighborOffsetsAndFaces) {
+    glm::ivec3 neighborPos = pos + pair.first;
+    if (isAirBlock(neighborPos)) {
+      return pair.second;
+    }
+  }
+  return 0; // 默认返回上方的面
+}
 bool Helper::Block::isAirBlock(const glm::ivec3 &pos) {
   ::Block *block = runtimes::getClientInstance()->getRegion()->getBlock(
       static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(pos.z));
@@ -55,6 +71,7 @@ bool Helper::Block::isValidPlacementPosition(const glm::ivec3 &pos) {
 
 void Helper::Block::placeBlock(Player *player, const BlockPos &pos, uchar face) {
   if (auto *gameMode = &player->getGameMode(); gameMode != nullptr) {
+    uchar face = determineFaceToPlace(pos);
     gameMode->buildBlock(pos, face);
   }
 }
