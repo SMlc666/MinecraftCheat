@@ -1,116 +1,66 @@
 #include "block.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
+#include "glm/fwd.hpp"
 #include "runtimes/runtimes.hpp"
 #include "game/minecraft/world/level/block/Block.hpp"
 #include "game/minecraft/world/level/block/BlockLegacy.hpp"
 #include "game/minecraft/world/level/block/BlockPos.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include <vector>
-static const std::vector<glm::ivec3> requiredAdjacencyOffsets = {
-    //以我的世界北方向为准
-    glm::ivec3(0, -1, 0), //下方
-    glm::ivec3(0, 1, 0),  //上方
-    glm::ivec3(0, 0, -1), //前方
-    glm::ivec3(0, 0, 1),  //后方
-    glm::ivec3(-1, 0, 0), //左侧
-    glm::ivec3(1, 0, 0),  //右侧
+static const std::vector<glm::ivec3> neighbours = {
+    glm::ivec3(0, -1, 0), glm::ivec3(0, 1, 0),  glm::ivec3(0, 0, -1),
+    glm::ivec3(0, 0, 1),  glm::ivec3(-1, 0, 0), glm::ivec3(1, 0, 0),
 };
-static const std::vector<glm::ivec3> potentialPlacementOffsets = {
-    //以我的世界北方向为准
-    glm::ivec3(0, -1, 0),  //下方
-    glm::ivec3(0, 1, 0),   //上方
-    glm::ivec3(0, 0, -1),  //前方
-    glm::ivec3(0, 0, 1),   //后方
-    glm::ivec3(-1, 0, 0),  //左侧
-    glm::ivec3(1, 0, 0),   //右侧
-    glm::ivec3(1, 0, -1),  //右上方
-    glm::ivec3(1, 0, 1),   //右下方
-    glm::ivec3(-1, 0, -1), //左上方
-    glm::ivec3(-1, 0, 1),  //左下方
-};
-static const std::vector<std::pair<glm::ivec3, uchar>> neighborOffsetsAndFaces = {
-    {glm::ivec3(0, 1, 0), 0},  // 上方
-    {glm::ivec3(0, -1, 0), 1}, // 下方
-    {glm::ivec3(0, 0, 1), 2},  // 后方
-    {glm::ivec3(0, 0, -1), 3}, // 前方
-    {glm::ivec3(1, 0, 0), 4},  // 右侧
-    {glm::ivec3(-1, 0, 0), 5}  // 左侧
-};
-uchar Helper::Block::determineFaceToPlace(const glm::ivec3 &pos) {
-  for (const auto &pair : neighborOffsetsAndFaces) {
-    glm::ivec3 neighborPos = pos + pair.first;
-    if (isAirBlock(neighborPos)) {
-      return pair.second;
-    }
-  }
-  return 0; // 默认返回上方的面
-}
-bool Helper::Block::isAirBlock(const glm::ivec3 &pos) {
-  ::Block *block = runtimes::getClientInstance()->getRegion()->getBlock(
-      static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(pos.z));
-  if ((block == nullptr) || (block->mBlockLegacy == nullptr)) {
+bool Helper::Block::isAirBlock(glm::ivec3 pos) {
+  auto *client = runtimes::getClientInstance();
+  if (client == nullptr) {
     return false;
   }
-  return block->mBlockLegacy->getName().find("air") != std::string::npos;
-}
-bool Helper::Block::isValidPlacementPosition(const glm::ivec3 &pos) {
-  bool can = false;
-  if (!isAirBlock(pos)) {
+  BlockSource *region = client->getRegion();
+  if (region == nullptr) {
     return false;
   }
-  glm::ivec3 blockPos = pos;
-  for (auto const &pair : requiredAdjacencyOffsets) {
-    blockPos = pos + glm::ivec3(pair);
-    if (!isAirBlock(glm::ivec3(blockPos))) {
-      can = true;
-      break;
+  ::Block *block = region->getBlock(pos);
+  if (block == nullptr) {
+    return false;
+  }
+  BlockLegacy *legacy = block->mBlockLegacy;
+  if (legacy == nullptr) {
+    return false;
+  }
+  return legacy->getName().find("air") != std::string::npos;
+}
+bool Helper::Block::buildBlock(glm::ivec3 pos, GameMode *gameMode) {
+  if (gameMode == nullptr) {
+    return false;
+  }
+  for (int face = 0; face < neighbours.size(); face++) {
+    auto offest = glm::ivec3(pos - neighbours[face]);
+    if (!isAirBlock(offest)) {
+      gameMode->buildBlock(offest, face);
+      return true;
     }
   }
-  return can;
+  return false;
 }
-
-void Helper::Block::placeBlock(Player *player, const BlockPos &pos, uchar face) {
-  if (auto *gameMode = &player->getGameMode(); gameMode != nullptr) {
-    gameMode->buildBlock(pos, face);
+void Helper::Block::predictBlock(glm::ivec3 pos, GameMode *gameMode, float distance) {
+  if (gameMode == nullptr) {
+    return;
   }
-}
-bool Helper::Block::predictBlock(Player *player, const glm::ivec3 &pos, int distance) {
-  std::vector<glm::ivec3> offsets;
-  for (int y = -distance; y <= 0; ++y) {
-    for (int x = -distance; x <= 0; ++x) {
-      for (int z = -distance; z <= 0; ++z) {
-        if (x == 0 && y == 0 && z == 0) {
-          continue;
-        }
-        offsets.emplace_back(x, y, z);
+  std::vector<glm::ivec3> blocks;
+  for (int y = -distance; y <= 0; y++) {
+    for (int x = -distance; x <= 0; x++) {
+      for (int z = -distance; z <= 0; z++) {
+        blocks.emplace_back(x, y, z);
       }
     }
   }
-
-  std::sort(offsets.begin(), offsets.end(), [](const glm::ivec3 &a, const glm::ivec3 &b) {
-    float distA = sqrtf(a.x * a.x + a.y * a.y + a.z * a.z);
-    float distB = sqrtf(b.x * b.x + b.y * b.y + b.z * b.z);
-    return distA < distB;
-  });
-
-  return std::ranges::any_of(offsets, [&](const auto &offset) {
-    glm::ivec3 targetPos = pos + offset;
-    if (isValidPlacementPosition(targetPos)) {
-      uchar face = determineFaceToPlace(targetPos);
-      placeBlock(player, targetPos, face);
-      return true;
-    }
-    return false;
-  });
-}
-std::vector<glm::ivec3> Helper::Block::getValidPlacementPositions(Player *player,
-                                                                  const glm::ivec3 &pos) {
-  std::vector<glm::ivec3> canBuildBlocks;
-  for (auto const &pair : potentialPlacementOffsets) {
-    glm::ivec3 blockPos = pos + glm::ivec3(pair);
-    if (isValidPlacementPosition(blockPos)) {
-      canBuildBlocks.push_back(blockPos);
+  std::sort(blocks.begin(), blocks.end(),
+            [](glm::ivec3 start, glm::ivec3 end) { return glm::length(start) < glm::length(end); });
+  for (const glm::ivec3 &offset : blocks) {
+    glm::ivec3 currentBlock = pos + offset;
+    if (buildBlock(currentBlock, gameMode)) {
+      return;
     }
   }
-  return canBuildBlocks;
 }

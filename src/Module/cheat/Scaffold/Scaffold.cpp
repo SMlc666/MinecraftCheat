@@ -33,10 +33,6 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     }
 
     glm::vec3 pos = player->getPosition();
-    auto canBuildBlocks = Helper::Block::getValidPlacementPositions(player, pos);
-    if (canBuildBlocks.empty()) {
-      return;
-    }
     bool isOnGround = ActorCollision::isOnGround(player->mEntityContext);
     if (isOnGround || (pos.y - targetY > 0.5F)) {
       targetY = glm::floor(pos.y) - 0.5F;
@@ -44,7 +40,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     glm::vec3 motion = player->getMotion();
     glm::ivec3 targetBlock = {pos.x + motion.x, targetY, pos.z + motion.z};
     if (Helper::Block::isAirBlock(targetBlock)) {
-      Helper::Block::predictBlock(player, targetBlock, 5.0F);
+      Helper::Block::predictBlock(targetBlock, &player->getGameMode(), 5.0F);
     }
   });
 }
