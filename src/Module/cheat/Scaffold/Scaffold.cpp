@@ -21,12 +21,12 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     }
 
     LocalPlayer *player = instance->getLocalPlayer();
-    if (!player || player->getMotion().y <= 0) {
+    if ((player == nullptr) || player->getMotion().y <= 0) {
       return;
     }
 
     ItemStack *item = player->getSelectedItem();
-    if (!item || !item->isBlock()) {
+    if ((item == nullptr) || !item->isBlock()) {
       return;
     }
 
