@@ -46,7 +46,9 @@ void Module::setOnRender(std::function<void(Module *)> func) {
 void Module::setOnPostRender(std::function<void(Module *)> func) {
   m_onPostRender = std::move(func);
 }
-
+void Module::setOnSendPacket(std::function<bool(Module *, Packet *)> func) {
+  m_onSendPacket = std::move(func);
+}
 void Module::onTick() {
   if (m_onTick) {
     m_onTick(this);
@@ -115,6 +117,16 @@ void Module::onPostRender() {
   if (isEnabled) {
     m_onPostRender(this);
   }
+}
+bool Module::onSendPacket(Packet *packet) {
+  if (!m_onSendPacket) {
+    return true;
+  }
+  bool isEnabled = m_gui.Get<bool>("enabled");
+  if (isEnabled) {
+    return m_onSendPacket(this, packet);
+  }
+  return true;
 }
 GUI &Module::getGUI() {
   return m_gui;

@@ -1,4 +1,5 @@
 #pragma once
+#include "game/minecraft/network/Packet/Packet.hpp"
 #include "menu/menu.hpp"
 #include <any>
 #include <functional>
@@ -24,6 +25,7 @@ public:
   void setOnDraw(std::function<void(Module *)> func);
   void setOnRender(std::function<void(Module *)> func);
   void setOnPostRender(std::function<void(Module *)> func);
+  void setOnSendPacket(std::function<bool(Module *, Packet *)> func);
   void onTick();
   void onEnable();
   void onDisable();
@@ -32,6 +34,7 @@ public:
   void onDraw();
   void onRender();
   void onPostRender();
+  bool onSendPacket(Packet *packet);
   GUI &getGUI();
 
 private:
@@ -46,5 +49,6 @@ private:
   std::function<void(Module *)> m_onDraw;
   std::function<void(Module *)> m_onRender;
   std::function<void(Module *)> m_onPostRender;
+  std::function<bool(Module *, Packet *)> m_onSendPacket;
   GUI m_gui;
 };
