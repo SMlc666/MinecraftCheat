@@ -63,4 +63,5 @@ target("cheat")
         ScriptDir,
         IncludeDir
     )
+    add_linkdirs("src/include/NDK/23")
     add_links("android","log","EGL","GLESv3","dl")
