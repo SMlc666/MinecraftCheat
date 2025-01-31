@@ -34,7 +34,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
 
     glm::vec3 pos = player->getPosition();
     bool isOnGround = ActorCollision::isOnGround(player->mEntityContext);
-    if (isOnGround || (pos.y - targetY > 0.5F)) {
+    if (isOnGround || (pos.y < targetY + 0.5F)) {
       targetY = glm::floor(pos.y) - 0.5F;
     }
     glm::vec3 motion = player->getMotion();
