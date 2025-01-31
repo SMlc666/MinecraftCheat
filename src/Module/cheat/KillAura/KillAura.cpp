@@ -212,8 +212,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     float fov = NAN;
     float Range = NAN;
     int rotationMode = 0;
-    g_PitchOrigin = NAN;
-    g_YawOrigin = NAN;
+
     try {
       enabled = module->getGUI().Get<bool>("enabled");
       rotation = module->getGUI().Get<bool>("rotation");
@@ -245,8 +244,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     glm::vec3 targetPos = g_Target->getPosition();
     Rotation::Rotation aimTarget = Rotation::toRotation(localPos, targetPos);
     Rotation::Rotation last = {mLocalPlayer->getPitch(), mLocalPlayer->getYaw()};
-    g_YawOrigin = last.yaw;
-    g_PitchOrigin = last.pitch;
     switch (rotationMode) {
     case 0:
       mLocalPlayer->setPitch(aimTarget.pitch);
