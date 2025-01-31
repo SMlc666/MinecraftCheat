@@ -27,6 +27,9 @@ static std::random_device g_rd;
 static std::uniform_int_distribution<> g_dist(0, 100);
 static std::mt19937 g_gen(g_rd());
 static Player *g_Target{};
+static float g_YawOrigin = NAN;
+static float g_PitchOrigin = NAN;
+
 static bool isInFov(LocalPlayer *mLocalPlayer, Player *target, float maxFov) {
   if (maxFov >= 360.0F) {
     return true;
@@ -211,6 +214,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     float fov = NAN;
     float Range = NAN;
     int rotationMode = 0;
+    g_PitchOrigin = NAN;
+    g_YawOrigin = NAN;
     try {
       enabled = module->getGUI().Get<bool>("enabled");
       rotation = module->getGUI().Get<bool>("rotation");
@@ -242,6 +247,8 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     glm::vec3 targetPos = g_Target->getPosition();
     Rotation::Rotation aimTarget = Rotation::toRotation(localPos, targetPos);
     Rotation::Rotation last = {mLocalPlayer->getPitch(), mLocalPlayer->getYaw()};
+    g_YawOrigin = last.yaw;
+    g_PitchOrigin = last.pitch;
     switch (rotationMode) {
     case 0:
       mLocalPlayer->setPitch(aimTarget.pitch);
@@ -256,5 +263,29 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       }
       break;
     }
+  });
+  setOnPostRender([](Module *module) {
+    bool rotationSlient = false;
+    try {
+      rotationSlient = module->getGUI().Get<bool>("rotationSlient");
+    } catch (const std::exception &e) {
+      return;
+    }
+    if (rotationSlient) {
+      return;
+    }
+    if (g_YawOrigin == NAN || g_PitchOrigin == NAN) {
+      return;
+    }
+    ClientInstance *mInstance = runtimes::getClientInstance();
+    if (mInstance == nullptr) {
+      return;
+    }
+    LocalPlayer *mLocalPlayer = mInstance->getLocalPlayer();
+    if (mLocalPlayer == nullptr) {
+      return;
+    }
+    mLocalPlayer->setPitch(g_PitchOrigin);
+    mLocalPlayer->setYaw(g_YawOrigin);
   });
 }
