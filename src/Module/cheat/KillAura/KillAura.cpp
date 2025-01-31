@@ -27,8 +27,6 @@ static std::random_device g_rd;
 static std::uniform_int_distribution<> g_dist(0, 100);
 static std::mt19937 g_gen(g_rd());
 static Player *g_Target{};
-static float g_YawOrigin = NAN;
-static float g_PitchOrigin = NAN;
 
 static bool isInFov(LocalPlayer *mLocalPlayer, Player *target, float maxFov) {
   if (maxFov >= 360.0F) {
@@ -263,29 +261,5 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       }
       break;
     }
-  });
-  setOnPostRender([](Module *module) {
-    bool rotationSlient = false;
-    try {
-      rotationSlient = module->getGUI().Get<bool>("rotationSlient");
-    } catch (const std::exception &e) {
-      return;
-    }
-    if (rotationSlient) {
-      return;
-    }
-    if (g_YawOrigin == NAN || g_PitchOrigin == NAN) {
-      return;
-    }
-    ClientInstance *mInstance = runtimes::getClientInstance();
-    if (mInstance == nullptr) {
-      return;
-    }
-    LocalPlayer *mLocalPlayer = mInstance->getLocalPlayer();
-    if (mLocalPlayer == nullptr) {
-      return;
-    }
-    mLocalPlayer->setPitch(g_PitchOrigin);
-    mLocalPlayer->setYaw(g_YawOrigin);
   });
 }
