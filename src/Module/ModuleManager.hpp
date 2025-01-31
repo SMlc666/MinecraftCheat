@@ -13,5 +13,6 @@ void tickAllModules();
 void loadAllModules();
 void renderAllModules();
 void postRenderAllModules();
+bool sendPacketAllModules(Packet *packet);
 } // namespace ModuleManager
 void moduleSetup();

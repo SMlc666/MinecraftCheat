@@ -79,6 +79,16 @@ void loadAllModules() {
     }
   }
 }
+bool sendPacketAllModules(Packet *packet) {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  bool result = true;
+  for (auto &pair : modules) {
+    if (pair.second != nullptr) {
+      result &= pair.second->onSendPacket(packet);
+    }
+  }
+  return result;
+}
 std::unordered_map<std::string, Module *> &getModules() {
   return modules;
 }
