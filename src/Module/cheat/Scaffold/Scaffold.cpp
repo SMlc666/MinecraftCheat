@@ -3,7 +3,6 @@
 #include "game/minecraft/actor/provider/ActorCollision.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/world/item/ItemStack.hpp"
-#include "Helper/Block/block.hpp"
 #include "glm/fwd.hpp"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
@@ -31,16 +30,13 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     if ((item == nullptr) || !item->isBlock()) {
       return;
     }
-
     glm::vec3 pos = player->getPosition();
-    bool isOnGround = ActorCollision::isOnGround(player->mEntityContext);
-    if (isOnGround || (pos.y < targetY + 0.5F)) {
-      targetY = glm::floor(pos.y) - 0.5F;
-    }
-    glm::vec3 motion = player->getMotion();
-    glm::ivec3 targetBlock = {pos.x + motion.x, targetY, pos.z + motion.z};
-    if (Helper::Block::isAirBlock(targetBlock)) {
-      Helper::Block::predictBlock(targetBlock, &player->getGameMode(), 5.0F);
-    }
+    float yaw = player->getYaw();
+    float rad = glm::radians(yaw);
+    glm::vec3 direction = glm::vec3(-glm::sin(rad), 0.0f, glm::cos(rad));
+    float distance = 0.5F;
+    glm::ivec3 blockPos = glm::ivec3(pos + direction * distance);
+    blockPos.y = blockPos.y - 1;
+    player->getGameMode().buildBlock(blockPos, 0);
   });
 }
