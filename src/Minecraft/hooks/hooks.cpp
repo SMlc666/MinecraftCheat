@@ -37,6 +37,9 @@ int64 LevelRenderer_renderLevel(int64 a1, int64 a2, int64 a3) {
   return ret;
 }
 void Network_LoopbackPacketSender_send(LoopbackPacketSender *self, Packet *packet) {
+  if (!ModuleManager::sendPacketAllModules(packet)) {
+    return;
+  }
   LoopbackPacketSender_send_.call<void>(self, packet);
 }
 void hooksInit() {
