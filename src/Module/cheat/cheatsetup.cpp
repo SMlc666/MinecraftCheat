@@ -10,6 +10,7 @@
 #include "cheat/NoPacket/NoPacket.hpp"
 #include "cheat/Scaffold/Scaffold.hpp"
 #include "cheat/Seckill/Seckill.hpp"
+#include "cheat/Speed/Speed.hpp"
 #include "cheat/Timer/Timer.hpp"
 #include "cheat/Velocity/Velocity.hpp"
 void cheatSetup() {
@@ -25,4 +26,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Scaffold);
   ModuleManager::addModule(new cheat::NoPacket);
   ModuleManager::addModule(new cheat::Fly);
+  ModuleManager::addModule(new cheat::Speed);
 }
