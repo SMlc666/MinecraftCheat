@@ -36,7 +36,5 @@ cheat::GodMode::GodMode() : Module("GodMode", MenuType::COMBAT_MENU, ConfigData)
     }
     player->getGameMode().attack(*player);
   });
-  setOnSendPacket([](Module *module, Packet *packet) {
-
-  });
+  setOnSendPacket([](Module *module, Packet *packet) { return true; });
 }
