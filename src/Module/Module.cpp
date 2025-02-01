@@ -50,11 +50,14 @@ void Module::setOnSendPacket(std::function<bool(Module *, Packet *)> func) {
   m_onSendPacket = std::move(func);
 }
 void Module::onTick() {
-  if (m_onTick) {
+  if (!m_onTick) {
+    return;
+  }
+  bool isEnabled = m_gui.Get<bool>("enabled");
+  if (isEnabled) {
     m_onTick(this);
   }
 }
-
 void Module::onEnable() {
   if (m_onEnable) {
     m_onEnable(this);
