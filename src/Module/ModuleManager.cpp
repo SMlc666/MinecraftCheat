@@ -80,7 +80,7 @@ void loadAllModules() {
   }
 }
 bool sendPacketAllModules(Packet *packet) {
-  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  //std::lock_guard<std::mutex> lockGuard(moduleMutex);
   bool result = true;
   for (auto &pair : modules) {
     if (pair.second != nullptr) {
