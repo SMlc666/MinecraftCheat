@@ -3,6 +3,7 @@
 #include "SpinAttack/SpinAttack.hpp"
 #include "Blink/Blink.hpp"
 #include "cheat/ClickGUI/ClickGUI.hpp"
+#include "cheat/Fly/Fly.hpp"
 #include "cheat/GodMode/GodMode.hpp"
 #include "cheat/KillAura/KillAura.hpp"
 #include "cheat/Network/Network.hpp"
@@ -23,4 +24,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Velocity);
   ModuleManager::addModule(new cheat::Scaffold);
   ModuleManager::addModule(new cheat::NoPacket);
+  ModuleManager::addModule(new cheat::Fly);
 }
