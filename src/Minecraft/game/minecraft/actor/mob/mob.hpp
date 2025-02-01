@@ -3,4 +3,5 @@
 class Mob : public Actor {
 public:
   void swing();
+  void setSpeed(float speed);
 };
