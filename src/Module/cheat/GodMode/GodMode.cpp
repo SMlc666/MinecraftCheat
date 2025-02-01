@@ -9,12 +9,26 @@
 static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
     {"shortcut", false},
+    {"Mode", 0},
 };
+static const std::vector<std::string> ModeItems = {"attackSelf", "setPosition"};
 cheat::GodMode::GodMode() : Module("GodMode", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
+  setOnDrawGUI([](Module *module) { module->getGUI().Selectable("Mode", "模式", ModeItems); });
   setOnTick([](Module *module) {
-    if (!module->getGUI().Get<bool>("enabled")) {
+    bool enabled{};
+    int Mode{};
+    try {
+      enabled = module->getGUI().Get<bool>("enabled");
+      Mode = module->getGUI().Get<int>("Mode");
+    } catch (...) {
+      return;
+    }
+    if (!enabled) {
+      return;
+    }
+    if (Mode != 0) {
       return;
     }
     ClientInstance *client = runtimes::getClientInstance();
