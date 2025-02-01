@@ -13,7 +13,8 @@ static const std::vector<std::string> ModeItems = {
 };
 static const float NormalSpeed = 1.0F;
 cheat::Speed::Speed() : Module("Speed", MenuType::COMBAT_MENU, ConfigData) {
-  setOnEnable([](Module *module) {
+  setOnEnable([](Module *module) {});
+  setOnTick([](Module *module) {
     float speed{};
     try {
       speed = module->getGUI().Get<float>("Speed");
