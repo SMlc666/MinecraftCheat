@@ -17,15 +17,10 @@ cheat::GodMode::GodMode() : Module("GodMode", MenuType::COMBAT_MENU, ConfigData)
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) { module->getGUI().Selectable("Mode", "模式", ModeItems); });
   setOnTick([](Module *module) {
-    bool enabled{};
     int Mode{};
     try {
-      enabled = module->getGUI().Get<bool>("enabled");
       Mode = module->getGUI().Get<int>("Mode");
     } catch (...) {
-      return;
-    }
-    if (!enabled) {
       return;
     }
     if (Mode != 0) {
@@ -40,5 +35,8 @@ cheat::GodMode::GodMode() : Module("GodMode", MenuType::COMBAT_MENU, ConfigData)
       return;
     }
     player->getGameMode().attack(*player);
+  });
+  setOnSendPacket([](Module *module, Packet *packet) {
+
   });
 }
