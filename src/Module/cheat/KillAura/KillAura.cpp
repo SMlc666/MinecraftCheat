@@ -119,7 +119,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     }
   });
   setOnTick([](Module *module) {
-    bool enabled = false;
     float Range = NAN;
     bool swing = false;
     int mincps = 0;
@@ -130,7 +129,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     float fov = NAN;
     int priority = 0;
     try {
-      enabled = module->getGUI().Get<bool>("enabled");
       Range = module->getGUI().Get<float>("range");
       swing = module->getGUI().Get<bool>("swing");
       mincps = module->getGUI().Get<int>("mincps");
@@ -147,9 +145,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     auto now = std::chrono::steady_clock::now();
     int rmcps = std::uniform_int_distribution<>(std::min(mincps, maxcps), maxcps)(g_gen);
     auto interval = std::chrono::milliseconds(1000 / rmcps);
-    if (!enabled) {
-      return;
-    }
     if (now - LastAttackTime < interval) {
       return;
     }
@@ -206,7 +201,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
   });
   setOnRender([](Module *module) {
     using namespace Helper;
-    bool enabled = false;
     bool rotation = false;
     bool antibot = false;
     float fov = NAN;
@@ -214,7 +208,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     int rotationMode = 0;
 
     try {
-      enabled = module->getGUI().Get<bool>("enabled");
       rotation = module->getGUI().Get<bool>("rotation");
       rotationMode = module->getGUI().Get<int>("rotationMode");
       antibot = module->getGUI().Get<bool>("antibot");
@@ -224,9 +217,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       return;
     }
     if (g_Target == nullptr) {
-      return;
-    }
-    if (!enabled || !rotation) {
       return;
     }
     ClientInstance *mInstance = runtimes::getClientInstance();
