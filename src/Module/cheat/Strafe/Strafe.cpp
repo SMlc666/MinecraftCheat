@@ -12,9 +12,8 @@
 #include <unordered_map>
 #include <vector>
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"Mode", 0},        {"Speed", 0.5F},
-    {"Distance", 5.0F}, {"Priority", 0},     {"AntiBot", false}, {"fov", 360.0F},
-};
+    {"enabled", false}, {"shortcut", false}, {"Mode", 0},     {"Speed", 0.5F},   {"Range", 5.0F},
+    {"Priority", 0},    {"AntiBot", false},  {"fov", 360.0F}, {"distance", 0.1F}};
 static const std::vector<std::string> StrafeItems = {"LockBack", "Surround"};
 static const std::vector<std::string> PriorityItems = {"Distance", "Health", "Random"};
 cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
@@ -24,8 +23,9 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
     module->getGUI().Selectable("Mode", "模式", StrafeItems);
     module->getGUI().Selectable("Priority", "优先级", PriorityItems);
     module->getGUI().SliderFloat("Speed", "速度", 0.1F, 5.0F);
-    module->getGUI().SliderFloat("Distance", "距离", 1.0F, 15.0F);
+    module->getGUI().SliderFloat("Range", "范围", 1.0F, 15.0F);
     module->getGUI().SliderFloat("fov", "视角", 0.0F, 360.0F);
+    module->getGUI().SliderFloat("distance", "玩家距离", 0.0F, 10.0F);
     module->getGUI().CheckBox("AntiBot", "反机器人");
   });
   setOnTick([](Module *module) {
@@ -33,9 +33,10 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
       int mode = module->getGUI().Get<int>("Mode");
       int priority = module->getGUI().Get<int>("Priority");
       auto speed = module->getGUI().Get<float>("Speed");
-      auto distance = module->getGUI().Get<float>("Distance");
+      auto Range = module->getGUI().Get<float>("Range");
       auto fov = module->getGUI().Get<float>("fov");
       bool antibot = module->getGUI().Get<bool>("AntiBot");
+      auto distance = module->getGUI().Get<float>("distance");
       ClientInstance *instance = runtimes::getClientInstance();
       if (instance == nullptr) {
         return;
@@ -50,7 +51,7 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
       }
       std::vector<Player *> Players;
       mDimension->forEachPlayer([&](Player &player) {
-        return Helper::Target::ProcessPlayer(player, mLocalPlayer, antibot, distance, fov, Players);
+        return Helper::Target::ProcessPlayer(player, mLocalPlayer, antibot, Range, fov, Players);
       });
       if (Players.empty()) {
         return;
@@ -68,62 +69,68 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
       // 在onTick函数中的模式判断处添加以下代码
       if (mode == 0) { // LockBack 模式
         Player *target = Players[0];
+
+        // 获取目标和本地玩家的位置
         glm::vec3 targetPos = target->getPosition();
+        glm::vec3 playerPos = mLocalPlayer->getPosition();
+
+        // 获取目标的朝向
         float targetYaw = target->getYaw();
 
-        // 计算目标面朝方向（将yaw转换为三维向量）
-        float yawRad = glm::radians(targetYaw);
-        glm::vec3 direction(-sin(yawRad), 0, cos(yawRad)); // 方向向量
+        // 计算目标背后的位置 (以目标为中心，距离为distance，角度为目标的朝向+180度)
+        float angleInRadians = (targetYaw + 180.0f) * glm::pi<float>() / 180.0f;
+        glm::vec3 desiredPos = targetPos + glm::vec3(sin(angleInRadians) * distance, 0,
+                                                     cos(angleInRadians) * distance);
 
-        // 计算目标背后的理想位置
-        glm::vec3 desiredPos = targetPos - direction * distance;
-        desiredPos.y = mLocalPlayer->getPosition().y; // 保持当前高度
+        // 计算需要移动的向量
+        glm::vec3 moveVector = desiredPos - playerPos;
 
-        // 计算运动向量
-        glm::vec3 delta = desiredPos - mLocalPlayer->getPosition();
-        delta.y = 0; // 仅水平移动
-
-        if (glm::length(delta) > 0.1f) {
-          glm::vec3 motionDir = glm::normalize(delta);
-          glm::vec3 newMotion = motionDir * speed;
-          mLocalPlayer->setMotion(glm::vec3(newMotion.x, mLocalPlayer->getMotion().y, newMotion.z));
-        } else {
-          mLocalPlayer->setMotion(glm::vec3(0, mLocalPlayer->getMotion().y, 0));
+        // 标准化移动向量并应用速度
+        float length = sqrt(moveVector.x * moveVector.x + moveVector.y * moveVector.y +
+                            moveVector.z * moveVector.z);
+        if (length > 0.0001f) {
+          moveVector = moveVector * (speed / length);
         }
+
+        // 添加Y轴移动以使玩家与目标在同一水平面
+        moveVector.y = (targetPos.y - playerPos.y) * speed;
+
+        // 设置移动
+        mLocalPlayer->setMotion(moveVector);
       } else if (mode == 1) { // Surround 模式
         Player *target = Players[0];
+
+        // 获取目标和本地玩家的位置
         glm::vec3 targetPos = target->getPosition();
+        glm::vec3 playerPos = mLocalPlayer->getPosition();
 
-        // 使用静态变量保持旋转角度（针对每个目标需要优化）
-        static float surroundAngle = 0.0f;
+        // 计算当前tick的角度 (随时间变化)
+        static float angle = 0.0f;
+        angle += speed * 0.2f; // 控制旋转速度
+        if (angle > 360.0f)
+          angle -= 360.0f;
 
-        // 基于线速度计算角度增量（物理正确的圆周运动）
-        if (distance > 0.1f) {
-          float angularSpeed = (speed / distance) * (180.0f / glm::pi<float>());
-          surroundAngle += angularSpeed;
+        float angleInRadians = angle * glm::pi<float>() / 180.0f;
+
+        // 计算期望位置 (以目标为中心，距离为distance)
+        glm::vec3 desiredPos = targetPos + glm::vec3(sin(angleInRadians) * distance, 0,
+                                                     cos(angleInRadians) * distance);
+
+        // 计算需要移动的向量
+        glm::vec3 moveVector = desiredPos - playerPos;
+
+        // 标准化移动向量并应用速度
+        float length = sqrt(moveVector.x * moveVector.x + moveVector.y * moveVector.y +
+                            moveVector.z * moveVector.z);
+        if (length > 0.0001f) {
+          moveVector = moveVector * (speed / length);
         }
-        surroundAngle = fmod(surroundAngle, 360.0f);
 
-        // 计算圆周坐标
-        float radian = glm::radians(surroundAngle);
-        float xOffset = cos(radian) * distance;
-        float zOffset = sin(radian) * distance;
+        // 添加Y轴移动以使玩家与目标在同一水平面
+        moveVector.y = (targetPos.y - playerPos.y) * speed;
 
-        // 计算目标位置（保持当前Y轴高度）
-        glm::vec3 desiredPos = targetPos + glm::vec3(xOffset, 0, zOffset);
-        desiredPos.y = mLocalPlayer->getPosition().y;
-
-        // 计算运动向量
-        glm::vec3 delta = desiredPos - mLocalPlayer->getPosition();
-        delta.y = 0; // 仅水平移动
-
-        if (glm::length(delta) > 0.1f) {
-          glm::vec3 motionDir = glm::normalize(delta);
-          glm::vec3 newMotion = motionDir * speed;
-          mLocalPlayer->setMotion(glm::vec3(newMotion.x, mLocalPlayer->getMotion().y, newMotion.z));
-        } else {
-          mLocalPlayer->setMotion(glm::vec3(0, mLocalPlayer->getMotion().y, 0));
-        }
+        // 设置移动
+        mLocalPlayer->setMotion(moveVector);
       }
     } catch (...) {
       return;
