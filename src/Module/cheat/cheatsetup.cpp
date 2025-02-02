@@ -12,6 +12,7 @@
 #include "cheat/Scaffold/Scaffold.hpp"
 #include "cheat/Seckill/Seckill.hpp"
 #include "cheat/Speed/Speed.hpp"
+#include "cheat/Strafe/Strafe.hpp"
 #include "cheat/Timer/Timer.hpp"
 #include "cheat/Velocity/Velocity.hpp"
 void cheatSetup() {
@@ -29,4 +30,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Fly);
   ModuleManager::addModule(new cheat::Speed);
   ModuleManager::addModule(new cheat::Hud);
+  ModuleManager::addModule(new cheat::Strafe);
 }
