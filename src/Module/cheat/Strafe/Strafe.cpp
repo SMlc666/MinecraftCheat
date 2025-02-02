@@ -12,7 +12,7 @@
 #include <unordered_map>
 #include <vector>
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"Mode", 0},        {"Speed", 0.5},
+    {"enabled", false}, {"shortcut", false}, {"Mode", 0},        {"Speed", 0.5F},
     {"Distance", 5.0F}, {"Priority", 0},     {"AntiBot", false}, {"fov", 360.0F},
 };
 static const std::vector<std::string> StrafeItems = {"LockBack", "Surround"};
