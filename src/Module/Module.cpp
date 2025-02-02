@@ -53,9 +53,13 @@ void Module::onTick() {
   if (!m_onTick) {
     return;
   }
-  bool isEnabled = m_gui.Get<bool>("enabled");
-  if (isEnabled) {
-    m_onTick(this);
+  try {
+    bool isEnabled = m_gui.Get<bool>("enabled");
+    if (isEnabled) {
+      m_onTick(this);
+    }
+  } catch (...) {
+    return;
   }
 }
 void Module::onEnable() {
@@ -98,36 +102,55 @@ void Module::onDraw() {
   if (!m_onDraw) {
     return;
   }
-  bool isEnabled = m_gui.Get<bool>("enabled");
-  if (isEnabled) {
-    m_onDraw(this);
+  try {
+    bool isEnabled = m_gui.Get<bool>("enabled");
+    if (isEnabled) {
+      m_onDraw(this);
+    }
+  } catch (...) {
+    return;
   }
 }
+
 void Module::onRender() {
   if (!m_onRender) {
     return;
   }
-  bool isEnabled = m_gui.Get<bool>("enabled");
-  if (isEnabled) {
-    m_onRender(this);
+  try {
+    bool isEnabled = m_gui.Get<bool>("enabled");
+    if (isEnabled) {
+      m_onRender(this);
+    }
+  } catch (...) {
+    return;
   }
 }
+
 void Module::onPostRender() {
   if (!m_onPostRender) {
     return;
   }
-  bool isEnabled = m_gui.Get<bool>("enabled");
-  if (isEnabled) {
-    m_onPostRender(this);
+  try {
+    bool isEnabled = m_gui.Get<bool>("enabled");
+    if (isEnabled) {
+      m_onPostRender(this);
+    }
+  } catch (...) {
+    return;
   }
 }
+
 bool Module::onSendPacket(Packet *packet) {
   if (!m_onSendPacket) {
     return true;
   }
-  bool isEnabled = m_gui.Get<bool>("enabled");
-  if (isEnabled) {
-    return m_onSendPacket(this, packet);
+  try {
+    bool isEnabled = m_gui.Get<bool>("enabled");
+    if (isEnabled) {
+      return m_onSendPacket(this, packet);
+    }
+  } catch (...) {
+    return true;
   }
   return true;
 }
