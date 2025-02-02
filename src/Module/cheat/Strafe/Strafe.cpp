@@ -68,70 +68,67 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
       }
       // 在onTick函数中的模式判断处添加以下代码
       if (mode == 0) { // LockBack 模式
-        Player *target = Players[0];
+        // 获取玩家的目标位置
+        Player *targetPlayer = Players[0];
+        glm::vec3 targetPosition = targetPlayer->getPosition();
+        float targetYaw = targetPlayer->getYaw();     // 获取目标的方向
+        float targetPitch = targetPlayer->getPitch(); // 获取目标的俯仰角度
 
-        // 获取目标和本地玩家的位置
-        glm::vec3 targetPos = target->getPosition();
-        glm::vec3 playerPos = mLocalPlayer->getPosition();
+        // 计算目标背后的位置 (计算背后点的偏移量)
+        glm::vec3 offset =
+            glm::vec3(-sin(glm::radians(targetYaw)), 0.0f, cos(glm::radians(targetYaw))) * distance;
+        glm::vec3 behindPosition = targetPosition + offset;
 
-        // 获取目标的朝向
-        float targetYaw = target->getYaw();
+        // 计算当前玩家与目标背后位置的向量
+        glm::vec3 direction = behindPosition - mLocalPlayer->getPosition();
 
-        // 计算目标背后的位置 (以目标为中心，距离为distance，角度为目标的朝向+180度)
-        float angleInRadians = (targetYaw + 180.0f) * glm::pi<float>() / 180.0f;
-        glm::vec3 desiredPos = targetPos + glm::vec3(sin(angleInRadians) * distance, 0,
-                                                     cos(angleInRadians) * distance);
+        // 调整y轴的速度，使玩家保持在一个水平面上
+        float verticalDifference = direction.y;
+        direction.y = 0.0f; // 不让y轴有任何偏差
+        glm::normalize(direction);
 
-        // 计算需要移动的向量
-        glm::vec3 moveVector = desiredPos - playerPos;
+        // 调整玩家的速度以使其向目标背后移动
+        glm::vec3 desiredMotion = direction * speed;
 
-        // 标准化移动向量并应用速度
-        float length = sqrt(moveVector.x * moveVector.x + moveVector.y * moveVector.y +
-                            moveVector.z * moveVector.z);
-        if (length > 0.0001f) {
-          moveVector = moveVector * (speed / length);
-        }
+        // 结合y轴的偏差来更新运动
+        desiredMotion.y = verticalDifference * speed;
 
-        // 添加Y轴移动以使玩家与目标在同一水平面
-        moveVector.y = (targetPos.y - playerPos.y) * speed;
-
-        // 设置移动
-        mLocalPlayer->setMotion(moveVector);
+        // 更新玩家的运动
+        mLocalPlayer->setMotion(desiredMotion);
       } else if (mode == 1) { // Surround 模式
-        Player *target = Players[0];
+        // 获取玩家的目标位置
+        Player *targetPlayer = Players[0];
+        glm::vec3 targetPosition = targetPlayer->getPosition();
 
-        // 获取目标和本地玩家的位置
-        glm::vec3 targetPos = target->getPosition();
-        glm::vec3 playerPos = mLocalPlayer->getPosition();
+        // 计算围绕目标转圈的运动
+        float angle = glm::radians(
+            glm::mod(glm::degrees(mLocalPlayer->getYaw()), 360.0f)); // 让角度保持在 [0, 360]
+        float radius = distance;                                     // 设定转圈的半径
+        float angleSpeed = 0.05f; // 每个tick的转动角度速度，您可以通过速度参数来调节
 
-        // 计算当前tick的角度 (随时间变化)
-        static float angle = 0.0f;
-        angle += speed * 0.2f; // 控制旋转速度
-        if (angle > 360.0f)
-          angle -= 360.0f;
+        // 计算围绕目标转圈的新的 x 和 z 坐标
+        float circleX = targetPosition.x + radius * cos(angle + angleSpeed);
+        float circleZ = targetPosition.z + radius * sin(angle + angleSpeed);
 
-        float angleInRadians = angle * glm::pi<float>() / 180.0f;
+        // 计算从玩家当前位置到目标位置的向量
+        glm::vec3 direction =
+            glm::vec3(circleX, targetPosition.y, circleZ) - mLocalPlayer->getPosition();
 
-        // 计算期望位置 (以目标为中心，距离为distance)
-        glm::vec3 desiredPos = targetPos + glm::vec3(sin(angleInRadians) * distance, 0,
-                                                     cos(angleInRadians) * distance);
+        // 调整y轴的速度，使玩家保持水平
+        float verticalDifference = direction.y;
+        direction.y = 0.0f;
+        glm::normalize(direction);
 
-        // 计算需要移动的向量
-        glm::vec3 moveVector = desiredPos - playerPos;
+        // 调整玩家的速度
+        glm::vec3 desiredMotion = direction * speed;
 
-        // 标准化移动向量并应用速度
-        float length = sqrt(moveVector.x * moveVector.x + moveVector.y * moveVector.y +
-                            moveVector.z * moveVector.z);
-        if (length > 0.0001f) {
-          moveVector = moveVector * (speed / length);
-        }
+        // 结合y轴的偏差来更新运动
+        desiredMotion.y = verticalDifference * speed;
 
-        // 添加Y轴移动以使玩家与目标在同一水平面
-        moveVector.y = (targetPos.y - playerPos.y) * speed;
-
-        // 设置移动
-        mLocalPlayer->setMotion(moveVector);
+        // 更新玩家的运动
+        mLocalPlayer->setMotion(desiredMotion);
       }
+
     } catch (...) {
       return;
     }
