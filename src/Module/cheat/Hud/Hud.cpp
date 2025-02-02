@@ -4,6 +4,7 @@
 #include "Module.hpp"
 #include "ModuleManager.hpp"
 #include "draw.hpp"
+#include "gui/gui.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
 #include "menu/menu.hpp"
@@ -11,11 +12,20 @@
 #include <string>
 #include <unordered_map>
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"arraylist", false}};
+    {"enabled", false},
+    {"shortcut", false},
+    {"arraylist", false},
+    {"fontSize", 16.0f},
+    {"lineSpacing", 2.0f},
+    {"padding", GUI::Vec2(10.0f, 10.0f)},
+    {"colorTop", GUI::Color(255, 255, 255, 255)},
+};
+
 namespace Arraylist {
 ImU32 colorTop = IM_COL32(255, 255, 255, 255);
 float fontSize = 16.0f;
 float lineSpacing = 2.0f;
+ImVec2 padding(10.0f, 10.0f);
 } // namespace Arraylist
 struct Array {
   std::string name;
@@ -32,6 +42,8 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
                       [](float value) { Arraylist::fontSize = value; });
       gui.SliderFloat("lineSpacing", "行间距", 1.0F, 10.0F,
                       [](float value) { Arraylist::lineSpacing = value; });
+      gui.SliderFloat2("padding", "边距", 0.0F, 30.0F,
+                       [](float x, float y) { Arraylist::padding = ImVec2(x, y); });
       gui.ColorEdit("colorTop", "字体颜色", [](GUI::Color color) {
         Arraylist::colorTop = IM_COL32(color.r, color.g, color.b, color.a);
       });
