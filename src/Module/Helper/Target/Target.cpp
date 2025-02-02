@@ -14,6 +14,11 @@ bool Helper::Target::hasPlayer(Dimension *dimension, Player *targetPlayer, Local
 
   return foundPlayer;
 }
+bool Helper::Target::isBot(Player *player) {
+  float Pitch = player->getPitch();
+  float Yaw = player->getYaw();
+  return Yaw == 0.0F && Pitch == 0.0F;
+}
 bool Helper::Target::ProcessPlayer(Player &player, LocalPlayer *localPlayer, bool antibot,
                                    float range, float fov, std::vector<Player *> &playerList) {
   if (&player == localPlayer) {
