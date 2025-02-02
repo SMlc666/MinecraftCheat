@@ -19,6 +19,7 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"lineSpacing", 2.0f},
     {"padding", GUI::Vec2(10.0f, 10.0f)},
     {"colorTop", GUI::Color(255, 255, 255, 255)},
+    {"onlyActive", true},
 };
 
 namespace Arraylist {
@@ -26,6 +27,7 @@ ImU32 colorTop = IM_COL32(255, 255, 255, 255);
 float fontSize = 16.0f;
 float lineSpacing = 2.0f;
 ImVec2 padding(10.0f, 10.0f);
+bool onlyActive = true;
 } // namespace Arraylist
 struct Array {
   std::string name;
@@ -47,6 +49,8 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
       gui.ColorEdit("colorTop", "字体颜色", [](GUI::Color color) {
         Arraylist::colorTop = IM_COL32(color.r, color.g, color.b, color.a);
       });
+      gui.CheckBox("onlyActive", "只显示激活模块",
+                   [](bool value) { Arraylist::onlyActive = value; });
       ImGui::TreePop();
     }
   });
@@ -56,9 +60,13 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
       auto fontSize = gui.Get<float>("fontSize");
       auto lineSpacing = gui.Get<float>("lineSpacing");
       GUI::Color colorTop = gui.GetColor("colorTop");
+      auto padding = gui.GetVec2("padding");
+      bool onlyActive = gui.Get<bool>("onlyActive");
       Arraylist::fontSize = fontSize;
       Arraylist::lineSpacing = lineSpacing;
       Arraylist::colorTop = IM_COL32(colorTop.r, colorTop.g, colorTop.b, colorTop.a);
+      Arraylist::padding = ImVec2(padding.x, padding.y);
+      Arraylist::onlyActive = onlyActive;
     } catch (...) {
       return;
     }
@@ -91,6 +99,13 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
 
     // 计算所有文本的边界
     for (const auto &module : moduleList) {
+      try {
+        if (Arraylist::onlyActive && !module.second->getGUI().Get<bool>("enabled")) {
+          continue;
+        }
+      } catch (...) {
+        continue;
+      }
       ImVec2 textSize = ImGui::CalcTextSize(module.first.c_str());
       textSize.x *= fontScale;
       textSize.y *= fontScale;
