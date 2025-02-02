@@ -14,9 +14,7 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"arraylist", false}};
 namespace Arraylist {
 ImU32 colorTop = IM_COL32(255, 255, 255, 255);
-ImU32 colorBottom = IM_COL32(255, 255, 255, 255);
 float fontSize = 16.0f;
-ImVec2 padding(10.0f, 10.0f);
 float lineSpacing = 2.0f;
 } // namespace Arraylist
 struct Array {
@@ -28,7 +26,13 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
     auto &gui = module->getGUI();
-    gui.CheckBox("arraylist", "功能列表");
+    if (ImGui::TreeNode("Arraylist")) {
+      gui.CheckBox("arraylist", "功能列表");
+      gui.SliderFloat("fontSize", "字体大小", 1.0F, 44.0F);
+      gui.SliderFloat("lineSpacing", "行间距", 1.0F, 10.0F);
+      gui.ColorEdit("colorTop", "字体颜色");
+      ImGui::TreePop();
+    }
   });
   setOnDraw([](Module *module) {
     auto &gui = module->getGUI();
