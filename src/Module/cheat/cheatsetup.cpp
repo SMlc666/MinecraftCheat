@@ -5,6 +5,7 @@
 #include "cheat/ClickGUI/ClickGUI.hpp"
 #include "cheat/Fly/Fly.hpp"
 #include "cheat/GodMode/GodMode.hpp"
+#include "cheat/Hud/Hud.hpp"
 #include "cheat/KillAura/KillAura.hpp"
 #include "cheat/Network/Network.hpp"
 #include "cheat/NoPacket/NoPacket.hpp"
@@ -27,4 +28,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::NoPacket);
   ModuleManager::addModule(new cheat::Fly);
   ModuleManager::addModule(new cheat::Speed);
+  ModuleManager::addModule(new cheat::Hud);
 }
