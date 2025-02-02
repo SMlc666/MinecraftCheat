@@ -28,10 +28,27 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
     auto &gui = module->getGUI();
     if (ImGui::TreeNode("Arraylist")) {
       gui.CheckBox("arraylist", "功能列表");
-      gui.SliderFloat("fontSize", "字体大小", 1.0F, 44.0F);
-      gui.SliderFloat("lineSpacing", "行间距", 1.0F, 10.0F);
-      gui.ColorEdit("colorTop", "字体颜色");
+      gui.SliderFloat("fontSize", "字体大小", 1.0F, 44.0F,
+                      [](float value) { Arraylist::fontSize = value; });
+      gui.SliderFloat("lineSpacing", "行间距", 1.0F, 10.0F,
+                      [](float value) { Arraylist::lineSpacing = value; });
+      gui.ColorEdit("colorTop", "字体颜色", [](GUI::Color color) {
+        Arraylist::colorTop = IM_COL32(color.r, color.g, color.b, color.a);
+      });
       ImGui::TreePop();
+    }
+  });
+  setOnLoad([](Module *module) {
+    auto &gui = module->getGUI();
+    try {
+      auto fontSize = gui.Get<float>("fontSize");
+      auto lineSpacing = gui.Get<float>("lineSpacing");
+      GUI::Color colorTop = gui.GetColor("colorTop");
+      Arraylist::fontSize = fontSize;
+      Arraylist::lineSpacing = lineSpacing;
+      Arraylist::colorTop = IM_COL32(colorTop.r, colorTop.g, colorTop.b, colorTop.a);
+    } catch (...) {
+      return;
     }
   });
   setOnDraw([](Module *module) {
