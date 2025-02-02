@@ -1,4 +1,5 @@
 #include "Module.hpp"
+#include "game/minecraft/input/MoveInputHandler.hpp"
 #include "gui/gui.hpp"
 #include "imgui/imgui.h"
 #include <functional>
@@ -49,6 +50,10 @@ void Module::setOnPostRender(std::function<void(Module *)> func) {
 void Module::setOnSendPacket(std::function<bool(Module *, Packet *)> func) {
   m_onSendPacket = std::move(func);
 }
+void Module::setOnMove(std::function<void(Module *, MoveInputHandler *)> func) {
+  m_onMove = std::move(func);
+}
+
 void Module::onTick() {
   if (!m_onTick) {
     return;
@@ -153,6 +158,19 @@ bool Module::onSendPacket(Packet *packet) {
     return true;
   }
   return true;
+}
+void Module::onMove(MoveInputHandler *inputHandler) {
+  if (!m_onMove) {
+    return;
+  }
+  try {
+    bool isEnabled = m_gui.Get<bool>("enabled");
+    if (isEnabled) {
+      m_onMove(this, inputHandler);
+    }
+  } catch (...) {
+    return;
+  }
 }
 GUI &Module::getGUI() {
   return m_gui;

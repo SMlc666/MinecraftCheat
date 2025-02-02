@@ -1,4 +1,5 @@
 #pragma once
+#include "game/minecraft/input/MoveInputHandler.hpp"
 #include "game/minecraft/network/Packet/Packet.hpp"
 #include "menu/menu.hpp"
 #include <any>
@@ -26,6 +27,7 @@ public:
   void setOnRender(std::function<void(Module *)> func);
   void setOnPostRender(std::function<void(Module *)> func);
   void setOnSendPacket(std::function<bool(Module *, Packet *)> func);
+  void setOnMove(std::function<void(Module *, MoveInputHandler *)> func);
   void onTick();
   void onEnable();
   void onDisable();
@@ -35,6 +37,7 @@ public:
   void onRender();
   void onPostRender();
   bool onSendPacket(Packet *packet);
+  void onMove(MoveInputHandler *inputHandler);
   GUI &getGUI();
 
 private:
@@ -50,5 +53,6 @@ private:
   std::function<void(Module *)> m_onRender;
   std::function<void(Module *)> m_onPostRender;
   std::function<bool(Module *, Packet *)> m_onSendPacket;
+  std::function<void(Module *, MoveInputHandler *)> m_onMove;
   GUI m_gui;
 };
