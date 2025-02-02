@@ -16,6 +16,13 @@ cheat::Network::Network() : Module("Network", MenuType::DEBUG_MENU, ConfigData) 
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
   setOnLoad([](Module *module) {});
+  setOnDrawGUI([](Module *module) {
+    auto &gui = module->getGUI();
+    gui.CheckBox("name", "name");
+    gui.CheckBox("id", "id");
+    gui.CheckBox("vaild", "vaild");
+    gui.CheckBox("classify", "classify");
+  });
   setOnSendPacket([](Module *module, Packet *packet) {
     bool name = false;
     bool id = false;
