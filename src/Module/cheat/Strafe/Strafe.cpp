@@ -71,26 +71,26 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
         // 获取玩家的目标位置
         Player *targetPlayer = Players[0];
         glm::vec3 targetPosition = targetPlayer->getPosition();
-        float targetYaw = targetPlayer->getYaw();     // 获取目标的方向
-        float targetPitch = targetPlayer->getPitch(); // 获取目标的俯仰角度
+        float targetYaw = targetPlayer->getYaw(); // 获取目标的方向
 
-        // 计算目标背后的位置 (计算背后点的偏移量)
+        // 计算目标背后的位置 (通过目标的 yaw 角度反向计算)
+        float backYaw = glm::mod(targetYaw + 180.0f, 360.0f); // 将 yaw 加上 180 度，表示目标背后
         glm::vec3 offset =
-            glm::vec3(-sin(glm::radians(targetYaw)), 0.0f, cos(glm::radians(targetYaw))) * distance;
+            glm::vec3(-sin(glm::radians(backYaw)), 0.0f, cos(glm::radians(backYaw))) * distance;
         glm::vec3 behindPosition = targetPosition + offset;
 
         // 计算当前玩家与目标背后位置的向量
         glm::vec3 direction = behindPosition - mLocalPlayer->getPosition();
 
-        // 调整y轴的速度，使玩家保持在一个水平面上
+        // 调整 y 轴的速度，使玩家保持在一个水平面上
         float verticalDifference = direction.y;
-        direction.y = 0.0f; // 不让y轴有任何偏差
+        direction.y = 0.0f; // 只关注水平面的方向
         glm::normalize(direction);
 
         // 调整玩家的速度以使其向目标背后移动
         glm::vec3 desiredMotion = direction * speed;
 
-        // 结合y轴的偏差来更新运动
+        // 结合 y 轴的偏差来更新运动
         desiredMotion.y = verticalDifference * speed;
 
         // 更新玩家的运动
