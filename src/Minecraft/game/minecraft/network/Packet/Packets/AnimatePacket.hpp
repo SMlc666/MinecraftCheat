@@ -23,11 +23,11 @@ public:
   std::byte padding2C[0x1C]{};
 
 public:
-  virtual ~AnimatePacket();
-  virtual MinecraftPacketIds getId() const;
-  virtual std::string getName() const;
-  virtual void write(BinaryStream &stream) const;
-  virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream &stream);
+  virtual ~AnimatePacket() override;
+  virtual MinecraftPacketIds getId() const override;
+  virtual std::string getName() const override;
+  virtual void write(BinaryStream &stream) const override;
+  virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream &stream) override;
 
 public:
   inline AnimatePacket(Action action, Actor &e) {
