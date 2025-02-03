@@ -5,6 +5,7 @@
 #include "game/minecraft/actor/actor.hpp"
 #include "game/minecraft/network/Packet/MinecraftPacketIds.hpp"
 #include "game/minecraft/network/Packet/Packet.hpp"
+#include "signature.hpp"
 #include <system_error>
 class AnimatePacket : public Packet {
 public:
@@ -19,7 +20,7 @@ public:
   };
 
 public:
-  std::byte padding2C[0x1C];
+  std::byte padding2C[0x1C]{};
 
 public:
   virtual ~AnimatePacket();
@@ -29,6 +30,10 @@ public:
   virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream &stream);
 
 public:
-  AnimatePacket(Action action, Actor &e);
+  inline AnimatePacket(Action action, Actor &e) {
+    using function = void (*)(AnimatePacket *, Action, Actor &);
+    auto func = getSign<function>("AnimatePacket::AnimatePacket");
+    func(this, action, e);
+  }
 };
 static_assert(sizeof(AnimatePacket) == 0x48);
