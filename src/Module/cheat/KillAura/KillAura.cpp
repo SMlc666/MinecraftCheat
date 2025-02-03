@@ -11,6 +11,7 @@
 #include "game/minecraft/network/PacketSender.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
 #include "imgui/imgui.h"
+#include "log.hpp"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include <chrono>
@@ -81,6 +82,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       fov = module->getGUI().Get<float>("fov");
       priority = module->getGUI().Get<int>("priority");
     } catch (const std::exception &e) {
+      g_log_tool.message(LogLevel::ERROR, "KillAura", std::format("读取配置失败:{}", e.what()));
       return;
     }
     int attackCount = 0;
