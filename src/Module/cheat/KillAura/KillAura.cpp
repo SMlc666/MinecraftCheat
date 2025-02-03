@@ -6,6 +6,9 @@
 #include "game/minecraft/actor/player/player.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
+#include "game/minecraft/minecraft.hpp"
+#include "game/minecraft/network/Packet/Packets/AnimatePacket.hpp"
+#include "game/minecraft/network/PacketSender.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
 #include "imgui/imgui.h"
 #include "menu/menu.hpp"
@@ -17,10 +20,12 @@
 #include "Helper/Rotation/rotation.hpp"
 static const std::vector<std::string> PriorityItems = {"Health", "Distance", "Random"};
 static const std::vector<std::string> RotationItems = {"Lock", "Approximate"};
+static const std::vector<std::string> SwingItems = {"Client", "Server", "Both"};
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},  {"shortcut", false},      {"mincps", 10},   {"maxcps", 20},
-    {"range", 5.0F},     {"swing", false},         {"attackNum", 1}, {"antibot", false},
-    {"fov", 180.0F},     {"failurerate", 0},       {"priority", 0},  {"rotation", false},
+    {"enabled", false},  {"shortcut", false},      {"mincps", 10},
+    {"maxcps", 20},      {"range", 5.0F},          {"swing", 2},
+    {"attackNum", 1},    {"antibot", false},       {"fov", 180.0F},
+    {"failurerate", 0},  {"priority", 0},          {"rotation", false},
     {"rotationMode", 0}, {"rotationSlient", false}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
@@ -57,7 +62,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
   });
   setOnTick([](Module *module) {
     float Range = NAN;
-    bool swing = false;
+    int swing{};
     int mincps = 0;
     int maxcps = 0;
     int attackNum = 0;
@@ -67,7 +72,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     int priority = 0;
     try {
       Range = module->getGUI().Get<float>("range");
-      swing = module->getGUI().Get<bool>("swing");
+      swing = module->getGUI().Get<int>("swing");
       mincps = module->getGUI().Get<int>("mincps");
       maxcps = module->getGUI().Get<int>("maxcps");
       attackNum = module->getGUI().Get<int>("attackNum");
@@ -95,6 +100,14 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     }
     Dimension *mDimension = mLocalPlayer->mDimension;
     if (mDimension == nullptr) {
+      return;
+    }
+    Minecraft *mMinecraft = mInstance->minecraftPtr;
+    if (mMinecraft == nullptr) {
+      return;
+    }
+    PacketSender *mPacketSender = &mMinecraft->mPacketSender;
+    if (mPacketSender == nullptr) {
       return;
     }
     PlayerList.clear();
@@ -128,8 +141,12 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
         g_Target = player;
         hasAttacked = true;
       }
-      if (swing) {
+      if (swing == 0 || swing == 2) {
         mLocalPlayer->swing();
+      }
+      if (swing == 1 || swing == 2) {
+        AnimatePacket packet(AnimatePacket::Action::Swing, *mLocalPlayer);
+        mPacketSender->send(packet);
       }
     }
     if (hasAttacked) {
