@@ -145,8 +145,9 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
         mLocalPlayer->swing();
       }
       if (swing == 1 || swing == 2) {
-        AnimatePacket packet(AnimatePacket::Action::Swing, *mLocalPlayer);
-        mPacketSender->send(packet);
+        auto *packet = new AnimatePacket(AnimatePacket::Action::Swing, *mLocalPlayer);
+        mPacketSender->send(*packet);
+        delete packet;
       }
     }
     if (hasAttacked) {
