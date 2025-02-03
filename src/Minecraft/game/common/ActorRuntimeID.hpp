@@ -26,7 +26,6 @@ public:
 
 public:
   uint64 rawID;
-  // NOLINTEND
 };
 
 namespace std {
