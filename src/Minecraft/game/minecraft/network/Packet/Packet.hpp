@@ -9,15 +9,10 @@
 class ReadOnlyBinaryStream;
 class BinaryStream;
 class IPacketHandlerDispacher;
+#pragma pack(push, 4)
 class Packet {
 public:
-  PacketPriority mPriority;
-  NetworkPeer::Reliability mReliability;
-  SubClientId mClientSubId;
-  bool mIsHandled;
-  std::chrono::steady_clock::time_point mReceiveTimepoint;
-  IPacketHandlerDispacher *mHandler;
-  Compressibility mCompressible;
+  std::byte padding8[0x24];
 
 public:
   virtual ~Packet();
@@ -29,3 +24,5 @@ public:
   virtual bool isValid() const;
   virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream &stream) = 0;
 };
+#pragma pack(pop)
+static_assert(sizeof(Packet) == 0x2C);
