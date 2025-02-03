@@ -24,7 +24,7 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
   setOnDrawGUI([](Module *module) {
     module->getGUI().Selectable("Mode", "模式", StrafeItems);
     module->getGUI().Selectable("Priority", "优先级", PriorityItems);
-    module->getGUI().SliderFloat("Speed", "速度", 0.1F, 5.0F);
+    module->getGUI().SliderFloat("Speed", "速度", 0.01F, 5.0F);
     module->getGUI().SliderFloat("Range", "范围", 1.0F, 15.0F);
     module->getGUI().SliderFloat("fov", "视角", 0.0F, 360.0F);
     module->getGUI().SliderFloat("distance", "玩家距离", 0.0F, 10.0F);
