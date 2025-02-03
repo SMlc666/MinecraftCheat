@@ -48,7 +48,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     });
     gui.SliderInt("maxcps", "最大攻击速度", 1, 20);
     gui.SliderInt("attackNum", "攻击数量", 1, 20);
-    gui.CheckBox("swing", "挥手");
+    gui.Selectable("swing", "挥手", SwingItems);
     gui.CheckBox("antibot", "反机器人");
     gui.SliderFloat("fov", "视角", 0.0F, 360.0F);
     gui.SliderInt("failurerate", "失败率", 0, 100);
