@@ -7,6 +7,7 @@
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/minecraft.hpp"
+#include "game/minecraft/network/LoopbackPacketSender.hpp"
 #include "game/minecraft/network/Packet/Packets/AnimatePacket.hpp"
 #include "game/minecraft/network/PacketSender.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
@@ -108,7 +109,7 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     if (mMinecraft == nullptr) {
       return;
     }
-    PacketSender *mPacketSender = &mMinecraft->mPacketSender;
+    LoopbackPacketSender *mPacketSender = runtimes::getPacketSender();
     if (mPacketSender == nullptr) {
       return;
     }
