@@ -1,5 +1,5 @@
 #pragma once
-
+#include <functional>
 #include "base/mcint.hpp"
 #include <compare>
 #include <cstddef>
@@ -25,8 +25,6 @@ public:
   }
 
 public:
-  // member variables
-  // NOLINTBEGIN
   uint64 rawID;
   // NOLINTEND
 };
