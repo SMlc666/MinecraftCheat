@@ -3,6 +3,7 @@
 #include "game/deps/input/InputMode.hpp"
 #include "game/minecraft/input/NewInteractionModel.hpp"
 #include "game/minecraft/network/Packet/Packet.hpp"
+#include "game/minecraft/network/Packet/PlayerInputTick.hpp"
 #include "glm/fwd.hpp"
 #include "game/minecraft/client/game/ClientPlayMode.hpp"
 #include <bitset>
@@ -84,12 +85,9 @@ public:
   alias::TypedStorage<4, 12, glm::vec3> mPos;
   alias::TypedStorage<4, 4, float> mYHeadRot;
   alias::TypedStorage<4, 12, glm::vec3> mPosDelta;
-  alias::TypedStorage<4, 8, glm::vec2> mVehicleRot;
   alias::TypedStorage<4, 8, glm::vec2> mAnalogMoveVector;
   alias::TypedStorage<4, 8, glm::vec2> mMove;
-  alias::TypedStorage<4, 8, glm::vec2> mInteractRotation;
   alias::TypedStorage<4, 12, glm::vec3> mCameraOrientation;
-  alias::TypedStorage<4, 8, glm::vec2> mRawMoveVector;
   alias::TypedStorage<8, 16, std::bitset<65>> mInputData;
   alias::TypedStorage<4, 4, InputMode> mInputMode;
   alias::TypedStorage<4, 4, ClientPlayMode> mPlayMode;
@@ -101,3 +99,4 @@ public:
   alias::UntypedStorage<8, 24> mPlayerBlockActions;
   alias::UntypedStorage<8, 8> mClientPredictedVehicle;
 };
+static_assert(sizeof(PlayerAuthInputPacket) == 0xC8);
