@@ -7,7 +7,7 @@
 #include "game/minecraft/network/Packet/Packet.hpp"
 #include "signature.hpp"
 #include <system_error>
-class AnimatePacket : public Packet {
+class AnimatePacket {
 public:
   enum class Action : int {
     NoAction = 0,
@@ -20,14 +20,8 @@ public:
   };
 
 public:
-  std::byte padding2C[0x1C]{};
-
-public:
-  virtual ~AnimatePacket() override;
-  virtual MinecraftPacketIds getId() const override;
-  virtual std::string getName() const override;
-  virtual void write(BinaryStream &stream) const override;
-  virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream &stream) override;
+  std::byte padding8[0x2C];
+  std::byte padding2C[0x1C];
 
 public:
   inline AnimatePacket(Action action, Actor &e) {
