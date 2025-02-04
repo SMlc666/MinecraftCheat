@@ -1,5 +1,5 @@
 #pragma once
 #include "imgui/imgui.h"
-void drawMainMenu() {
+inline void drawMainMenu() {
   ImGui::Text("Main Menu");
 }

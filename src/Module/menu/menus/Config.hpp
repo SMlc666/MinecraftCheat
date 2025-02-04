@@ -2,7 +2,7 @@
 #include "config/config.hpp"
 #include "imgui/imgui.h"
 #include "log.hpp"
-void drawConfigMenu() {
+inline void drawConfigMenu() {
   if (ImGui::Button("Save")) {
     try {
       Config::saveConfig();

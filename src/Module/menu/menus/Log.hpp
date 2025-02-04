@@ -37,7 +37,7 @@ static void drawLog(std::vector<LogEntry> &Logs) {
     }
   }
 }
-void drawLogMenu() {
+inline void drawLogMenu() {
   if (ImGui::Button("Clear")) {
     g_log_tool.cleanLogs();
   }

@@ -1,7 +1,7 @@
 #pragma once
 #include "ScriptManager.hpp"
 #include "imgui/imgui.h"
-void drawScriptMenu() {
+inline void drawScriptMenu() {
   auto Scripts = ScriptManager::getScripts();
   if (ImGui::Button("Reload Scripts")) {
     ScriptManager::reloadScripts();

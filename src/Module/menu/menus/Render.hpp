@@ -1,3 +1,3 @@
 #pragma once
-void drawRenderMenu() {
+inline void drawRenderMenu() {
 }

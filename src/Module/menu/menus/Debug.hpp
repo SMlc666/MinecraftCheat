@@ -18,7 +18,7 @@
 #include <cstdlib>
 #include <format>
 #include <stdexcept>
-void drawDebugMenu() {
+inline void drawDebugMenu() {
   if (ImGui::TreeNode("Crash Test")) {
     if (ImGui::Button("Test Crash Abort")) {
       std::abort();
