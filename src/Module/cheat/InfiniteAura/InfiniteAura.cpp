@@ -13,8 +13,8 @@
 #include <unordered_map>
 #include <algorithm>
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"step", 1}, {"range", 20.0F},
-    {"fov", 360.0F},    {"AntiBot", false},  {"Mode", 0}, {"Prioriry", 0}};
+    {"enabled", false}, {"shortcut", false}, {"step", 1}, {"range", 20.0F}, {"fov", 360.0F},
+    {"AntiBot", false}, {"Distance", 1.0F},  {"Mode", 0}, {"Prioriry", 0}};
 static const std::vector<std::string> ModeItems = {"Teleport", "Motion"};
 static const std::vector<std::string> PrioriryItems = {
     "Health",
@@ -22,6 +22,8 @@ static const std::vector<std::string> PrioriryItems = {
     "Random",
 };
 static glm::vec3 originPos{};
+static glm::vec3 moveDirection{};
+static int remainingSteps = 0;
 cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
@@ -30,6 +32,7 @@ cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_ME
     gui.SliderFloat("range", "范围", 1.0F, 100.0F);
     gui.SliderInt("step", "步骤", 1, 20);
     gui.SliderFloat("fov", "视角", 0.0F, 360.0F);
+    gui.SliderFloat("Distance", "返回距离", 0.1F, 10.0F);
     gui.CheckBox("AntiBot", "反机器人");
     gui.Selectable("Mode", "模式", ModeItems);
     gui.Selectable("Prioriry", "优先级", PrioriryItems);
@@ -43,28 +46,26 @@ cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_ME
       auto step = gui.Get<int>("step");
       auto mode = gui.Get<int>("Mode");
       auto priority = gui.Get<int>("Prioriry");
-
+      auto distance = gui.Get<float>("Distance");
       ClientInstance *instance = runtimes::getClientInstance();
-      if (instance == nullptr)
+      if (instance == nullptr) {
         return;
-
+      }
       auto *mLocalPlayer = instance->getLocalPlayer();
-      if (mLocalPlayer == nullptr)
+      if (mLocalPlayer == nullptr) {
         return;
-
+      }
       Dimension *dimension = mLocalPlayer->mDimension;
-      if (dimension == nullptr)
+      if (dimension == nullptr) {
         return;
-
+      }
       std::vector<Player *> players;
       dimension->forEachPlayer([&](Player &player) {
         return Helper::Target::ProcessPlayer(player, mLocalPlayer, antibot, range, fov, players);
       });
-
-      if (players.empty())
+      if (players.empty()) {
         return;
-
-      // Prioritization logic
+      }
       if (priority == 0) {
         std::sort(players.begin(), players.end(),
                   [](Player *a, Player *b) { return a->getHealth() < b->getHealth(); });
@@ -75,39 +76,41 @@ cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_ME
       } else if (priority == 2) {
         std::shuffle(players.begin(), players.end(), std::mt19937(std::random_device()()));
       }
-
       Player *target = players.front();
       glm::vec3 targetPos = target->getPosition();
       glm::vec3 selfPos = mLocalPlayer->getPosition();
-
-      // Check if we are close to the target
-      if (glm::distance(selfPos, targetPos) < 1.0F) {
-        // Return according to the mode
+      if (glm::distance(selfPos, targetPos) < distance) {
         if (mode == 0) {
-          // Teleport back
           mLocalPlayer->setPosition(originPos);
         } else if (mode == 1) {
-          // Motion return, slowly adjust motion back
           mLocalPlayer->setMotion(glm::normalize(originPos - selfPos) * 0.1f);
         }
-        originPos = {}; // Clear origin after return
+        originPos = {};
         return;
       }
-
       if (originPos == glm::vec3{}) {
         originPos = selfPos;
+        glm::vec3 toTarget = targetPos - selfPos;
+        float totalDistance = glm::length(toTarget);
+        remainingSteps = static_cast<int>(std::ceil(totalDistance / step));
+        if (remainingSteps > 0) {
+          moveDirection = glm::normalize(toTarget);
+        } else {
+          moveDirection = glm::vec3{};
+        }
       }
-
-      if (mode == 0) {
-        // Teleport mode: interpolate to target position, respecting step
-        glm::vec3 moveVec = glm::normalize(targetPos - selfPos) *
-                            std::min(static_cast<float>(step), glm::distance(selfPos, targetPos));
-        mLocalPlayer->setPosition(selfPos + moveVec);
-      } else if (mode == 1) {
-        // Motion mode: move smoothly with motion
-        glm::vec3 moveVec = glm::normalize(targetPos - selfPos) *
-                            std::min(static_cast<float>(step), glm::distance(selfPos, targetPos));
-        mLocalPlayer->setMotion(moveVec);
+      if (remainingSteps > 0) {
+        float currentStep = std::min(static_cast<float>(step), glm::distance(selfPos, targetPos));
+        if (mode == 0) {
+          mLocalPlayer->setPosition(selfPos + moveDirection * currentStep);
+        } else if (mode == 1) {
+          mLocalPlayer->setMotion(moveDirection * currentStep);
+        }
+        --remainingSteps;
+        if (remainingSteps <= 0) {
+          moveDirection = glm::vec3{};
+          originPos = glm::vec3{};
+        }
       }
     } catch (...) {
       return;
