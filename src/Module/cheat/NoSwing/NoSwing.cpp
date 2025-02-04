@@ -7,6 +7,8 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"shortcut", false},
 };
 cheat::NoSwing::NoSwing() : Module("NoSwing", MenuType::COMBAT_MENU, ConfigData) {
+  setOnEnable([](Module *module) {});
+  setOnDisable([](Module *module) {});
   setOnSendPacket([](Module *module, Packet *packet) {
     if (packet->getName().find("AnimatePacket") != std::string::npos) {
       return false;
