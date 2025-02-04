@@ -4,7 +4,6 @@
 #include "game/minecraft/world/level/BlockSourceListener.hpp"
 #include <cstddef>
 #include "glm/fwd.hpp"
-#include "glm/glm.hpp"
 class Dimension;
 class Level;
 class BlockSource;
