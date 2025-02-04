@@ -64,7 +64,9 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
       bool onlyActive = gui.Get<bool>("onlyActive");
       Arraylist::fontSize = fontSize;
       Arraylist::lineSpacing = lineSpacing;
-      Arraylist::colorTop = IM_COL32(colorTop.r, colorTop.g, colorTop.b, colorTop.a);
+      Arraylist::colorTop =
+          IM_COL32(static_cast<unsigned int>(colorTop.r), static_cast<unsigned int>(colorTop.g),
+                   static_cast<unsigned int>(colorTop.b), static_cast<unsigned int>(colorTop.a));
       Arraylist::padding = ImVec2(padding.x, padding.y);
       Arraylist::onlyActive = onlyActive;
     } catch (...) {
