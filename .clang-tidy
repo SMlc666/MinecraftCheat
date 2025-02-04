@@ -1,1 +1,52 @@
-Checks: "modernize-*, readability-*, performance-*, clang-analyzer-*, bugprone-*, -modernize-use-trailing-return-type, safety-*, cppcoreguidelines-*, -cppcoreguidelines-pro-type-vararg,-cppcoreguidelines-interfaces-global-init,-bugprone-easily-swappable-parameters,-cppcoreguidelines-avoid-non-const-global-variables,-readability-identifier-length"
+---
+Checks: >
+    -*,
+    bugprone-*,
+    clang-analyzer-*,
+    performance-*,
+    readability-*,
+    modernize-*,
+    portability-*,
+    cert-*,
+    cppcoreguidelines-*,
+    hicpp-*,
+    misc-*,
+    
+    # 显式排除的检查项
+    -modernize-use-trailing-return-type,
+    -cppcoreguidelines-pro-type-union-access,
+    -cppcoreguidelines-pro-type-vararg,
+    -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+    -cppcoreguidelines-pro-type-noexcept-move
+    
+CheckOptions:
+  # 现代C++特性配置
+  modernize-use-nodiscard: 'true'
+  modernize-use-emplace: 'true'
+  modernize-pass-by-value: 'true'
+  
+  # 性能相关
+  performance-for-range-copy: 'CheckAll'
+  performance-implicit-conversion-in-loop: 'true'
+  
+  # 代码可读性
+  readability-identifier-naming: |
+    ClassCase: CamelCase
+    VariableCase: camelBack
+    MemberCase: CamelCase
+    ConstantCase: UPPER_CASE
+  
+  # 头文件过滤
+  HeaderFilterRegex: '.*'
+  
+  # 宏定义处理
+  CheckOptions:
+    cert-err58-cpp.AllowedFailures: '.*_test.cpp'
+  
+  # 第三方库排除
+  ExcludePatterns: 
+    - 'third_party/'
+    - 'build/'
+    - 'external/'
+    
+WarningsAsErrors: 'bugprone-*,clang-analyzer-*,cert-*'
