@@ -21,7 +21,7 @@ static Player *lastTarget = nullptr;
 static float currentSpeed = 0.0f;
 cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
-  setOnDisable([](Module *module) {});
+  setOnDisable([](Module *module) { lastTarget = nullptr; });
   setOnDrawGUI([](Module *module) {
     try {
       module->getGUI().Selectable("Mode", "模式", StrafeItems);
