@@ -23,16 +23,21 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
-    module->getGUI().Selectable("Mode", "模式", StrafeItems);
-    module->getGUI().SliderFloat("Speed", "速度", 0.01F, 5.0F);
-    module->getGUI().SliderFloat("Range", "范围", 1.0F, 15.0F);
-    module->getGUI().SliderFloat("fov", "视角", 0.0F, 360.0F);
-    module->getGUI().SliderFloat("distance", "玩家距离", 0.0F, 10.0F);
-    module->getGUI().CheckBox("changeY", "调整Y轴");
-    if (module->getGUI().CheckBox("slow", "减速")) {
-      module->getGUI().SliderFloat("slowScale", "减速比例", 0.01F, 1.0F);
+    try {
+      module->getGUI().Selectable("Mode", "模式", StrafeItems);
+      module->getGUI().SliderFloat("Speed", "速度", 0.01F, 5.0F);
+      module->getGUI().SliderFloat("Range", "范围", 1.0F, 15.0F);
+      module->getGUI().SliderFloat("fov", "视角", 0.0F, 360.0F);
+      module->getGUI().SliderFloat("distance", "玩家距离", 0.0F, 10.0F);
+      module->getGUI().CheckBox("changeY", "调整Y轴");
+      module->getGUI().CheckBox("slow", "减速");
+      if (module->getGUI().Get<bool>("slow")) {
+        module->getGUI().SliderFloat("slowScale", "减速比例", 0.01F, 1.0F);
+      }
+      module->getGUI().CheckBox("AntiBot", "反机器人");
+    } catch (...) {
+      return;
     }
-    module->getGUI().CheckBox("AntiBot", "反机器人");
   });
   setOnTick([](Module *module) {
     try {
