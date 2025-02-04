@@ -24,6 +24,10 @@ static const std::vector<std::string> PrioriryItems = {
 static glm::vec3 originPos{};
 static glm::vec3 moveDirection{};
 static int remainingSteps = 0;
+static bool isReturning = false;
+static glm::vec3 returnTargetPos{};
+static constexpr float POSITION_EPSILON = 0.05f;
+static constexpr float VELOCITY_EPSILON = 0.01f;
 cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
@@ -82,10 +86,28 @@ cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_ME
       if (glm::distance(selfPos, targetPos) < distance) {
         if (mode == 0) {
           mLocalPlayer->setPosition(originPos);
+          originPos = {};
+          isReturning = false;
         } else if (mode == 1) {
-          mLocalPlayer->setMotion(glm::normalize(originPos - selfPos) * 0.1f);
+          if (!isReturning) {
+            returnTargetPos = originPos;
+            isReturning = true;
+          }
+          glm::vec3 currentVel = mLocalPlayer->getMotion();
+          glm::vec3 toOrigin = returnTargetPos - selfPos;
+          float distanceToOrigin = glm::length(toOrigin);
+          if (distanceToOrigin < POSITION_EPSILON && glm::length(currentVel) < VELOCITY_EPSILON) {
+            originPos = {};
+            isReturning = false;
+            return;
+          }
+          float decayFactor = std::clamp(distanceToOrigin / distance, 0.1f, 1.0f);
+          glm::vec3 adjustedMotion = glm::normalize(toOrigin) * decayFactor * 0.1f;
+          mLocalPlayer->setMotion(adjustedMotion);
         }
-        originPos = {};
+        return;
+      }
+      if (isReturning) {
         return;
       }
       if (originPos == glm::vec3{}) {
