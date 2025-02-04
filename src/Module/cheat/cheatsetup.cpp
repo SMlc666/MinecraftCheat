@@ -10,6 +10,7 @@
 #include "cheat/KillAura/KillAura.hpp"
 #include "cheat/Network/Network.hpp"
 #include "cheat/NoPacket/NoPacket.hpp"
+#include "cheat/NoSwing/NoSwing.hpp"
 #include "cheat/Scaffold/Scaffold.hpp"
 #include "cheat/Seckill/Seckill.hpp"
 #include "cheat/Speed/Speed.hpp"
@@ -33,4 +34,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Hud);
   ModuleManager::addModule(new cheat::Strafe);
   ModuleManager::addModule(new cheat::InfiniteAura);
+  ModuleManager::addModule(new cheat::NoSwing);
 }
