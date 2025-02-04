@@ -4,7 +4,6 @@
 #include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
-#include "glm/ext/scalar_constants.hpp"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include <any>
@@ -71,27 +70,18 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
         std::shuffle(Players.begin(), Players.end(), std::mt19937(std::random_device()()));
       }
       glm::vec3 motion = mLocalPlayer->getMotion();
-      if (mode == 0) { // LockBack 模式
-        // 获取玩家的目标位置
+      if (mode == 0) {
         Player *targetPlayer = Players[0];
         glm::vec3 targetPosition = targetPlayer->getPosition();
-        float targetYaw = targetPlayer->getYaw(); // 获取目标的方向
-
-        // 计算目标背后的位置 (通过目标的 yaw 角度反向计算)
-        float backYaw = glm::mod(targetYaw + 180.0f, 360.0f); // 将 yaw 加上 180 度，表示目标背后
+        float targetYaw = targetPlayer->getYaw();
+        float backYaw = glm::mod(targetYaw + 180.0f, 360.0f);
         glm::vec3 offset =
             glm::vec3(-sin(glm::radians(backYaw)), 0.0f, cos(glm::radians(backYaw))) * distance;
         glm::vec3 behindPosition = targetPosition + offset;
-
-        // 计算当前玩家与目标背后位置的向量
         glm::vec3 direction = behindPosition - mLocalPlayer->getPosition();
-
-        // 调整 y 轴的速度，使玩家保持在一个水平面上
         float verticalDifference = direction.y;
-        direction.y = 0.0f; // 只关注水平面的方向
-        glm::normalize(direction);
-
-        // 调整玩家的速度以使其向目标背后移动
+        direction.y = 0.0f;
+        direction = glm::normalize(direction);
         glm::vec3 desiredMotion = direction * speed;
 
         if (changeY) {
@@ -99,33 +89,21 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
         } else {
           desiredMotion.y = motion.y;
         }
-        // 更新玩家的运动
         mLocalPlayer->setMotion(desiredMotion);
-      } else if (mode == 1) { // Surround 模式
-        // 获取玩家的目标位置
+      } else if (mode == 1) {
         Player *targetPlayer = Players[0];
         glm::vec3 targetPosition = targetPlayer->getPosition();
-
-        // 计算围绕目标转圈的运动
-        float angle = glm::radians(
-            glm::mod(glm::degrees(mLocalPlayer->getYaw()), 360.0f)); // 让角度保持在 [0, 360]
-        float radius = distance;                                     // 设定转圈的半径
-        float angleSpeed = 0.05f; // 每个tick的转动角度速度，您可以通过速度参数来调节
-
-        // 计算围绕目标转圈的新的 x 和 z 坐标
+        float angle = glm::radians(glm::mod(glm::degrees(mLocalPlayer->getYaw()), 360.0f));
+        float radius = distance;
+        float angleSpeed = 0.05f;
         float circleX = targetPosition.x + radius * cos(angle + angleSpeed);
         float circleZ = targetPosition.z + radius * sin(angle + angleSpeed);
 
-        // 计算从玩家当前位置到目标位置的向量
         glm::vec3 direction =
             glm::vec3(circleX, targetPosition.y, circleZ) - mLocalPlayer->getPosition();
-
-        // 调整y轴的速度，使玩家保持水平
         float verticalDifference = direction.y;
         direction.y = 0.0f;
-        glm::normalize(direction);
-
-        // 调整玩家的速度
+        direction = glm::normalize(direction);
         glm::vec3 desiredMotion = direction * speed;
 
         if (changeY) {
