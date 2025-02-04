@@ -9,10 +9,9 @@ glm::vec3 Actor::getPosition() const {
   return this->mPosMotion->pos;
 }
 void Actor::setPosition(glm::vec3 pos) {
-  if (this->mPosMotion == nullptr) {
-    gsl::details::terminate();
-  }
-  this->mPosMotion->pos = pos;
+  using function = void (*)(Actor *, glm::vec3 *);
+  auto func = getSign<function>("Actor::setPos");
+  func(this, &pos);
 }
 float Actor::getDistance(glm::vec3 pos) const {
   glm::vec3 selfPos = this->getPosition();
