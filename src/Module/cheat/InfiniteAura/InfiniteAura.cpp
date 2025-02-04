@@ -29,8 +29,18 @@ static glm::vec3 returnTargetPos{};
 static constexpr float POSITION_EPSILON = 0.05f;
 static constexpr float VELOCITY_EPSILON = 0.01f;
 cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_MENU, ConfigData) {
-  setOnEnable([](Module *module) {});
-  setOnDisable([](Module *module) {});
+  setOnEnable([](Module *module) {
+    ClientInstance *instance = runtimes::getClientInstance();
+    if (instance == nullptr) {
+      return;
+    }
+    auto *mLocalPlayer = instance->getLocalPlayer();
+    if (mLocalPlayer == nullptr) {
+      return;
+    }
+    originPos = mLocalPlayer->getPosition();
+  });
+  setOnDisable([](Module *module) { originPos = {}; });
   setOnDrawGUI([](Module *module) {
     auto &gui = module->getGUI();
     gui.SliderFloat("range", "范围", 1.0F, 100.0F);
@@ -86,7 +96,6 @@ cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_ME
       if (glm::distance(selfPos, targetPos) < distance) {
         if (mode == 0) {
           mLocalPlayer->setPosition(originPos);
-          originPos = {};
           isReturning = false;
         } else if (mode == 1) {
           if (!isReturning) {
@@ -97,7 +106,6 @@ cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_ME
           glm::vec3 toOrigin = returnTargetPos - selfPos;
           float distanceToOrigin = glm::length(toOrigin);
           if (distanceToOrigin < POSITION_EPSILON && glm::length(currentVel) < VELOCITY_EPSILON) {
-            originPos = {};
             isReturning = false;
             return;
           }
