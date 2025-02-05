@@ -22,6 +22,7 @@ bool Helper::Target::IsSelfTeam(Player *player) {
       return true;
     }
   }
+  return false;
 }
 cheat::Teams::Teams() : Module("Teams", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {
