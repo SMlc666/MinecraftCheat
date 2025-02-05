@@ -25,6 +25,7 @@ static glm::vec3 originPos{};
 static glm::vec3 moveDirection{};
 static int remainingSteps = 0;
 static bool isReturning = false;
+static bool hasStartedMove = false;
 static glm::vec3 returnTargetPos{};
 static constexpr float POSITION_EPSILON = 0.05f;
 static constexpr float VELOCITY_EPSILON = 0.01f;
