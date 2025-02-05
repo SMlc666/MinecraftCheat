@@ -57,14 +57,20 @@ bool Helper::Block::tryScaffold(LocalPlayer *player, glm::vec3 blockBelow) {
       BlockPos(-1, 0, 0), // 左侧
       BlockPos(1, 0, 0)   // 右侧
   };
-  for (const auto &offset : checklist) {
-    BlockPos neighbour = block - offset;
-    if (canPlaceBlock(neighbour)) {
-      player->getGameMode().buildBlock(
-          neighbour,
-          std::distance(checklist.begin(), std::find(checklist.begin(), checklist.end(), offset)));
-      return true;
+  bool foundCandidate = false;
+  int i = 0;
+  for (auto current : checklist) {
+    BlockPos calc = block - current;
+    if (!isAirBlock(calc)) {
+      foundCandidate = true;
+      block = calc;
+      break;
     }
+    i++;
+  }
+  if (foundCandidate) {
+    player->getGameMode().buildBlock(block, i);
+    return true;
   }
   return false;
 }
