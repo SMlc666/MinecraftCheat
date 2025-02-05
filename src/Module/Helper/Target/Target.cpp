@@ -24,24 +24,22 @@ bool Helper::Target::ProcessPlayer(Player &player, LocalPlayer *localPlayer, boo
   if (&player == localPlayer) {
     return true;
   }
-
   if (isBot(&player) && antibot) {
     return true;
   }
-
   const float distance = localPlayer->getDistance(&player);
   if (distance > range) {
     return true;
   }
-
   if (!isInFov(localPlayer, &player, fov)) {
     return true;
   }
-
   if (!player.isAlive() || player.getHealth() <= 0) {
     return true;
   }
-
+  if (player.getName().empty()) {
+    return true;
+  }
   playerList.push_back(&player);
   return true;
 }
