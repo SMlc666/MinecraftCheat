@@ -65,7 +65,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
         }
       } else {
         glm::vec3 blockBelow = player->getPosition();
-        blockBelow.y -= 1.0f;
+        blockBelow.y -= 0.8f;
         if (!Helper::Block::tryScaffold(player, blockBelow)) {
           if (speed > 0.05f) { // Are we actually walking?
             blockBelow.z -= vel.z * 0.4f;
