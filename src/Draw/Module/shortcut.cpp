@@ -36,11 +36,11 @@ void drawAllShortcuts() {
       ImGui::SetWindowFontScale(shortcutTextScale);
       if (ImGui::Button(m->getName().c_str(), shortcutSize)) {
         if (mEnabled) {
-          ModuleManager::disableModule(m);
           gui.Set("enabled", false);
+          ModuleManager::disableModule(m);
         } else {
-          ModuleManager::enableModule(m);
           gui.Set("enabled", true);
+          ModuleManager::enableModule(m);
         }
       }
       ImGui::SetWindowFontScale(1.0F);
