@@ -51,8 +51,8 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
                 !Helper::Block::tryScaffold(player, blockBelowBelow)) {
               blockBelow.x -= vel.x * 0.4f;
               blockBelowBelow.x -= vel.x * 0.4f;
-              if (!Helper::Block::tryScaffold(blockBelow) &&
-                  !Helper::Block::tryScaffold(blockBelowBelow)) {
+              if (!Helper::Block::tryScaffold(player, blockBelow) &&
+                  !Helper::Block::tryScaffold(player, blockBelowBelow)) {
                 blockBelow.z += vel.z;
                 blockBelow.x += vel.x;
                 blockBelowBelow.z += vel.z;
