@@ -41,6 +41,9 @@ bool Helper::Target::ProcessPlayer(Player &player, LocalPlayer *localPlayer, boo
   if (player.getName().empty()) {
     return true;
   }
+  if (IsSelfTeam(&player)) {
+    return true;
+  }
   playerList.push_back(&player);
   return true;
 }

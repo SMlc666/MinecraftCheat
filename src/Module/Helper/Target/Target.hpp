@@ -7,4 +7,5 @@ bool ProcessPlayer(Player &player, LocalPlayer *localPlayer, bool antibot, float
                    std::vector<Player *> &playerList);
 bool hasPlayer(Dimension *dimension, Player *targetPlayer, LocalPlayer *localPlayer, bool antibot,
                float range, float fov);
+bool IsSelfTeam(Player *player);
 } // namespace Helper::Target
