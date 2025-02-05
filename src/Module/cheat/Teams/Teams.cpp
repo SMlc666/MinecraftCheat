@@ -31,7 +31,7 @@ cheat::Teams::Teams() : Module("Teams", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {
     try {
       float range = module->getGUI().Get<float>("range");
-      module->getGUI().Set("enabled", false);
+      module->getGUI().Set<bool>("enabled", false);
       g_log_tool.message(LogLevel::INFO, "Teams", "Teams module enabled");
       ClientInstance *instance = runtimes::getClientInstance();
       if (instance == nullptr) {
