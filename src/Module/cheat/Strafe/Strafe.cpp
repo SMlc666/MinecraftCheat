@@ -69,7 +69,6 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
         return Helper::Target::ProcessPlayer(player, mLocalPlayer, antibot, Range, fov, Players);
       });
       if (Players.empty()) {
-        // 当没有目标时，重置跟随状态（下次进入视为首次跟随）
         lastTarget = nullptr;
         return;
       }
@@ -83,34 +82,23 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
       } else if (priority == 2) { // Random
         std::shuffle(Players.begin(), Players.end(), std::mt19937(std::random_device()()));
       }
-
-      // 当前目标选择第一个目标
       Player *targetPlayer = Players[0];
-
-      // 根据 slow 功能决定当前使用的速度（仅对首次跟随生效）
       float effectiveSpeed = speed;
       if (slowEnabled) {
+        constexpr float ACCELERATION_FACTOR = 0.1f;
+        const float baseSpeed = speed * slowScaleVal;
         if (lastTarget != targetPlayer) {
-          // 新的目标或重新进入视野，视为首次跟随，初始化 currentSpeed 为正常速度的 slowScale 比例
           lastTarget = targetPlayer;
-          currentSpeed = speed * slowScaleVal;
+          currentSpeed = baseSpeed;
         } else {
-          // 如果还在跟随，并且当前速度还未达到正常速度，则逐步加速
-          if (currentSpeed < speed) {
-            // 此处加速公式可根据需求调整：slowScaleVal 越大，加速越慢
-            currentSpeed += (speed - currentSpeed) * (0.1f / slowScaleVal);
-            if (currentSpeed > speed) {
-              currentSpeed = speed;
-            }
+          currentSpeed += (speed - currentSpeed) * ACCELERATION_FACTOR;
+          const float minSpeed = baseSpeed * 0.8f;
+          if (currentSpeed < minSpeed) {
+            currentSpeed = minSpeed;
           }
         }
         effectiveSpeed = currentSpeed;
-      } else {
-        // 若没有开启 slow 功能，直接使用配置的 speed
-        effectiveSpeed = speed;
-        lastTarget = targetPlayer; // 更新目标
       }
-
       glm::vec3 motion = mLocalPlayer->getMotion();
       if (mode == 0) { // LockBack 模式
         glm::vec3 targetPosition = targetPlayer->getPosition();
