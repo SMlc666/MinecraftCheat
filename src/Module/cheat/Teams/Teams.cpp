@@ -5,6 +5,7 @@
 #include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
+#include "imgui/imgui.h"
 #include "log.hpp"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
@@ -62,5 +63,10 @@ cheat::Teams::Teams() : Module("Teams", MenuType::COMBAT_MENU, ConfigData) {
     }
   });
   setOnDisable([](Module *module) {});
-  setOnDrawGUI([](Module *module) { module->getGUI().SliderFloat("range", "范围", 1.0F, 30.0F); });
+  setOnDrawGUI([](Module *module) {
+    module->getGUI().SliderFloat("range", "范围", 1.0F, 30.0F);
+    if (ImGui::Button("清空团队")) {
+      TeamNames.clear();
+    }
+  });
 };
