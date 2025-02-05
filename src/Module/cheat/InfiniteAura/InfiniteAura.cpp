@@ -119,8 +119,7 @@ cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_ME
       if (isReturning) {
         return;
       }
-      if (originPos == glm::vec3{}) {
-        originPos = selfPos;
+      if (!hasStartedMove) {
         glm::vec3 toTarget = targetPos - selfPos;
         float totalDistance = glm::length(toTarget);
         remainingSteps = static_cast<int>(std::ceil(totalDistance / step));
@@ -129,6 +128,7 @@ cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_ME
         } else {
           moveDirection = glm::vec3{};
         }
+        hasStartedMove = true;
       }
       if (remainingSteps > 0) {
         float currentStep = std::min(static_cast<float>(step), glm::distance(selfPos, targetPos));
@@ -140,7 +140,7 @@ cheat::InfiniteAura::InfiniteAura() : Module("InfiniteAura", MenuType::COMBAT_ME
         --remainingSteps;
         if (remainingSteps <= 0) {
           moveDirection = glm::vec3{};
-          originPos = glm::vec3{};
+          hasStartedMove = false; // 移动完成后重置状态，但不重置 originPos
         }
       }
     } catch (...) {
