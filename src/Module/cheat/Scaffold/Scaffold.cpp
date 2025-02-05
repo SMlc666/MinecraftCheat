@@ -38,10 +38,10 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       vel = glm::normalize(vel);
 
       if (staircaseMode) {
-        glm::vec3 blockBelow = player->getPosition();
-        blockBelow.y += 0.3f;
-        glm::vec3 blockBelowBelow = player->getPosition();
-        blockBelowBelow.y -= 0.2f;
+        glm::vec3 blockBelow = player->getEyesPos();
+        blockBelow.y -= 1.5f;
+        glm::vec3 blockBelowBelow = player->getEyesPos();
+        blockBelowBelow.y -= 2.0f;
         if (!Helper::Block::tryScaffold(player, blockBelow) &&
             !Helper::Block::tryScaffold(player, blockBelowBelow)) {
           if (speed > 0.05f) { // Are we actually walking?
@@ -64,8 +64,8 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
           }
         }
       } else {
-        glm::vec3 blockBelow = player->getPosition();
-        blockBelow.y -= 2.0f;
+        glm::vec3 blockBelow = player->getEyesPos();
+        blockBelow.y -= 0.6f;
         if (!Helper::Block::tryScaffold(player, blockBelow)) {
           if (speed > 0.05f) { // Are we actually walking?
             blockBelow.z -= vel.z * 0.4f;
