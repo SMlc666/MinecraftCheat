@@ -5,76 +5,83 @@
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/world/item/ItemStack.hpp"
 #include "glm/fwd.hpp"
+#include "glm/geometric.hpp"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include <unordered_map>
 #include <vector>
 static Module *g_md{};
-const static std::unordered_map<std::string, std::any> ConfigData = {{"enabled", false},
-                                                                     {"shortcut", false}};
+const static std::unordered_map<std::string, std::any> ConfigData = {
+    {"enabled", false}, {"shortcut", false}, {"staircaseMode", false}};
 static float targetY = 0.5F;
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
   setOnLoad([](Module *module) { g_md = module; });
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
+  setOnDrawGUI([](Module *module) { module->getGUI().CheckBox("staircaseMode", "楼梯模式"); });
   setOnRender([](Module *module) {
-    ClientInstance *instance = runtimes::getClientInstance();
-    if (!instance)
-      return;
+    try {
+      bool staircaseMode = module->getGUI().Get<bool>("staircaseMode");
+      ClientInstance *instance = runtimes::getClientInstance();
+      if (!instance)
+        return;
 
-    LocalPlayer *player = instance->getLocalPlayer();
-    if (!player || player->getMotion().y > 0)
-      return; // 只在非上升状态工作
+      LocalPlayer *player = instance->getLocalPlayer();
+      if (!player)
+        return;
 
-    ItemStack *item = player->getSelectedItem();
-    if (!item || !item->isBlock())
-      return;
+      ItemStack *item = player->getSelectedItem();
+      if (!item || !item->isBlock())
+        return;
+      glm::vec3 vel = player->getMotion();
+      float speed = glm::length(glm::vec2(vel.x, vel.z));
+      vel = glm::normalize(vel);
 
-    // 获取玩家位置和方向
-    glm::vec3 playerPos = player->getPosition();
-    float yaw = player->getYaw();
-
-    // 定义6个面方向（下、上、北、南、西、东）
-    static const std::vector<glm::ivec3> neighbours = {{0, -1, 0}, {0, 1, 0},  {0, 0, -1},
-                                                       {0, 0, 1},  {-1, 0, 0}, {1, 0, 0}};
-
-    /* 自动补脚下方块 */
-    glm::ivec3 feetBlock(glm::floor(playerPos.x),
-                         glm::floor(playerPos.y - 1.0f), // 稍微向下取整
-                         glm::floor(playerPos.z));
-
-    if (Helper::Block::isAirBlock(feetBlock)) {
-      for (int face = 0; face < neighbours.size(); ++face) {
-        glm::ivec3 supportBlock = feetBlock - neighbours[face];
-        if (!Helper::Block::isAirBlock(supportBlock)) {
-          player->getGameMode().buildBlock(supportBlock, static_cast<unsigned char>(face));
-          break;
+      if (staircaseMode) {
+        glm::vec3 blockBelow = player->getPosition();
+        blockBelow.y -= 1.0f;
+        glm::vec3 blockBelowBelow = player->getPosition();
+        blockBelowBelow.y -= 1.5f;
+        if (!Helper::Block::tryScaffold(player, blockBelow) &&
+            !Helper::Block::tryScaffold(player, blockBelowBelow)) {
+          if (speed > 0.05f) { // Are we actually walking?
+            blockBelow.z -= vel.z * 0.4f;
+            blockBelowBelow.z -= vel.z * 0.4f;
+            if (!Helper::Block::tryScaffold(player, blockBelow) &&
+                !Helper::Block::tryScaffold(player, blockBelowBelow)) {
+              blockBelow.x -= vel.x * 0.4f;
+              blockBelowBelow.x -= vel.x * 0.4f;
+              if (!Helper::Block::tryScaffold(blockBelow) &&
+                  !Helper::Block::tryScaffold(blockBelowBelow)) {
+                blockBelow.z += vel.z;
+                blockBelow.x += vel.x;
+                blockBelowBelow.z += vel.z;
+                blockBelowBelow.x += vel.x;
+                Helper::Block::tryScaffold(player, blockBelow);
+                Helper::Block::tryScaffold(player, blockBelowBelow);
+              }
+            }
+          }
+        }
+      } else {
+        glm::vec3 blockBelow = player->getPosition();
+        blockBelow.y += 1.2f;
+        if (!Helper::Block::tryScaffold(player, blockBelow)) {
+          if (speed > 0.05f) { // Are we actually walking?
+            blockBelow.z -= vel.z * 0.4f;
+            if (!Helper::Block::tryScaffold(player, blockBelow)) {
+              blockBelow.x -= vel.x * 0.4f;
+              if (!Helper::Block::tryScaffold(player, blockBelow)) {
+                blockBelow.z += vel.z;
+                blockBelow.x += vel.x;
+                Helper::Block::tryScaffold(player, blockBelow);
+              }
+            }
+          }
         }
       }
-    }
-
-    /* 自动向前延伸 */
-    // 计算水平方向向量
-    glm::vec3 frontDir(-glm::sin(glm::radians(yaw)), 0.0f, glm::cos(glm::radians(yaw)));
-    frontDir = glm::normalize(frontDir);
-
-    // 计算前方2.5格位置（浮点坐标）
-    glm::vec3 targetPos = playerPos + frontDir * 2.5f;
-
-    // 转换为方块坐标并获取下方方块
-    glm::ivec3 targetBlock(glm::floor(targetPos.x), glm::floor(targetPos.y),
-                           glm::floor(targetPos.z));
-    glm::ivec3 belowTarget = targetBlock - glm::ivec3(0, 1, 0);
-
-    // 检查是否需要放置支撑
-    if (Helper::Block::isAirBlock(belowTarget)) {
-      for (int face = 0; face < neighbours.size(); ++face) {
-        glm::ivec3 supportBlock = belowTarget - neighbours[face];
-        if (!Helper::Block::isAirBlock(supportBlock)) {
-          player->getGameMode().buildBlock(supportBlock, static_cast<unsigned char>(face));
-          break;
-        }
-      }
+    } catch (...) {
+      return;
     }
   });
 }
