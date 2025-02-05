@@ -5,13 +5,14 @@ bool Helper::Target::hasPlayer(Dimension *dimension, Player *targetPlayer, Local
   bool foundPlayer = false;
   std::vector<Player *> playerList;
   dimension->forEachPlayer([&](Player &player) {
-    if (&player == targetPlayer &&
-        ProcessPlayer(player, localPlayer, antibot, range, fov, playerList)) {
-      foundPlayer = true;
-    }
-    return true;
+    return ProcessPlayer(player, localPlayer, antibot, range, fov, playerList);
   });
-
+  for (Player *player : playerList) {
+    if (player == targetPlayer) {
+      foundPlayer = true;
+      break;
+    }
+  }
   return foundPlayer;
 }
 bool Helper::Target::isBot(Player *player) {
