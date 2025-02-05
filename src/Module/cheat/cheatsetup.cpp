@@ -15,6 +15,7 @@
 #include "cheat/Seckill/Seckill.hpp"
 #include "cheat/Speed/Speed.hpp"
 #include "cheat/Strafe/Strafe.hpp"
+#include "cheat/Teams/Teams.hpp"
 #include "cheat/Timer/Timer.hpp"
 #include "cheat/Velocity/Velocity.hpp"
 void cheatSetup() {
@@ -35,4 +36,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Strafe);
   ModuleManager::addModule(new cheat::InfiniteAura);
   ModuleManager::addModule(new cheat::NoSwing);
+  ModuleManager::addModule(new cheat::Teams);
 }
