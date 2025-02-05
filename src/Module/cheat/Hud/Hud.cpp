@@ -1,12 +1,10 @@
 #include "Hud.hpp"
-
 #include <math.h>
 #include "Module.hpp"
 #include "ModuleManager.hpp"
 #include "draw.hpp"
 #include "gui/gui.hpp"
 #include "imgui/imgui.h"
-#include "imgui/imgui_internal.h"
 #include "menu/menu.hpp"
 #include <any>
 #include <string>
@@ -47,7 +45,9 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
       gui.SliderFloat2("padding", "边距", 0.0F, 30.0F,
                        [](float x, float y) { Arraylist::padding = ImVec2(x, y); });
       gui.ColorEdit("colorTop", "字体颜色", [](GUI::Color color) {
-        Arraylist::colorTop = IM_COL32(color.r, color.g, color.b, color.a);
+        Arraylist::colorTop = IM_COL32(
+            static_cast<unsigned int>(color.r * 255), static_cast<unsigned int>(color.g * 255),
+            static_cast<unsigned int>(color.b * 255), static_cast<unsigned int>(color.a * 255));
       });
       gui.CheckBox("onlyActive", "只显示激活模块",
                    [](bool value) { Arraylist::onlyActive = value; });
@@ -64,9 +64,10 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
       bool onlyActive = gui.Get<bool>("onlyActive");
       Arraylist::fontSize = fontSize;
       Arraylist::lineSpacing = lineSpacing;
-      Arraylist::colorTop =
-          IM_COL32(static_cast<unsigned int>(colorTop.r), static_cast<unsigned int>(colorTop.g),
-                   static_cast<unsigned int>(colorTop.b), static_cast<unsigned int>(colorTop.a));
+      Arraylist::colorTop = IM_COL32(static_cast<unsigned int>(colorTop.r * 255), // 假设是0-1浮点
+                                     static_cast<unsigned int>(colorTop.g * 255),
+                                     static_cast<unsigned int>(colorTop.b * 255),
+                                     static_cast<unsigned int>(colorTop.a * 255));
       Arraylist::padding = ImVec2(padding.x, padding.y);
       Arraylist::onlyActive = onlyActive;
     } catch (...) {
