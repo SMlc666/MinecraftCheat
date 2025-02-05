@@ -9,4 +9,5 @@ public:
   [[nodiscard]] GameMode &getGameMode() const;
   [[nodiscard]] std::string &getName() const;
   [[nodiscard]] ItemStack *getSelectedItem() const;
+  glm::vec3 getEyesPos() const;
 };
