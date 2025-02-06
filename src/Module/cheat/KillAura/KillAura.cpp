@@ -9,6 +9,8 @@
 #include "game/minecraft/minecraft.hpp"
 #include "game/minecraft/network/LoopbackPacketSender.hpp"
 #include "game/minecraft/network/Packet/Packets/AnimatePacket.hpp"
+#include "game/minecraft/network/Packet/Packets/MovePlayerPacket.hpp"
+#include "game/minecraft/network/Packet/Packets/PlayerAuthInputPacket.hpp"
 #include "game/minecraft/network/PacketSender.hpp"
 #include "game/minecraft/world/level/dimension/dimension.hpp"
 #include "imgui/imgui.h"
@@ -163,14 +165,18 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     float fov = NAN;
     float Range = NAN;
     int rotationMode = 0;
-
+    bool rotationSlient = false;
     try {
       rotation = module->getGUI().Get<bool>("rotation");
       rotationMode = module->getGUI().Get<int>("rotationMode");
       antibot = module->getGUI().Get<bool>("antibot");
       fov = module->getGUI().Get<float>("fov");
       Range = module->getGUI().Get<float>("range");
+      rotationSlient = module->getGUI().Get<bool>("rotationSlient");
     } catch (const std::exception &e) {
+      return;
+    }
+    if (rotationSlient) {
       return;
     }
     if (g_Target == nullptr) {
@@ -206,5 +212,76 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       }
       break;
     }
+  });
+  setOnSendPacket([](Module *module, Packet *packet) {
+    try {
+      if (g_Target == nullptr) {
+        return true;
+      }
+      if (packet->getName() != "MovePlayerPacket" && packet->getName() != "PlayerAuthInputPacket") {
+        return true;
+      }
+      auto &gui = module->getGUI();
+      bool rotation = gui.Get<bool>("rotation");
+      bool rotationSlient = gui.Get<bool>("rotationSlient");
+      int rotationMode = gui.Get<int>("rotationMode");
+      bool antibot = gui.Get<bool>("antibot");
+      float fov = gui.Get<float>("fov");
+      float Range = gui.Get<float>("range");
+      if (!rotation || !rotationSlient) {
+        return true;
+      }
+      ClientInstance *mInstance = runtimes::getClientInstance();
+      if (mInstance == nullptr) {
+        return true;
+      }
+      LocalPlayer *mLocalPlayer = mInstance->getLocalPlayer();
+      if (mLocalPlayer == nullptr) {
+        return true;
+      }
+      if (!Helper::Target::hasPlayer(mLocalPlayer->mDimension, g_Target, mLocalPlayer, antibot,
+                                     Range, fov)) {
+        return true;
+      }
+      glm::vec3 localPos = mLocalPlayer->getPosition();
+      glm::vec3 targetPos = g_Target->getPosition();
+      Helper::Rotation::Rotation aimTarget = Helper::Rotation::toRotation(localPos, targetPos);
+      Helper::Rotation::Rotation last = {mLocalPlayer->getPitch(), mLocalPlayer->getYaw()};
+      switch (rotationMode) {
+      case 0:
+        if (packet->getName() == "MovePlayerPacket") {
+          auto *movePacket = static_cast<MovePlayerPacket *>(packet);
+          movePacket->mYHeadRot = aimTarget.yaw;
+          movePacket->mRot = glm::vec2{aimTarget.pitch, aimTarget.yaw};
+        } else {
+          auto *authPacket = static_cast<PlayerAuthInputPacket *>(packet);
+          authPacket->mYHeadRot = aimTarget.yaw;
+          authPacket->mRot = glm::vec2{aimTarget.pitch, aimTarget.yaw};
+        }
+        break;
+      case 1:
+        aimTarget.pitch /= 2.0F;
+        float diff = Helper::Rotation::getRotationDifference(last, aimTarget);
+        if (diff >= 50.0F) {
+          mLocalPlayer->setPitch((aimTarget.pitch - last.pitch) / 0.8F + last.pitch);
+          mLocalPlayer->setYaw((aimTarget.yaw - last.yaw) / 0.8F + last.yaw);
+          if (packet->getName() == "MovePlayerPacket") {
+            auto *movePacket = static_cast<MovePlayerPacket *>(packet);
+            movePacket->mYHeadRot = (aimTarget.yaw - last.yaw) / 0.8F + last.yaw;
+            movePacket->mRot = glm::vec2((aimTarget.pitch - last.pitch) / 0.8F + last.pitch,
+                                         (aimTarget.yaw - last.yaw) / 0.8F + last.yaw);
+          } else {
+            auto *authPacket = static_cast<PlayerAuthInputPacket *>(packet);
+            authPacket->mYHeadRot = (aimTarget.yaw - last.yaw) / 0.8F + last.yaw;
+            authPacket->mRot = glm::vec2((aimTarget.pitch - last.pitch) / 0.8F + last.pitch,
+                                         (aimTarget.yaw - last.yaw) / 0.8F + last.yaw);
+          }
+        }
+        break;
+      }
+    } catch (...) {
+      return true;
+    }
+    return true;
   });
 }
