@@ -1,9 +1,9 @@
 #pragma once
 #include "base/mcint.hpp"
+#include "game/deps/input/InputMode.hpp"
 #include "game/minecraft/actor/player/player.hpp"
 #include <functional>
 class Vec3;
-class InputMode;
 class ItemStack;
 class InteractionResult;
 class Block;
