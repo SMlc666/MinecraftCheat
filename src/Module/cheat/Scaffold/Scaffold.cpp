@@ -4,6 +4,8 @@
 #include "Module.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
+#include "game/minecraft/network/Packet/Packets/MovePlayerPacket.hpp"
+#include "game/minecraft/network/Packet/Packets/PlayerAuthInputPacket.hpp"
 #include "game/minecraft/world/item/ItemStack.hpp"
 #include "glm/fwd.hpp"
 #include "glm/geometric.hpp"
@@ -121,7 +123,38 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
   });
   setOnSendPacket([](Module *module, Packet *packet) {
     try {
-
+      bool rotation = g_md->getGUI().Get<bool>("rotation");
+      bool rotationSlient = g_md->getGUI().Get<bool>("rotationSlient");
+      if (!rotation) {
+        return true;
+      }
+      if (!rotationSlient) {
+        return true;
+      }
+      ClientInstance *instance = runtimes::getClientInstance();
+      if (!instance)
+        return true;
+      LocalPlayer *player = instance->getLocalPlayer();
+      if (!player)
+        return true;
+      glm::vec3 vel = player->getMotion();
+      float speed = glm::length(glm::vec2(vel.x, vel.z));
+      if (speed < 0.05f) {
+        return true;
+      }
+      glm::vec3 pos = player->getPosition();
+      glm::vec3 BlockBelow = pos;
+      BlockBelow.y -= 0.5f;
+      Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
+      if (packet->getName() == "MovePlayerPacket") {
+        auto *movePacket = static_cast<MovePlayerPacket *>(packet);
+        movePacket->mRot = glm::vec2(83.0f, rot.yaw);
+        movePacket->mYHeadRot = rot.yaw;
+      } else if (packet->getName() == "PlayerAuthInputPacket") {
+        auto *authPacket = static_cast<PlayerAuthInputPacket *>(packet);
+        authPacket->mRot = glm::vec2(83.0f, rot.yaw);
+        authPacket->mYHeadRot = rot.yaw;
+      }
     } catch (...) {
       return true;
     }
