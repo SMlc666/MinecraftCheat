@@ -1,6 +1,7 @@
 #include "Scaffold.hpp"
 #include "Helper/Block/Block.hpp"
 #include "Helper/Rotation/rotation.hpp"
+#include "Module.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/world/item/ItemStack.hpp"
@@ -11,10 +12,8 @@
 #include <unordered_map>
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},
-    {"shortcut", false},
-    {"staircaseMode", false},
-    {"rotation", false},
+    {"enabled", false},  {"shortcut", false},       {"staircaseMode", false},
+    {"rotation", false}, {"rotationSlient", false},
 };
 static float targetY = 0.5F;
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
@@ -24,6 +23,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
   setOnDrawGUI([](Module *module) {
     module->getGUI().CheckBox("staircaseMode", "楼梯模式");
     module->getGUI().CheckBox("rotation", "转头");
+    module->getGUI().CheckBox("rotationSlient", "静音转头");
   });
   setOnRender([](Module *module) {
     try {
@@ -45,9 +45,9 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
 
       if (staircaseMode) {
         glm::vec3 blockBelow = player->getEyesPos();
-        blockBelow.y -= 4.0f;
+        blockBelow.y -= 3.0f;
         glm::vec3 blockBelowBelow = player->getEyesPos();
-        blockBelowBelow.y -= 5.0f;
+        blockBelowBelow.y -= 4.0f;
         if (!Helper::Block::tryScaffold(player, blockBelow) &&
             !Helper::Block::tryScaffold(player, blockBelowBelow)) {
           if (speed > 0.05f) { // Are we actually walking?
@@ -71,7 +71,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
         }
       } else {
         glm::vec3 blockBelow = player->getEyesPos();
-        blockBelow.y -= 4.0f;
+        blockBelow.y -= 2.0f;
         if (!Helper::Block::tryScaffold(player, blockBelow)) {
           if (speed > 0.05f) { // Are we actually walking?
             blockBelow.z -= vel.z * 0.4f;
@@ -93,6 +93,10 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
   setOnRender([](Module *module) {
     try {
       bool rotation = module->getGUI().Get<bool>("rotation");
+      bool rotationSlient = module->getGUI().Get<bool>("rotationSlient");
+      if (rotationSlient) {
+        return;
+      }
       if (!rotation)
         return;
       ClientInstance *instance = runtimes::getClientInstance();
@@ -114,5 +118,13 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     } catch (...) {
       return;
     }
+  });
+  setOnSendPacket([](Module *module, Packet *packet) {
+    try {
+
+    } catch (...) {
+      return true;
+    }
+    return true;
   });
 }
