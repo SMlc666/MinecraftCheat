@@ -1,7 +1,7 @@
 #include "Scaffold.hpp"
 #include "Helper/Block/Block.hpp"
+#include "Helper/Rotation/rotation.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
-#include "game/minecraft/actor/provider/ActorCollision.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/world/item/ItemStack.hpp"
 #include "glm/fwd.hpp"
@@ -9,16 +9,22 @@
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include <unordered_map>
-#include <vector>
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"staircaseMode", false}};
+    {"enabled", false},
+    {"shortcut", false},
+    {"staircaseMode", false},
+    {"rotation", false},
+};
 static float targetY = 0.5F;
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
   setOnLoad([](Module *module) { g_md = module; });
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
-  setOnDrawGUI([](Module *module) { module->getGUI().CheckBox("staircaseMode", "楼梯模式"); });
+  setOnDrawGUI([](Module *module) {
+    module->getGUI().CheckBox("staircaseMode", "楼梯模式");
+    module->getGUI().CheckBox("rotation", "转头");
+  });
   setOnRender([](Module *module) {
     try {
       bool staircaseMode = module->getGUI().Get<bool>("staircaseMode");
@@ -80,6 +86,31 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
           }
         }
       }
+    } catch (...) {
+      return;
+    }
+  });
+  setOnRender([](Module *module) {
+    try {
+      bool rotation = module->getGUI().Get<bool>("rotation");
+      if (!rotation)
+        return;
+      ClientInstance *instance = runtimes::getClientInstance();
+      if (!instance)
+        return;
+      LocalPlayer *player = instance->getLocalPlayer();
+      if (!player)
+        return;
+      glm::vec3 vel = player->getMotion();
+      float speed = glm::length(glm::vec2(vel.x, vel.z));
+      if (speed < 0.05f)
+        return;
+      glm::vec3 pos = player->getPosition();
+      glm::vec3 BlockBelow = pos;
+      BlockBelow.y -= 0.5f;
+      Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
+      player->setPitch(83.0f);
+      player->setYaw(rot.yaw);
     } catch (...) {
       return;
     }
