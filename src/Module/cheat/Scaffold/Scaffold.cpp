@@ -107,6 +107,9 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       LocalPlayer *player = instance->getLocalPlayer();
       if (!player)
         return;
+      ItemStack *item = player->getSelectedItem();
+      if (!item || !item->isBlock())
+        return;
       glm::vec3 vel = player->getMotion();
       float speed = glm::length(glm::vec2(vel.x, vel.z));
       if (speed < 0.05f)
@@ -136,6 +139,9 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
         return true;
       LocalPlayer *player = instance->getLocalPlayer();
       if (!player)
+        return true;
+      ItemStack *item = player->getSelectedItem();
+      if (!item || !item->isBlock())
         return true;
       glm::vec3 vel = player->getMotion();
       float speed = glm::length(glm::vec2(vel.x, vel.z));
