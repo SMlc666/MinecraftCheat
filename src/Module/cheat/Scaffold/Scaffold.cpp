@@ -30,6 +30,8 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
   setOnRender([](Module *module) {
     try {
       bool staircaseMode = module->getGUI().Get<bool>("staircaseMode");
+      bool rotation = module->getGUI().Get<bool>("rotation");
+      bool rotationSlient = module->getGUI().Get<bool>("rotationSlient");
       ClientInstance *instance = runtimes::getClientInstance();
       if (!instance)
         return;
@@ -44,7 +46,16 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       glm::vec3 vel = player->getMotion();
       float speed = glm::length(glm::vec2(vel.x, vel.z));
       vel = glm::normalize(vel);
-
+      if (!rotationSlient && rotation) {
+        if (speed > 0.05f) {
+          glm::vec3 pos = player->getPosition();
+          glm::vec3 BlockBelow = pos;
+          BlockBelow.y -= 0.5f;
+          Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
+          player->setPitch(83.0f);
+          player->setYaw(rot.yaw);
+        }
+      }
       if (staircaseMode) {
         glm::vec3 blockBelow = player->getEyesPos();
         blockBelow.y -= 3.0f;
@@ -88,38 +99,6 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
           }
         }
       }
-    } catch (...) {
-      return;
-    }
-  });
-  setOnRender([](Module *module) {
-    try {
-      bool rotation = module->getGUI().Get<bool>("rotation");
-      bool rotationSlient = module->getGUI().Get<bool>("rotationSlient");
-      if (rotationSlient) {
-        return;
-      }
-      if (!rotation)
-        return;
-      ClientInstance *instance = runtimes::getClientInstance();
-      if (!instance)
-        return;
-      LocalPlayer *player = instance->getLocalPlayer();
-      if (!player)
-        return;
-      ItemStack *item = player->getSelectedItem();
-      if (!item || !item->isBlock())
-        return;
-      glm::vec3 vel = player->getMotion();
-      float speed = glm::length(glm::vec2(vel.x, vel.z));
-      if (speed < 0.05f)
-        return;
-      glm::vec3 pos = player->getPosition();
-      glm::vec3 BlockBelow = pos;
-      BlockBelow.y -= 0.5f;
-      Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
-      player->setPitch(83.0f);
-      player->setYaw(rot.yaw);
     } catch (...) {
       return;
     }
