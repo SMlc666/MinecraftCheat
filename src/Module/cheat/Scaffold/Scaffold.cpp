@@ -25,13 +25,15 @@ const static std::unordered_map<std::string, std::any> ConfigData = {
 };
 static bool TowerOver = false;
 static float YCoord{};
-MemTool::Hook Helper_Block_tryScaffold;
-static bool Helper_Block_tryScaffold_(LocalPlayer *player, glm::vec3 blockBelow) {
+static MemTool::Hook Helper_Block_tryScaffold;
+static MemTool::Hook Helper_Block_tryClutchScaffold;
+static bool Helper_Block_tryScaffold_(LocalPlayer *player, glm::vec3 blockBelow, bool strict) {
   auto ret = Helper_Block_tryScaffold.call<bool>(player, blockBelow);
   try {
     if (g_md->getGUI().Get<bool>("debug")) {
-      g_log_tool.message(LogLevel::DEBUG, "Scaffold", "tryScaffold : {} {} {} status: {}",
-                         blockBelow.x, blockBelow.y, blockBelow.z, ret);
+      g_log_tool.message(LogLevel::DEBUG, "Scaffold",
+                         "tryScaffold : {} {} {} status: {} strict: {}", blockBelow.x, blockBelow.y,
+                         blockBelow.z, ret, strict);
     }
   } catch (...) {
   }
@@ -43,6 +45,9 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     Helper_Block_tryScaffold =
         MemTool::Hook(&Helper::Block::tryScaffold,
                       reinterpret_cast<void *>(Helper_Block_tryScaffold_), nullptr, false);
+    Helper_Block_tryClutchScaffold =
+        MemTool::Hook(&Helper::Block::tryClutchScaffold,
+                      reinterpret_cast<void *>(Helper::Block::tryClutchScaffold), nullptr, false);
   });
   setOnEnable([](Module *module) {
     try {
