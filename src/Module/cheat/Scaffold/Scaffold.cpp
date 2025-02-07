@@ -26,6 +26,7 @@ const static std::unordered_map<std::string, std::any> ConfigData = {
     {"rotation", false},
     {"rotationSlient", false},
     {"rotationPitch", 65.0F},
+    {"rotationChangeYaw", false},
     {"Tower", false},
     {"TowerMotionY", 0.5F},
     {"TowerPitch", 90.0F},
@@ -98,6 +99,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     }
     if (ImGui::TreeNode("Rotation")) {
       module->getGUI().CheckBox("rotation", "转头");
+      module->getGUI().CheckBox("rotationChangeYaw", "转头改变Yaw");
       module->getGUI().SliderFloat("rotationPitch", "转头角度", 0.0F, 180.0F);
       module->getGUI().CheckBox("rotationSlient", "静音转头");
       ImGui::TreePop();
@@ -208,6 +210,9 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     try {
       bool rotation = g_md->getGUI().Get<bool>("rotation");
       bool rotationSlient = g_md->getGUI().Get<bool>("rotationSlient");
+      float rotationPitch = g_md->getGUI().Get<float>("rotationPitch");
+      bool rotationChangeYaw = g_md->getGUI().Get<bool>("rotationChangeYaw");
+      float TowerPitch = g_md->getGUI().Get<float>("TowerPitch");
       if (!rotation) {
         return true;
       }
@@ -231,13 +236,15 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       glm::vec3 pos = player->getPosition();
       glm::vec3 BlockBelow = pos;
       BlockBelow.y -= 0.5f;
+      float pitch = InTower ? TowerPitch : rotationPitch;
       Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
+      float yaw = rotationChangeYaw ? rot.yaw : player->getYaw();
       if (packet->getName() == "MovePlayerPacket") {
         auto *movePacket = static_cast<MovePlayerPacket *>(packet);
-        movePacket->mRot = glm::vec2(rot.pitch, movePacket->mRot.y);
+        movePacket->mRot = glm::vec2(pitch, yaw);
       } else if (packet->getName() == "PlayerAuthInputPacket") {
         auto *authPacket = static_cast<PlayerAuthInputPacket *>(packet);
-        authPacket->mRot = glm::vec2(rot.pitch, authPacket->mRot->y);
+        authPacket->mRot = glm::vec2(pitch, yaw);
       }
     } catch (...) {
       return true;
