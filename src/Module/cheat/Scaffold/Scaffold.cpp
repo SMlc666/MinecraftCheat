@@ -52,7 +52,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
           glm::vec3 BlockBelow = pos;
           BlockBelow.y -= 0.5f;
           Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
-          player->setPitch(83.0f);
+          player->setPitch(rot.pitch);
           player->setYaw(rot.yaw);
         }
       }
@@ -133,11 +133,11 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
       if (packet->getName() == "MovePlayerPacket") {
         auto *movePacket = static_cast<MovePlayerPacket *>(packet);
-        movePacket->mRot = glm::vec2(83.0f, rot.yaw);
+        movePacket->mRot = glm::vec2(rot.pitch, rot.yaw);
         movePacket->mYHeadRot = rot.yaw;
       } else if (packet->getName() == "PlayerAuthInputPacket") {
         auto *authPacket = static_cast<PlayerAuthInputPacket *>(packet);
-        authPacket->mRot = glm::vec2(83.0f, rot.yaw);
+        authPacket->mRot = glm::vec2(rot.pitch, rot.yaw);
         authPacket->mYHeadRot = rot.yaw;
       }
     } catch (...) {
