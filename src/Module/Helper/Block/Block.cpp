@@ -78,7 +78,7 @@ bool Helper::Block::tryScaffold(LocalPlayer *player, glm::vec3 blockBelow, bool 
   return false;
 }
 bool Helper::Block::tryClutchScaffold(LocalPlayer *player, BlockSource *region,
-                                      glm::vec3 blockBelow) {
+                                      glm::vec3 blockBelow, bool strict) {
   glm::vec3 vel = player->getMotion();
   vel = glm::normalize(vel);
   blockBelow = glm::floor(blockBelow);
