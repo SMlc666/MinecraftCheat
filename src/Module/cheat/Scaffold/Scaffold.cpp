@@ -55,17 +55,12 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       ItemStack *item = player->getSelectedItem();
       if (!item || !item->isBlock())
         return;
-      glm::vec3 vel = player->getMotion();
-      glm::vec3 orig_motion = vel;
-      float speed = glm::length(glm::vec2(vel.x, vel.z));
-      vel = glm::normalize(vel);
-      glm::vec3 pos = player->getPosition();
-      glm::vec3 BlockBelow = pos;
+      glm::vec3 orig_motion = player->getMotion();
       if (Tower) {
-        if (vel.y > 0.0f && !TowerOver) {
+        if (orig_motion.y > 0.0f && !TowerOver) {
           player->setMotion(glm::vec3(orig_motion.x, orig_motion.y + TowerMotionY, orig_motion.z));
           TowerOver = true;
-        } else if (vel.y < 0.0f && TowerOver) {
+        } else if (orig_motion.y < 0.0f && TowerOver) {
           TowerOver = false;
         }
       }
