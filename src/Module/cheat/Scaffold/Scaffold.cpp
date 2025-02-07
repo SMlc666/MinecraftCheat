@@ -150,7 +150,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
           }
         }
       } else {
-        glm::vec3 blockBelowReal = Helper::Block::getBlockBelow(player, 0.5f);
+        glm::vec3 blockBelowReal = Helper::Block::getBlockBelow(player, 1.5f);
         glm::vec3 blockBelow = blockBelowReal;
         if (SameY) {
           Helper::Block::adjustYCoordinate(blockBelow, blockBelowReal, YCoord);
