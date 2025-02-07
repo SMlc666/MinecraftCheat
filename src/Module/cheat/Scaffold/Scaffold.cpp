@@ -39,6 +39,19 @@ static bool Helper_Block_tryScaffold_(LocalPlayer *player, glm::vec3 blockBelow,
   }
   return ret;
 }
+static bool Helper_Block_tryClutchScaffold_(LocalPlayer *player, BlockSource *region,
+                                            glm::vec3 blockBelow, bool strict) {
+  auto ret = Helper_Block_tryClutchScaffold.call<bool>(player, region, blockBelow);
+  try {
+    if (g_md->getGUI().Get<bool>("debug")) {
+      g_log_tool.message(LogLevel::DEBUG, "Scaffold",
+                         "tryClutchScaffold : {} {} {} status: {} strict: {}", blockBelow.x,
+                         blockBelow.y, blockBelow.z, ret, strict);
+    }
+  } catch (...) {
+  }
+  return ret;
+}
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
   setOnLoad([](Module *module) {
     g_md = module;
@@ -47,7 +60,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
                       reinterpret_cast<void *>(Helper_Block_tryScaffold_), nullptr, false);
     Helper_Block_tryClutchScaffold =
         MemTool::Hook(&Helper::Block::tryClutchScaffold,
-                      reinterpret_cast<void *>(Helper::Block::tryClutchScaffold), nullptr, false);
+                      reinterpret_cast<void *>(Helper_Block_tryClutchScaffold_), nullptr, false);
   });
   setOnEnable([](Module *module) {
     try {
