@@ -77,3 +77,8 @@ bool Actor::isJumping() const {
   auto func = getSign<function>("Actor::isJumping");
   return func(this);
 }
+float Actor::getFallDistance() const {
+  using function = float (*)(const Actor *);
+  auto func = getSign<function>("Actor::getFallDistance");
+  return func(this);
+}
