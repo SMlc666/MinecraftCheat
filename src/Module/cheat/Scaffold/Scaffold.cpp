@@ -9,6 +9,7 @@
 #include "game/minecraft/world/item/ItemStack.hpp"
 #include "glm/fwd.hpp"
 #include "glm/geometric.hpp"
+#include "imgui/imgui.h"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include <unordered_map>
@@ -24,8 +25,11 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
     module->getGUI().CheckBox("staircaseMode", "楼梯模式");
-    module->getGUI().CheckBox("rotation", "转头");
-    module->getGUI().CheckBox("rotationSlient", "静音转头");
+    if (ImGui::TreeNode("Rotation")) {
+      module->getGUI().CheckBox("rotation", "转头");
+      module->getGUI().CheckBox("rotationSlient", "静音转头");
+      ImGui::TreePop();
+    }
   });
   setOnRender([](Module *module) {
     try {
