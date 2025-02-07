@@ -18,7 +18,6 @@ const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},        {"shortcut", false}, {"staircaseMode", false}, {"rotation", false},
     {"rotationSlient", false}, {"Tower", false},    {"TowerMotionY", 0.5F},
 };
-static float targetY = 0.5F;
 static bool TowerOver = false;
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
   setOnLoad([](Module *module) { g_md = module; });
