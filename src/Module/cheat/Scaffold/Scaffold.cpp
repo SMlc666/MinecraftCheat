@@ -18,7 +18,7 @@
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},        {"shortcut", false},      {"placeStrict", false},
-    {"SameY", false},          {"DownMode", false}, {"rotation", false},
+    {"SameY", false},          {"DownMode", false},      {"rotation", false},
     {"rotationSlient", false}, {"rotationPitch", 65.0F}, {"Tower", false},
     {"TowerMotionY", 0.5F},    {"debug", false},
 };
@@ -89,29 +89,38 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       ItemStack *item = player->getSelectedItem();
       if (!item || !item->isBlock())
         return;
-      glm::vec3 orig_motion = player->getMotion();
-      if (Tower) {
-        if (orig_motion.y > 0.0f && !TowerOver) {
-          player->setMotion(glm::vec3(orig_motion.x, orig_motion.y + TowerMotionY, orig_motion.z));
-          TowerOver = true;
-        } else if (orig_motion.y < 0.0f && TowerOver) {
-          TowerOver = false;
-        }
-      }
       if (rotation && !rotationSlient) {
         player->setPitch(rotationPitch);
       }
-      glm::vec3 pos = player->getPosition();
-      glm::vec3 BlockBelow = glm::vec3(pos.x, pos.y - 1.0f, pos.z);
-      glm::vec3 vel = glm::normalize(orig_motion);
-      float speed = glm::length(glm::vec2(orig_motion.x, orig_motion.z));
-      if (speed == 0 && Tower && TowerOver) {
-        if (!Helper::Block::tryScaffold(player, BlockBelow, placeStrict)) {
-          BlockBelow.y += 1.0f;
-          if (!Helper::Block::tryScaffold(player, BlockBelow, placeStrict)) {
-            return;
+      glm::vec3 motion = player->getMotion();
+      float speed = glm::length(glm::vec2(motion.x, motion.y));
+      glm::vec3 vel = glm::normalize(motion);
+      if (DownMode) {
+        glm::vec3 blockBelow = Helper::Block::getBlockBelow(player, 1.5f);
+        glm::vec3 blockBelowBelow = Helper::Block::getBlockBelow(player, 2.0f);
+        if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict) &&
+            !Helper::Block::tryScaffold(player, blockBelowBelow, placeStrict)) {
+          if (speed > 0.05f) {
+            blockBelow.z -= vel.z * 0.4f;
+            blockBelowBelow.z -= vel.z * 0.4f;
+            if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict) &&
+                !Helper::Block::tryScaffold(player, blockBelowBelow, placeStrict)) {
+              blockBelow.x -= vel.x * 0.4f;
+              blockBelowBelow.x -= vel.x * 0.4f;
+              if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict) &&
+                  !Helper::Block::tryScaffold(player, blockBelowBelow, placeStrict) &&
+                  player->isSprinting()) {
+                blockBelow.z += vel.z;
+                blockBelow.x += vel.x;
+                blockBelowBelow.z += vel.z;
+                blockBelowBelow.x += vel.x;
+                Helper::Block::tryScaffold(player, blockBelow, placeStrict);
+                Helper::Block::tryScaffold(player, blockBelowBelow, placeStrict);
+              }
+            }
           }
         }
+      } else {
       }
     } catch (...) {
       return;
