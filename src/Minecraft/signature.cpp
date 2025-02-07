@@ -27,6 +27,7 @@ const std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"AnimatePacket::AnimatePacket", 0x6211FCC},
     {"Actor::setPos", 0x72448A8},
     {"Mob::isSprinting", 0x70FBAC0},
+    {"Actor::isJumping", 0x725109C},
 };
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
