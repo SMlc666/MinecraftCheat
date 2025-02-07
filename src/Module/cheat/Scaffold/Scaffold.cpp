@@ -15,16 +15,22 @@
 #include <unordered_map>
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},  {"shortcut", false},       {"staircaseMode", false},
-    {"rotation", false}, {"rotationSlient", false},
+    {"enabled", false},        {"shortcut", false}, {"staircaseMode", false}, {"rotation", false},
+    {"rotationSlient", false}, {"Tower", false},    {"TowerMotionY", 0.5F},
 };
 static float targetY = 0.5F;
+static bool TowerOver = false;
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
   setOnLoad([](Module *module) { g_md = module; });
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
     module->getGUI().CheckBox("staircaseMode", "楼梯模式");
+    if (ImGui::TreeNode("Tower")) {
+      module->getGUI().CheckBox("Tower", "塔模式");
+      module->getGUI().SliderFloat("TowerMotionY", "塔模式高度", 0.0F, 1.0F);
+      ImGui::TreePop();
+    }
     if (ImGui::TreeNode("Rotation")) {
       module->getGUI().CheckBox("rotation", "转头");
       module->getGUI().CheckBox("rotationSlient", "静音转头");
@@ -36,6 +42,8 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       bool staircaseMode = module->getGUI().Get<bool>("staircaseMode");
       bool rotation = module->getGUI().Get<bool>("rotation");
       bool rotationSlient = module->getGUI().Get<bool>("rotationSlient");
+      bool Tower = module->getGUI().Get<bool>("Tower");
+      float TowerMotionY = module->getGUI().Get<float>("TowerMotionY");
       ClientInstance *instance = runtimes::getClientInstance();
       if (!instance)
         return;
@@ -48,19 +56,19 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       if (!item || !item->isBlock())
         return;
       glm::vec3 vel = player->getMotion();
+      glm::vec3 orig_motion = vel;
       float speed = glm::length(glm::vec2(vel.x, vel.z));
       vel = glm::normalize(vel);
-      if (!rotationSlient && rotation) {
-        if (speed > 0.05f) {
-          glm::vec3 pos = player->getPosition();
-          glm::vec3 BlockBelow = pos;
-          BlockBelow.y -= 0.5f;
-          Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
-          player->setPitch(rot.pitch);
-          player->setYaw(rot.yaw);
+      glm::vec3 pos = player->getPosition();
+      glm::vec3 BlockBelow = pos;
+      if (Tower) {
+        if (vel.y >= 0.0f && !TowerOver) {
+          player->setMotion(glm::vec3(orig_motion.x, orig_motion.y + TowerMotionY, orig_motion.z));
+          TowerOver = true;
+        } else if (vel.y < 0.0f && TowerOver) {
+          TowerOver = false;
         }
       }
-
     } catch (...) {
       return;
     }
