@@ -63,7 +63,13 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
           TowerOver = false;
         }
       }
-
+      glm::vec3 pos = player->getPosition();
+      glm::vec3 BlockBelow = glm::vec3(pos.x, pos.y - 1.0f, pos.z);
+      glm::vec3 vel = glm::normalize(orig_motion);
+      float speed = glm::length(glm::vec2(orig_motion.x, orig_motion.z));
+      if (speed == 0 && Tower) {
+        Helper::Block::tryScaffold(player, BlockBelow);
+      }
     } catch (...) {
       return;
     }
