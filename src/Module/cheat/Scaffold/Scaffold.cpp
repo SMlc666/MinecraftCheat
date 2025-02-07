@@ -46,9 +46,14 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
   });
   setOnEnable([](Module *module) {
     try {
-      bool SameY = module->getGUI().Get<bool>("SameY");
-      if (SameY) {
-      }
+      ClientInstance *instance = runtimes::getClientInstance();
+      if (!instance)
+        return;
+      LocalPlayer *player = instance->getLocalPlayer();
+      if (!player)
+        return;
+      glm::vec3 blockBelow = Helper::Block::getBlockBelow(player, 0.5);
+      YCoord = blockBelow.y;
     } catch (...) {
     }
   });
