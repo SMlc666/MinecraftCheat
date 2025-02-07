@@ -8,6 +8,7 @@
 #include "game/minecraft/network/Packet/Packets/MovePlayerPacket.hpp"
 #include "game/minecraft/network/Packet/Packets/PlayerAuthInputPacket.hpp"
 #include "game/minecraft/world/item/ItemStack.hpp"
+#include "game/minecraft/world/level/block/BlockSource.hpp"
 #include "glm/fwd.hpp"
 #include "glm/geometric.hpp"
 #include "imgui/imgui.h"
@@ -20,9 +21,10 @@ const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},        {"shortcut", false},      {"placeStrict", false},
     {"SameY", false},          {"DownMode", false},      {"rotation", false},
     {"rotationSlient", false}, {"rotationPitch", 65.0F}, {"Tower", false},
-    {"TowerMotionY", 0.5F},    {"debug", false},
+    {"TowerMotionY", 0.5F},    {"debug", false},         {"Extend", 0},
 };
 static bool TowerOver = false;
+static float YCoord{};
 MemTool::Hook Helper_Block_tryScaffold;
 static bool Helper_Block_tryScaffold_(LocalPlayer *player, glm::vec3 blockBelow) {
   auto ret = Helper_Block_tryScaffold.call<bool>(player, blockBelow);
@@ -55,6 +57,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     module->getGUI().CheckBox("DownMode", "楼梯模式");
     module->getGUI().CheckBox("placeStrict", "严格放置");
     module->getGUI().CheckBox("SameY", "同高度放置");
+    module->getGUI().SliderInt("Extend", "扩展", 0, 10);
     if (ImGui::TreeNode("Tower")) {
       module->getGUI().CheckBox("Tower", "塔模式");
       module->getGUI().SliderFloat("TowerMotionY", "塔模式高度", 0.0F, 1.0F);
@@ -78,6 +81,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       float rotationPitch = module->getGUI().Get<float>("rotationPitch");
       bool placeStrict = module->getGUI().Get<bool>("placeStrict");
       bool SameY = module->getGUI().Get<bool>("SameY");
+      int Extend = module->getGUI().Get<int>("Extend");
       ClientInstance *instance = runtimes::getClientInstance();
       if (!instance)
         return;
@@ -85,7 +89,9 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       LocalPlayer *player = instance->getLocalPlayer();
       if (!player)
         return;
-
+      BlockSource *region = instance->getRegion();
+      if (!region)
+        return;
       ItemStack *item = player->getSelectedItem();
       if (!item || !item->isBlock())
         return;
@@ -121,6 +127,34 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
           }
         }
       } else {
+        glm::vec3 blockBelowReal = Helper::Block::getBlockBelow(player, 0.5f);
+        glm::vec3 blockBelow = blockBelowReal;
+        if (SameY) {
+          Helper::Block::adjustYCoordinate(blockBelow, blockBelowReal, YCoord);
+        }
+        Helper::Block::extendBlock(vel, blockBelow, Extend);
+
+        if (Helper::Block::isAirBlock(blockBelow)) {
+          Helper::Block::tryClutchScaffold(player, region, blockBelow);
+        } else {
+          if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict)) {
+            if (speed > 0.05f) {
+              blockBelow.z -= vel.z * 0.4f;
+
+              if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict)) {
+                blockBelow.x -= vel.x * 0.4f;
+
+                if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict) &&
+                    player->isSprinting()) {
+                  blockBelow.z += vel.z;
+                  blockBelow.x += vel.x;
+
+                  Helper::Block::tryScaffold(player, blockBelow, placeStrict);
+                }
+              }
+            }
+          }
+        }
       }
     } catch (...) {
       return;
