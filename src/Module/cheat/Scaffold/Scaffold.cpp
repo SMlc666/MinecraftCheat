@@ -60,49 +60,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
           player->setYaw(rot.yaw);
         }
       }
-      if (staircaseMode) {
-        glm::vec3 blockBelow = player->getEyesPos();
-        blockBelow.y -= 3.0f;
-        glm::vec3 blockBelowBelow = player->getEyesPos();
-        blockBelowBelow.y -= 4.0f;
-        if (!Helper::Block::tryScaffold(player, blockBelow) &&
-            !Helper::Block::tryScaffold(player, blockBelowBelow)) {
-          if (speed > 0.05f) { // Are we actually walking?
-            blockBelow.z -= vel.z * 0.4f;
-            blockBelowBelow.z -= vel.z * 0.4f;
-            if (!Helper::Block::tryScaffold(player, blockBelow) &&
-                !Helper::Block::tryScaffold(player, blockBelowBelow)) {
-              blockBelow.x -= vel.x * 0.4f;
-              blockBelowBelow.x -= vel.x * 0.4f;
-              if (!Helper::Block::tryScaffold(player, blockBelow) &&
-                  !Helper::Block::tryScaffold(player, blockBelowBelow)) {
-                blockBelow.z += vel.z;
-                blockBelow.x += vel.x;
-                blockBelowBelow.z += vel.z;
-                blockBelowBelow.x += vel.x;
-                Helper::Block::tryScaffold(player, blockBelow);
-                Helper::Block::tryScaffold(player, blockBelowBelow);
-              }
-            }
-          }
-        }
-      } else {
-        glm::vec3 blockBelow = player->getEyesPos();
-        blockBelow.y -= 3.0f;
-        if (!Helper::Block::tryScaffold(player, blockBelow)) {
-          if (speed > 0.05f) { // Are we actually walking?
-            blockBelow.z -= vel.z * 0.4f;
-            if (!Helper::Block::tryScaffold(player, blockBelow)) {
-              blockBelow.x -= vel.x * 0.4f;
-              if (!Helper::Block::tryScaffold(player, blockBelow)) {
-                blockBelow.z += vel.z;
-                blockBelow.x += vel.x;
-                Helper::Block::tryScaffold(player, blockBelow);
-              }
-            }
-          }
-        }
-      }
+
     } catch (...) {
       return;
     }
