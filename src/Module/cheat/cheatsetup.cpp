@@ -2,6 +2,7 @@
 #include "ModuleManager.hpp"
 #include "SpinAttack/SpinAttack.hpp"
 #include "Blink/Blink.hpp"
+#include "cheat/AntiVoid/AntiVoid.hpp"
 #include "cheat/ClickGUI/ClickGUI.hpp"
 #include "cheat/Fly/Fly.hpp"
 #include "cheat/GodMode/GodMode.hpp"
@@ -37,4 +38,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::InfiniteAura);
   ModuleManager::addModule(new cheat::NoSwing);
   ModuleManager::addModule(new cheat::Teams);
+  ModuleManager::addModule(new cheat::AntiVoid);
 }
