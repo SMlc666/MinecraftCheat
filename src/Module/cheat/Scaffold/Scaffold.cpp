@@ -37,6 +37,7 @@ static bool InTower = false;
 static float YCoord{};
 static MemTool::Hook Helper_Block_tryScaffold;
 static MemTool::Hook Helper_Block_tryClutchScaffold;
+glm::vec3 targetBlock{};
 static bool Helper_Block_tryScaffold_(LocalPlayer *player, glm::vec3 blockBelow, bool strict) {
   auto ret = Helper_Block_tryScaffold.call<bool>(player, blockBelow);
   try {
@@ -47,6 +48,7 @@ static bool Helper_Block_tryScaffold_(LocalPlayer *player, glm::vec3 blockBelow,
     }
   } catch (...) {
   }
+  targetBlock = blockBelow;
   return ret;
 }
 static bool Helper_Block_tryClutchScaffold_(LocalPlayer *player, BlockSource *region,
@@ -60,6 +62,7 @@ static bool Helper_Block_tryClutchScaffold_(LocalPlayer *player, BlockSource *re
     }
   } catch (...) {
   }
+  targetBlock = blockBelow;
   return ret;
 }
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
@@ -115,6 +118,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       float TowerMotionY = module->getGUI().Get<float>("TowerMotionY");
       float TowerPitch = module->getGUI().Get<float>("TowerPitch");
       float rotationPitch = module->getGUI().Get<float>("rotationPitch");
+      bool rotationChangeYaw = module->getGUI().Get<bool>("rotationChangeYaw");
       bool placeStrict = module->getGUI().Get<bool>("placeStrict");
       bool SameY = module->getGUI().Get<bool>("SameY");
       int Extend = module->getGUI().Get<int>("Extend");
@@ -131,11 +135,16 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       ItemStack *item = player->getSelectedItem();
       if (!item || !item->isBlock())
         return;
+      Helper::Rotation::Rotation rot =
+          Helper::Rotation::toRotation(player->getPosition(), targetBlock);
+      float yaw = rotationChangeYaw ? rot.yaw : player->getYaw();
       if (rotation && !rotationSlient) {
         if (InTower) {
           player->setPitch(TowerPitch);
+          player->setYaw(yaw);
         } else {
           player->setPitch(rotationPitch);
+          player->setYaw(yaw);
         }
       }
       glm::vec3 motion = player->getMotion();
@@ -237,7 +246,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       glm::vec3 BlockBelow = pos;
       BlockBelow.y -= 0.5f;
       float pitch = InTower ? TowerPitch : rotationPitch;
-      Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
+      Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, targetBlock);
       float yaw = rotationChangeYaw ? rot.yaw : player->getYaw();
       if (packet->getName() == "MovePlayerPacket") {
         auto *movePacket = static_cast<MovePlayerPacket *>(packet);
