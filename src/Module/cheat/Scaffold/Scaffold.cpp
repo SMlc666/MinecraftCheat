@@ -15,8 +15,9 @@
 #include <unordered_map>
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},        {"shortcut", false}, {"staircaseMode", false}, {"rotation", false},
-    {"rotationSlient", false}, {"Tower", false},    {"TowerMotionY", 0.5F},
+    {"enabled", false},  {"shortcut", false},       {"staircaseMode", false},
+    {"rotation", false}, {"rotationSlient", false}, {"rotationPitch", 65.0F},
+    {"Tower", false},    {"TowerMotionY", 0.5F},
 };
 static bool TowerOver = false;
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
@@ -32,6 +33,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     }
     if (ImGui::TreeNode("Rotation")) {
       module->getGUI().CheckBox("rotation", "转头");
+      module->getGUI().SliderFloat("rotationPitch", "转头角度", 0.0F, 180.0F);
       module->getGUI().CheckBox("rotationSlient", "静音转头");
       ImGui::TreePop();
     }
@@ -43,6 +45,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       bool rotationSlient = module->getGUI().Get<bool>("rotationSlient");
       bool Tower = module->getGUI().Get<bool>("Tower");
       float TowerMotionY = module->getGUI().Get<float>("TowerMotionY");
+      float rotationPitch = module->getGUI().Get<float>("rotationPitch");
       ClientInstance *instance = runtimes::getClientInstance();
       if (!instance)
         return;
@@ -62,6 +65,9 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
         } else if (orig_motion.y < 0.0f && TowerOver) {
           TowerOver = false;
         }
+      }
+      if (rotation && !rotationSlient) {
+        player->setPitch(rotationPitch);
       }
       glm::vec3 pos = player->getPosition();
       glm::vec3 BlockBelow = glm::vec3(pos.x, pos.y - 1.0f, pos.z);
@@ -109,12 +115,10 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, BlockBelow);
       if (packet->getName() == "MovePlayerPacket") {
         auto *movePacket = static_cast<MovePlayerPacket *>(packet);
-        movePacket->mRot = glm::vec2(rot.pitch, rot.yaw);
-        movePacket->mYHeadRot = rot.yaw;
+        movePacket->mRot = glm::vec2(rot.pitch, movePacket->mRot.y);
       } else if (packet->getName() == "PlayerAuthInputPacket") {
         auto *authPacket = static_cast<PlayerAuthInputPacket *>(packet);
-        authPacket->mRot = glm::vec2(rot.pitch, rot.yaw);
-        authPacket->mYHeadRot = rot.yaw;
+        authPacket->mRot = glm::vec2(rot.pitch, authPacket->mRot->y);
       }
     } catch (...) {
       return true;
