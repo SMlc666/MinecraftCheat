@@ -140,7 +140,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
         Helper::Block::extendBlock(vel, blockBelow, Extend);
 
         if (Helper::Block::isAirBlock(blockBelow)) {
-          Helper::Block::tryClutchScaffold(player, region, blockBelow);
+          Helper::Block::tryClutchScaffold(player, region, blockBelow, placeStrict);
         } else {
           if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict)) {
             if (speed > 0.05f) {
