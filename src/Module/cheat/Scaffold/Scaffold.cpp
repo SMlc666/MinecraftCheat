@@ -68,7 +68,12 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       glm::vec3 vel = glm::normalize(orig_motion);
       float speed = glm::length(glm::vec2(orig_motion.x, orig_motion.z));
       if (speed == 0 && Tower) {
-        Helper::Block::tryScaffold(player, BlockBelow);
+        if (!Helper::Block::tryScaffold(player, BlockBelow)) {
+          BlockBelow.y += 1.0f;
+          if (!Helper::Block::tryScaffold(player, BlockBelow)) {
+            return;
+          }
+        }
       }
     } catch (...) {
       return;
