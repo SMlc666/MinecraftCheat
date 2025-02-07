@@ -17,9 +17,10 @@
 #include <unordered_map>
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},  {"shortcut", false},       {"staircaseMode", false},
-    {"rotation", false}, {"rotationSlient", false}, {"rotationPitch", 65.0F},
-    {"Tower", false},    {"TowerMotionY", 0.5F},    {"debug", false},
+    {"enabled", false},       {"shortcut", false}, {"placeStrict", false},
+    {"staircaseMode", false}, {"rotation", false}, {"rotationSlient", false},
+    {"rotationPitch", 65.0F}, {"Tower", false},    {"TowerMotionY", 0.5F},
+    {"debug", false},
 };
 static bool TowerOver = false;
 MemTool::Hook Helper_Block_tryScaffold;
@@ -45,6 +46,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
     module->getGUI().CheckBox("staircaseMode", "楼梯模式");
+    module->getGUI().CheckBox("placeStrict", "严格放置");
     if (ImGui::TreeNode("Tower")) {
       module->getGUI().CheckBox("Tower", "塔模式");
       module->getGUI().SliderFloat("TowerMotionY", "塔模式高度", 0.0F, 1.0F);
@@ -66,6 +68,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       bool Tower = module->getGUI().Get<bool>("Tower");
       float TowerMotionY = module->getGUI().Get<float>("TowerMotionY");
       float rotationPitch = module->getGUI().Get<float>("rotationPitch");
+      bool placeStrict = module->getGUI().Get<bool>("placeStrict");
       ClientInstance *instance = runtimes::getClientInstance();
       if (!instance)
         return;
@@ -94,9 +97,9 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       glm::vec3 vel = glm::normalize(orig_motion);
       float speed = glm::length(glm::vec2(orig_motion.x, orig_motion.z));
       if (speed == 0 && Tower) {
-        if (!Helper::Block::tryScaffold(player, BlockBelow)) {
+        if (!Helper::Block::tryScaffold(player, BlockBelow, placeStrict)) {
           BlockBelow.y += 1.0f;
-          if (!Helper::Block::tryScaffold(player, BlockBelow)) {
+          if (!Helper::Block::tryScaffold(player, BlockBelow, placeStrict)) {
             return;
           }
         }
