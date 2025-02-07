@@ -136,7 +136,7 @@ void Helper::Block::adjustYCoordinate(glm::vec3 &blockBelow, const glm::vec3 &bl
 }
 glm::vec3 Helper::Block::getBlockBelow(Player *player, float yOffset) {
   glm::vec3 blockBelow = player->getPosition();
-  blockBelow.y += yOffset;
+  blockBelow.y += yOffset - 3.0f;
   return blockBelow;
 }
 glm::vec3 Helper::Block::getNextBlock(Player *player, const glm::vec3 &velocity,
