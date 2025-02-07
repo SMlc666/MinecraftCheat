@@ -90,3 +90,13 @@ glm::vec3 Helper::Block::getBlockBelow(Player *player, float yOffset) {
   blockBelow.y += yOffset;
   return blockBelow;
 }
+glm::vec3 Helper::Block::getNextBlock(Player *player, const glm::vec3 &velocity,
+                                      const glm::vec3 &blockBelow) {
+  glm::vec3 nextBlock = blockBelow;
+  if (abs(velocity.x) > abs(velocity.z)) {
+    nextBlock.x += (velocity.x > 0 ? 1 : (velocity.x < 0 ? -1 : 0));
+  } else {
+    nextBlock.z += (velocity.z > 0 ? 1 : (velocity.z < 0 ? -1 : 0));
+  }
+  return nextBlock;
+}
