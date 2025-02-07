@@ -18,12 +18,21 @@
 #include <unordered_map>
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},        {"shortcut", false},      {"placeStrict", false},
-    {"SameY", false},          {"DownMode", false},      {"rotation", false},
-    {"rotationSlient", false}, {"rotationPitch", 65.0F}, {"Tower", false},
-    {"TowerMotionY", 0.5F},    {"debug", false},         {"Extend", 0},
+    {"enabled", false},
+    {"shortcut", false},
+    {"placeStrict", false},
+    {"SameY", false},
+    {"DownMode", false},
+    {"rotation", false},
+    {"rotationSlient", false},
+    {"rotationPitch", 65.0F},
+    {"Tower", false},
+    {"TowerMotionY", 0.5F},
+    {"TowerPitch", 90.0F},
+    {"debug", false},
+    {"Extend", 0},
 };
-static bool TowerOver = false;
+static bool InTower = false;
 static float YCoord{};
 static MemTool::Hook Helper_Block_tryScaffold;
 static MemTool::Hook Helper_Block_tryClutchScaffold;
@@ -75,7 +84,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     } catch (...) {
     }
   });
-  setOnDisable([](Module *module) {});
+  setOnDisable([](Module *module) { InTower = false; });
   setOnDrawGUI([](Module *module) {
     module->getGUI().CheckBox("DownMode", "楼梯模式");
     module->getGUI().CheckBox("placeStrict", "严格放置");
@@ -84,6 +93,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
     if (ImGui::TreeNode("Tower")) {
       module->getGUI().CheckBox("Tower", "塔模式");
       module->getGUI().SliderFloat("TowerMotionY", "塔模式高度", 0.0F, 1.0F);
+      module->getGUI().SliderFloat("TowerPitch", "塔模式角度", 0.0F, 180.0F);
       ImGui::TreePop();
     }
     if (ImGui::TreeNode("Rotation")) {
@@ -101,6 +111,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       bool rotationSlient = module->getGUI().Get<bool>("rotationSlient");
       bool Tower = module->getGUI().Get<bool>("Tower");
       float TowerMotionY = module->getGUI().Get<float>("TowerMotionY");
+      float TowerPitch = module->getGUI().Get<float>("TowerPitch");
       float rotationPitch = module->getGUI().Get<float>("rotationPitch");
       bool placeStrict = module->getGUI().Get<bool>("placeStrict");
       bool SameY = module->getGUI().Get<bool>("SameY");
@@ -119,10 +130,20 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       if (!item || !item->isBlock())
         return;
       if (rotation && !rotationSlient) {
-        player->setPitch(rotationPitch);
+        if (InTower) {
+          player->setPitch(TowerPitch);
+        } else {
+          player->setPitch(rotationPitch);
+        }
       }
       glm::vec3 motion = player->getMotion();
       float speed = glm::length(glm::vec2(motion.x, motion.y));
+      if (speed == 0.0f && player->isJumping() && Tower && !InTower) {
+        InTower = true;
+        player->setMotion(glm::vec3(0.0f, TowerMotionY, 0.0f));
+      } else if (speed != 0.0f && InTower && !player->isJumping()) {
+        InTower = false;
+      }
       glm::vec3 vel = glm::normalize(motion);
       if (DownMode) {
         glm::vec3 blockBelow = Helper::Block::getBlockBelow(player, 1.5f);
