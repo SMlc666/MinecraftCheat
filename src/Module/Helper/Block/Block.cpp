@@ -46,7 +46,7 @@ bool Helper::Block::canPlaceBlock(glm::ivec3 pos) {
   }
   return false;
 }
-bool Helper::Block::tryScaffold(LocalPlayer *player, glm::vec3 blockBelow) {
+bool Helper::Block::tryScaffold(LocalPlayer *player, glm::vec3 blockBelow, bool strict) {
   blockBelow = glm::floor(blockBelow);
   BlockPos block(blockBelow);
   static std::vector<BlockPos> checklist = {
@@ -61,7 +61,7 @@ bool Helper::Block::tryScaffold(LocalPlayer *player, glm::vec3 blockBelow) {
   int i = 0;
   for (auto current : checklist) {
     BlockPos calc = block - current;
-    if (!isAirBlock(calc)) {
+    if (!isAirBlock(calc) && (strict || canPlaceBlock(calc))) {
       foundCandidate = true;
       block = calc;
       break;

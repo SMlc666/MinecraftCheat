@@ -4,5 +4,5 @@
 namespace Helper::Block {
 bool isAirBlock(glm::ivec3 pos);
 bool canPlaceBlock(glm::ivec3 pos);
-bool tryScaffold(LocalPlayer *player, glm::vec3 blockBelow);
+bool tryScaffold(LocalPlayer *player, glm::vec3 blockBelow, bool strict = false);
 } // namespace Helper::Block
