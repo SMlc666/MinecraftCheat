@@ -72,3 +72,8 @@ void Actor::setMotion(glm::vec3 motion) {
   }
   this->mPosMotion->motion = motion;
 }
+bool Actor::isJumping() const {
+  using function = bool (*)(const Actor *);
+  auto func = getSign<function>("Actor::isJumping");
+  return func(this);
+}
