@@ -1,12 +1,23 @@
 #include "Block.hpp"
+#include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/world/level/block/Block.hpp"
 #include "game/minecraft/world/level/block/BlockLegacy.hpp"
 #include "game/minecraft/world/level/block/BlockSource.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
+#include "glm/common.hpp"
 #include "glm/fwd.hpp"
+#include "glm/geometric.hpp"
 #include "runtimes/runtimes.hpp"
 #include <string>
+static std::vector<BlockPos> checklist = {
+    BlockPos(0, -1, 0), // 下方
+    BlockPos(0, 1, 0),  // 上方
+    BlockPos(0, 0, -1), // 后方
+    BlockPos(0, 0, 1),  // 前方
+    BlockPos(-1, 0, 0), // 左侧
+    BlockPos(1, 0, 0)   // 右侧
+};
 bool Helper::Block::isAirBlock(glm::ivec3 pos) {
   auto *client = runtimes::getClientInstance();
   if (client == nullptr) {
@@ -49,14 +60,6 @@ bool Helper::Block::canPlaceBlock(glm::ivec3 pos) {
 bool Helper::Block::tryScaffold(LocalPlayer *player, glm::vec3 blockBelow, bool strict) {
   blockBelow = glm::floor(blockBelow);
   BlockPos block(blockBelow);
-  static std::vector<BlockPos> checklist = {
-      BlockPos(0, -1, 0), // 下方
-      BlockPos(0, 1, 0),  // 上方
-      BlockPos(0, 0, -1), // 后方
-      BlockPos(0, 0, 1),  // 前方
-      BlockPos(-1, 0, 0), // 左侧
-      BlockPos(1, 0, 0)   // 右侧
-  };
   bool foundCandidate = false;
   int i = 0;
   for (auto current : checklist) {
@@ -71,6 +74,52 @@ bool Helper::Block::tryScaffold(LocalPlayer *player, glm::vec3 blockBelow, bool 
   if (foundCandidate) {
     player->getGameMode().buildBlock(block, i);
     return true;
+  }
+  return false;
+}
+bool Helper::Block::tryClutchScaffold(LocalPlayer *player, BlockSource *region,
+                                      glm::vec3 blockBelow) {
+  glm::vec3 vel = player->getMotion();
+  vel = glm::normalize(vel);
+  blockBelow = glm::floor(blockBelow);
+  static std::vector<glm::ivec3> checkBlocks;
+  if (checkBlocks.empty()) {
+    for (int y = -4; y <= 4; y++) {
+      for (int x = -4; x <= 4; x++) {
+        for (int z = -4; z <= 4; z++) {
+          checkBlocks.push_back(glm::ivec3(x, y, z));
+        }
+      }
+    }
+    std::sort(checkBlocks.begin(), checkBlocks.end(), [](glm::ivec3 first, glm::ivec3 last) {
+      return sqrtf((float)(first.x * first.x) + (float)(first.y * first.y) +
+                   (float)(first.z * first.z)) <
+             sqrtf((float)(last.x * last.x) + (float)(last.y * last.y) + (float)(last.z * last.z));
+    });
+  }
+  for (const glm::ivec3 &blockOffset : checkBlocks) {
+    glm::ivec3 currentBlock = glm::ivec3(blockBelow) + blockOffset;
+    ::Block *block = region->getBlock(glm::ivec3(currentBlock));
+    BlockLegacy *blockLegacy = block->mBlockLegacy;
+    if (Helper::Block::isAirBlock(currentBlock)) {
+      glm::ivec3 blok(currentBlock);
+      bool foundCandidate = false;
+      int i = 0;
+      for (auto current : checklist) {
+        glm::ivec3 calc = blok - current;
+        bool Y = Helper::Block::isAirBlock(calc);
+        if (!(Helper::Block::isAirBlock(calc))) {
+          foundCandidate = true;
+          blok = calc;
+          break;
+        }
+        i++;
+      }
+      if (foundCandidate) {
+        player->getGameMode().buildBlock(blok, i);
+        return true;
+      }
+    }
   }
   return false;
 }
