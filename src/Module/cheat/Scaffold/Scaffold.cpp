@@ -1,6 +1,7 @@
 #include "Scaffold.hpp"
 #include "Helper/Block/Block.hpp"
 #include "Helper/Rotation/rotation.hpp"
+#include "MemTool.hpp"
 #include "Module.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
@@ -10,6 +11,7 @@
 #include "glm/fwd.hpp"
 #include "glm/geometric.hpp"
 #include "imgui/imgui.h"
+#include "log.hpp"
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include <unordered_map>
@@ -17,11 +19,28 @@ static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},  {"shortcut", false},       {"staircaseMode", false},
     {"rotation", false}, {"rotationSlient", false}, {"rotationPitch", 65.0F},
-    {"Tower", false},    {"TowerMotionY", 0.5F},
+    {"Tower", false},    {"TowerMotionY", 0.5F},    {"debug", false},
 };
 static bool TowerOver = false;
+MemTool::Hook Helper_Block_tryScaffold;
+static bool Helper_Block_tryScaffold_(LocalPlayer *player, glm::vec3 blockBelow) {
+  auto ret = Helper_Block_tryScaffold.call<bool>(player, blockBelow);
+  try {
+    if (g_md->getGUI().Get<bool>("debug")) {
+      g_log_tool.message(LogLevel::DEBUG, "Scaffold", "tryScaffold : {} {} {} status: {}",
+                         blockBelow.x, blockBelow.y, blockBelow.z, ret);
+    }
+  } catch (...) {
+  }
+  return ret;
+}
 cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
-  setOnLoad([](Module *module) { g_md = module; });
+  setOnLoad([](Module *module) {
+    g_md = module;
+    Helper_Block_tryScaffold =
+        MemTool::Hook(&Helper::Block::tryScaffold,
+                      reinterpret_cast<void *>(Helper_Block_tryScaffold_), nullptr, false);
+  });
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
@@ -37,6 +56,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       module->getGUI().CheckBox("rotationSlient", "静音转头");
       ImGui::TreePop();
     }
+    module->getGUI().CheckBox("debug", "调试模式");
   });
   setOnRender([](Module *module) {
     try {
