@@ -62,13 +62,14 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       glm::vec3 pos = player->getPosition();
       glm::vec3 BlockBelow = pos;
       if (Tower) {
-        if (vel.y >= 0.0f && !TowerOver) {
+        if (vel.y > 0.0f && !TowerOver) {
           player->setMotion(glm::vec3(orig_motion.x, orig_motion.y + TowerMotionY, orig_motion.z));
           TowerOver = true;
         } else if (vel.y < 0.0f && TowerOver) {
           TowerOver = false;
         }
       }
+
     } catch (...) {
       return;
     }
