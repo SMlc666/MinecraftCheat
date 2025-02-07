@@ -18,7 +18,7 @@
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},        {"shortcut", false},      {"placeStrict", false},
-    {"SameY", false},          {"staircaseMode", false}, {"rotation", false},
+    {"SameY", false},          {"DownMode", false}, {"rotation", false},
     {"rotationSlient", false}, {"rotationPitch", 65.0F}, {"Tower", false},
     {"TowerMotionY", 0.5F},    {"debug", false},
 };
@@ -52,7 +52,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
   });
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
-    module->getGUI().CheckBox("staircaseMode", "楼梯模式");
+    module->getGUI().CheckBox("DownMode", "楼梯模式");
     module->getGUI().CheckBox("placeStrict", "严格放置");
     module->getGUI().CheckBox("SameY", "同高度放置");
     if (ImGui::TreeNode("Tower")) {
@@ -70,7 +70,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
   });
   setOnRender([](Module *module) {
     try {
-      bool staircaseMode = module->getGUI().Get<bool>("staircaseMode");
+      bool DownMode = module->getGUI().Get<bool>("DownMode");
       bool rotation = module->getGUI().Get<bool>("rotation");
       bool rotationSlient = module->getGUI().Get<bool>("rotationSlient");
       bool Tower = module->getGUI().Get<bool>("Tower");
