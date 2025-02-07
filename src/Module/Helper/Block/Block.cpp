@@ -82,6 +82,7 @@ bool Helper::Block::tryClutchScaffold(LocalPlayer *player, BlockSource *region,
   glm::vec3 vel = player->getMotion();
   vel = glm::normalize(vel);
   blockBelow = glm::floor(blockBelow);
+
   static std::vector<glm::ivec3> checkBlocks;
   if (checkBlocks.empty()) {
     for (int y = -4; y <= 4; y++) {
@@ -97,30 +98,16 @@ bool Helper::Block::tryClutchScaffold(LocalPlayer *player, BlockSource *region,
              sqrtf((float)(last.x * last.x) + (float)(last.y * last.y) + (float)(last.z * last.z));
     });
   }
+
   for (const glm::ivec3 &blockOffset : checkBlocks) {
     glm::ivec3 currentBlock = glm::ivec3(blockBelow) + blockOffset;
-    ::Block *block = region->getBlock(glm::ivec3(currentBlock));
-    BlockLegacy *blockLegacy = block->mBlockLegacy;
     if (Helper::Block::isAirBlock(currentBlock)) {
-      glm::ivec3 blok(currentBlock);
-      bool foundCandidate = false;
-      int i = 0;
-      for (auto current : checklist) {
-        glm::ivec3 calc = blok - current;
-        bool Y = Helper::Block::isAirBlock(calc);
-        if (!(Helper::Block::isAirBlock(calc))) {
-          foundCandidate = true;
-          blok = calc;
-          break;
-        }
-        i++;
-      }
-      if (foundCandidate) {
-        player->getGameMode().buildBlock(blok, i);
+      if (tryScaffold(player, currentBlock, false)) {
         return true;
       }
     }
   }
+
   return false;
 }
 void Helper::Block::extendBlock(const glm::vec3 &velocity, glm::vec3 &blockBelow, int extend) {
