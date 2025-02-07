@@ -74,3 +74,19 @@ bool Helper::Block::tryScaffold(LocalPlayer *player, glm::vec3 blockBelow, bool 
   }
   return false;
 }
+void Helper::Block::extendBlock(const glm::vec3 &velocity, glm::vec3 &blockBelow, int extend) {
+  blockBelow.x += velocity.x * extend;
+  blockBelow.z += velocity.z * extend;
+}
+void Helper::Block::adjustYCoordinate(glm::vec3 &blockBelow, const glm::vec3 &blockBelowReal,
+                                      float &YCoord) {
+  blockBelow.y = YCoord;
+  if (blockBelowReal.y < YCoord) {
+    YCoord = blockBelowReal.y;
+  }
+}
+glm::vec3 Helper::Block::getBlockBelow(Player *player, float yOffset) {
+  glm::vec3 blockBelow = player->getPosition();
+  blockBelow.y += yOffset;
+  return blockBelow;
+}
