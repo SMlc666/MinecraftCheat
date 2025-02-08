@@ -28,11 +28,12 @@ cheat::AntiVoid::AntiVoid() : Module("AntiVoid", MenuType::MOVEMENT_MENU, Config
       ImGui::TreePop();
     }
   });
+
   setOnTick([](Module *module) {
     try {
       float distance = module->getGUI().Get<float>("distance");
       float Xoffest = module->getGUI().Get<float>("Xoffest");
-      float Yoffest = module->getGUI().Get<float>("Yoffest");
+      float Yoffest = module->getGUI().Get<float>("Yoffest") + 1.0f; // 增加 1，传送到方块上方
       float Zoffest = module->getGUI().Get<float>("Zoffest");
       glm::vec3 offest(Xoffest, Yoffest, Zoffest);
       ClientInstance *instance = runtimes::getClientInstance();
@@ -46,11 +47,12 @@ cheat::AntiVoid::AntiVoid() : Module("AntiVoid", MenuType::MOVEMENT_MENU, Config
       glm::vec3 pos = player->getPosition();
       bool isOnGround = ActorCollision::isOnGround(player->mEntityContext);
       if (isOnGround) {
-        savePos = pos;
+        savePos = glm::round(pos); // 使用 glm::round()
       } else {
         float fallDistance = player->getFallDistance();
         if (fallDistance > distance) {
           player->setPosition(savePos + offest);
+          player->setMotion(glm::vec3(0, 0, 0)); // 这行可以根据需要移除
         }
       }
     } catch (...) {
