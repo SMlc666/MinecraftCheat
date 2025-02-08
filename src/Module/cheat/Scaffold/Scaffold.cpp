@@ -205,28 +205,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
           Helper::Block::adjustYCoordinate(blockBelow, blockBelowReal, YCoord);
         }
         Helper::Block::extendBlock(vel, blockBelow, Extend);
-
-        if (Helper::Block::isAirBlock(blockBelow)) {
-          Helper::Block::tryClutchScaffold(player, region, blockBelow, placeStrict);
-        } else {
-          if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict)) {
-            if (speed > 0.05f) {
-              blockBelow.z -= vel.z * 0.4f;
-
-              if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict)) {
-                blockBelow.x -= vel.x * 0.4f;
-
-                if (!Helper::Block::tryScaffold(player, blockBelow, placeStrict) &&
-                    player->isSprinting()) {
-                  blockBelow.z += vel.z;
-                  blockBelow.x += vel.x;
-
-                  Helper::Block::tryScaffold(player, blockBelow, placeStrict);
-                }
-              }
-            }
-          }
-        }
+        Helper::Block::tryClutchScaffold(player, region, blockBelow, placeStrict);
       }
     } catch (...) {
       return;
@@ -261,7 +240,8 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
       glm::vec3 pos = player->getPosition();
       glm::vec3 BlockBelow = pos;
       BlockBelow.y -= 0.5f;
-      float pitch = InTower ? g_md->getGUI().Get<float>("TowerPitchMax") : g_md->getGUI().Get<float>("rotationPitchMax");
+      float pitch = InTower ? g_md->getGUI().Get<float>("TowerPitchMax")
+                            : g_md->getGUI().Get<float>("rotationPitchMax");
       Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, targetBlock);
       float yaw = rotationChangeYaw ? rot.yaw : player->getYaw();
       if (packet->getName() == "MovePlayerPacket") {
