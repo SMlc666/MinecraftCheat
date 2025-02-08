@@ -136,3 +136,22 @@ glm::vec3 Helper::Block::getNextBlock(Player *player, const glm::vec3 &velocity,
   }
   return nextBlock;
 }
+bool Helper::Block::blockNameHas(glm::ivec3 pos, const std::string &name) {
+  auto *client = runtimes::getClientInstance();
+  if (client == nullptr) {
+    return false;
+  }
+  BlockSource *region = client->getRegion();
+  if (region == nullptr) {
+    return false;
+  }
+  ::Block *block = region->getBlock(pos);
+  if (block == nullptr) {
+    return false;
+  }
+  BlockLegacy *legacy = block->mBlockLegacy;
+  if (legacy == nullptr) {
+    return false;
+  }
+  return legacy->getName().find(name) != std::string::npos;
+}
