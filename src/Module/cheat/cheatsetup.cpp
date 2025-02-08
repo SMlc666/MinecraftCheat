@@ -9,6 +9,7 @@
 #include "cheat/GodMode/GodMode.hpp"
 #include "cheat/Hud/Hud.hpp"
 #include "cheat/InfiniteAura/InfiniteAura.hpp"
+#include "cheat/JetPack/JetPack.hpp"
 #include "cheat/KillAura/KillAura.hpp"
 #include "cheat/Network/Network.hpp"
 #include "cheat/NoPacket/NoPacket.hpp"
@@ -43,4 +44,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::AntiVoid);
   ModuleManager::addModule(new cheat::Nuker);
   ModuleManager::addModule(new cheat::Fucker);
+  ModuleManager::addModule(new cheat::JetPack);
 }
