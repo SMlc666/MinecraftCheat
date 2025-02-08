@@ -151,7 +151,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       float speed = glm::length(glm::vec2(motion.x, motion.y));
       if (player->isJumping() && Tower && !InTower) {
         InTower = true;
-        player->setMotion(glm::vec3(0.0f, TowerMotionY, 0.0f));
+        player->setMotion(glm::vec3(motion.x, TowerMotionY, motion.z));
       } else if (InTower && !player->isJumping()) {
         InTower = false;
       }
