@@ -12,6 +12,7 @@
 #include "cheat/Network/Network.hpp"
 #include "cheat/NoPacket/NoPacket.hpp"
 #include "cheat/NoSwing/NoSwing.hpp"
+#include "cheat/Nuker/Nuker.hpp"
 #include "cheat/Scaffold/Scaffold.hpp"
 #include "cheat/Seckill/Seckill.hpp"
 #include "cheat/Speed/Speed.hpp"
@@ -39,4 +40,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::NoSwing);
   ModuleManager::addModule(new cheat::Teams);
   ModuleManager::addModule(new cheat::AntiVoid);
+  ModuleManager::addModule(new cheat::Nuker);
 }
