@@ -68,6 +68,8 @@ void drawAllMenus() {
   drawMenu(DEBUG_MENU);
   drawMenu(COMBAT_MENU);
   drawMenu(RENDER_MENU);
+  drawMenu(MOVEMENT_MENU);
+  drawMenu(WORLD_MENU);
 }
 void drawAllOnDraw() {
   auto &modules = ModuleManager::getModules();
