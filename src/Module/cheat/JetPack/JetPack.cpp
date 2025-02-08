@@ -8,12 +8,17 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <cmath>
+
 namespace {
 const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false}, {"shortcut", false}, {"speed", 1.0F}, {"ChangeY", false}, {"Mode", 0},
 };
 const std::vector<std::string> ModeItems = {"Motion", "setPos"};
+glm::vec3 jetpackPosition{};
+bool jetpackInitialized = false;
 } // namespace
+
 cheat::JetPack::JetPack() : Module("JetPack", MenuType::MOVEMENT_MENU, ConfigData) {
   setOnDrawGUI([](Module *module) {
     module->getGUI().SliderFloat("speed", "速度", 0.1F, 10.0F);
@@ -43,15 +48,20 @@ cheat::JetPack::JetPack() : Module("JetPack", MenuType::MOVEMENT_MENU, ConfigDat
       direction.y = -sinf(pitchRad);
       glm::vec3 move = direction * (speed / 20.0F);
       if (!ChangeY) {
-        move.y = 0.0F;
+        move.y = player->getMotion().y;
       }
       if (Mode == 0) {
         player->setMotion(move);
-
       } else if (Mode == 1) {
-        glm::vec3 pos = player->getPosition();
-        pos += move;
-        player->setPosition(pos);
+        if (!jetpackInitialized) {
+          jetpackPosition = player->getPosition();
+          jetpackInitialized = true;
+        }
+        jetpackPosition += move;
+        if (!ChangeY) {
+          jetpackPosition.y = player->getPosition().y;
+        }
+        player->setPosition(jetpackPosition);
       }
     } catch (...) {
       return;
