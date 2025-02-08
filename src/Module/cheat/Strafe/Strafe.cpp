@@ -32,7 +32,7 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
       module->getGUI().CheckBox("changeY", "调整Y轴");
       module->getGUI().CheckBox("slow", "减速");
       if (module->getGUI().Get<bool>("slow")) {
-        module->getGUI().SliderFloat("slowScale", "减速比例", 0.01F, 1.0F);
+        module->getGUI().SliderFloat("slowScale", "减速比例", 0.01F, 3.0F);
       }
       module->getGUI().CheckBox("AntiBot", "反机器人");
     } catch (...) {
@@ -85,7 +85,7 @@ cheat::Strafe::Strafe() : Module("Strafe", MenuType::COMBAT_MENU, ConfigData) {
       Player *targetPlayer = Players[0];
       float effectiveSpeed = speed;
       if (slowEnabled) {
-        constexpr float ACCELERATION_FACTOR = 0.1f;
+        constexpr float ACCELERATION_FACTOR = 0.05f;
         const float baseSpeed = speed * slowScaleVal;
         if (lastTarget != targetPlayer) {
           lastTarget = targetPlayer;
