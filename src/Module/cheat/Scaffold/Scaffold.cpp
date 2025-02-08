@@ -4,6 +4,7 @@
 #include "MemTool.hpp"
 #include "Module.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
+#include "game/minecraft/actor/provider/ActorCollision.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
 #include "game/minecraft/network/Packet/Packets/MovePlayerPacket.hpp"
 #include "game/minecraft/network/Packet/Packets/PlayerAuthInputPacket.hpp"
@@ -152,7 +153,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       if (player->isJumping() && Tower && !InTower) {
         InTower = true;
         player->setMotion(glm::vec3(motion.x, TowerMotionY, motion.z));
-      } else if (InTower && !player->isJumping()) {
+      } else if (InTower && ActorCollision::isOnGround(player->mEntityContext)) {
         InTower = false;
       }
       glm::vec3 vel = glm::normalize(motion);
