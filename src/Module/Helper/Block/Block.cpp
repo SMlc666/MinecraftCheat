@@ -102,7 +102,7 @@ bool Helper::Block::tryClutchScaffold(LocalPlayer *player, BlockSource *region,
   for (const glm::ivec3 &blockOffset : checkBlocks) {
     glm::ivec3 currentBlock = glm::ivec3(blockBelow) + blockOffset;
     if (Helper::Block::isAirBlock(currentBlock)) {
-      if (tryScaffold(player, currentBlock, false)) {
+      if (tryScaffold(player, currentBlock, strict)) {
         return true;
       }
     }
