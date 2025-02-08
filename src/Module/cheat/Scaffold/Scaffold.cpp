@@ -149,10 +149,10 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigDa
       }
       glm::vec3 motion = player->getMotion();
       float speed = glm::length(glm::vec2(motion.x, motion.y));
-      if (speed == 0.0f && player->isJumping() && Tower && !InTower) {
+      if (player->isJumping() && Tower && !InTower) {
         InTower = true;
         player->setMotion(glm::vec3(0.0f, TowerMotionY, 0.0f));
-      } else if (speed != 0.0f && InTower && !player->isJumping()) {
+      } else if (InTower && !player->isJumping()) {
         InTower = false;
       }
       glm::vec3 vel = glm::normalize(motion);
