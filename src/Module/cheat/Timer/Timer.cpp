@@ -17,43 +17,55 @@ static std::unordered_map<std::string, std::any> ConfigData = {
 static const float NormalValue = 20.0F;
 cheat::Timer::Timer() : Module("Timer", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {
-    float value = module->getGUI().Get<float>("value");
-    ClientInstance *client = runtimes::getClientInstance();
-    if (!client) {
+    try {
+      float value = module->getGUI().Get<float>("value");
+      ClientInstance *client = runtimes::getClientInstance();
+      if (!client) {
+        return;
+      }
+      auto *minecraft = client->minecraftPtr;
+      if (!minecraft) {
+        return;
+      }
+      minecraft->mRealTimer.setTimeScale(value);
+      minecraft->mSimTimer.setTimeScale(value);
+    } catch (...) {
       return;
     }
-    auto *minecraft = client->minecraftPtr;
-    if (!minecraft) {
-      return;
-    }
-    minecraft->mRealTimer.setTimeScale(value);
-    minecraft->mSimTimer.setTimeScale(value);
   });
   setOnDisable([](Module *module) {
-    ClientInstance *client = runtimes::getClientInstance();
-    if (!client) {
+    try {
+      ClientInstance *client = runtimes::getClientInstance();
+      if (!client) {
+        return;
+      }
+      auto *minecraft = client->minecraftPtr;
+      if (!minecraft) {
+        return;
+      }
+      minecraft->mRealTimer.setTimeScale(NormalValue);
+      minecraft->mSimTimer.setTimeScale(NormalValue);
+    } catch (...) {
       return;
     }
-    auto *minecraft = client->minecraftPtr;
-    if (!minecraft) {
-      return;
-    }
-    minecraft->mRealTimer.setTimeScale(NormalValue);
-    minecraft->mSimTimer.setTimeScale(NormalValue);
   });
   setOnDrawGUI([](Module *module) {
     module->getGUI().SliderFloat("value", "value", 0.01F, 80.0F, [&module](float value) {
-      if (module->getGUI().Get<bool>("enabled")) {
-        ClientInstance *client = runtimes::getClientInstance();
-        if (!client) {
-          return;
+      try {
+        if (module->getGUI().Get<bool>("enabled")) {
+          ClientInstance *client = runtimes::getClientInstance();
+          if (!client) {
+            return;
+          }
+          auto *minecraft = client->minecraftPtr;
+          if (!minecraft) {
+            return;
+          }
+          minecraft->mRealTimer.setTimeScale(value);
+          minecraft->mSimTimer.setTimeScale(value);
         }
-        auto *minecraft = client->minecraftPtr;
-        if (!minecraft) {
-          return;
-        }
-        minecraft->mRealTimer.setTimeScale(value);
-        minecraft->mSimTimer.setTimeScale(value);
+      } catch (...) {
+        return;
       }
     });
   });
