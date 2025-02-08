@@ -94,4 +94,21 @@ cheat::Timer::Timer() : Module("Timer", MenuType::COMBAT_MENU, ConfigData) {
       minecraft->mSimTimer.setTimeScale(value);
     }
   });
+  setOnTick([](Module *module) {
+    try {
+      float value = module->getGUI().Get<float>("value");
+      ClientInstance *client = runtimes::getClientInstance();
+      if (!client) {
+        return;
+      }
+      auto *minecraft = client->minecraftPtr;
+      if (!minecraft) {
+        return;
+      }
+      minecraft->mRealTimer.setTimeScale(value);
+      minecraft->mSimTimer.setTimeScale(value);
+    } catch (...) {
+      return;
+    }
+  });
 }
