@@ -17,6 +17,8 @@
 #include "menu/menu.hpp"
 #include "runtimes/runtimes.hpp"
 #include <unordered_map>
+#include <random>
+
 static Module *g_md{};
 const static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
@@ -26,11 +28,13 @@ const static std::unordered_map<std::string, std::any> ConfigData = {
     {"DownMode", false},
     {"rotation", false},
     {"rotationSlient", false},
-    {"rotationPitch", 65.0F},
+    {"rotationPitchMin", 60.0F},
+    {"rotationPitchMax", 70.0F},
     {"rotationChangeYaw", false},
     {"Tower", false},
     {"TowerMotionY", 0.5F},
-    {"TowerPitch", 90.0F},
+    {"TowerPitchMin", 85.0F},
+    {"TowerPitchMax", 95.0F},
     {"debug", false},
     {"Extend", 0},
 };
@@ -98,13 +102,16 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
     if (ImGui::TreeNode("Tower")) {
       module->getGUI().CheckBox("Tower", "塔模式");
       module->getGUI().SliderFloat("TowerMotionY", "塔模式高度", 0.0F, 1.0F);
-      module->getGUI().SliderFloat("TowerPitch", "塔模式角度", 0.0F, 180.0F);
+      module->getGUI().SliderFloat("TowerPitchMin", "塔模式最小角度", 0.0F, 180.0F);
+      module->getGUI().SliderFloat("TowerPitchMax", "塔模式最大角度", 0.0F, 180.0F);
+
       ImGui::TreePop();
     }
     if (ImGui::TreeNode("Rotation")) {
       module->getGUI().CheckBox("rotation", "转头");
       module->getGUI().CheckBox("rotationChangeYaw", "转头改变Yaw");
-      module->getGUI().SliderFloat("rotationPitch", "转头角度", 0.0F, 180.0F);
+      module->getGUI().SliderFloat("rotationPitchMin", "转头最小角度", 0.0F, 180.0F);
+      module->getGUI().SliderFloat("rotationPitchMax", "转头最大角度", 0.0F, 180.0F);
       module->getGUI().CheckBox("rotationSlient", "静音转头");
       ImGui::TreePop();
     }
@@ -112,13 +119,13 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
   });
   setOnRender([](Module *module) {
     try {
+      std::random_device rd;
+      std::mt19937 gen(rd());
       bool DownMode = module->getGUI().Get<bool>("DownMode");
       bool rotation = module->getGUI().Get<bool>("rotation");
       bool rotationSlient = module->getGUI().Get<bool>("rotationSlient");
       bool Tower = module->getGUI().Get<bool>("Tower");
       float TowerMotionY = module->getGUI().Get<float>("TowerMotionY");
-      float TowerPitch = module->getGUI().Get<float>("TowerPitch");
-      float rotationPitch = module->getGUI().Get<float>("rotationPitch");
       bool rotationChangeYaw = module->getGUI().Get<bool>("rotationChangeYaw");
       bool placeStrict = module->getGUI().Get<bool>("placeStrict");
       bool SameY = module->getGUI().Get<bool>("SameY");
@@ -141,10 +148,19 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
       float yaw = rotationChangeYaw ? rot.yaw : player->getYaw();
       if (rotation && !rotationSlient) {
         if (InTower) {
-          player->setPitch(TowerPitch);
+          float TowerPitchMin = module->getGUI().Get<float>("TowerPitchMin");
+          float TowerPitchMax = module->getGUI().Get<float>("TowerPitchMax");
+          std::uniform_real_distribution<> distrib(TowerPitchMin, TowerPitchMax);
+          float randomPitch = distrib(gen);
+
+          player->setPitch(randomPitch);
           player->setYaw(yaw);
         } else {
-          player->setPitch(rotationPitch);
+          float rotationPitchMin = module->getGUI().Get<float>("rotationPitchMin");
+          float rotationPitchMax = module->getGUI().Get<float>("rotationPitchMax");
+          std::uniform_real_distribution<> distrib(rotationPitchMin, rotationPitchMax);
+          float randomPitch = distrib(gen);
+          player->setPitch(randomPitch);
           player->setYaw(yaw);
         }
       }
@@ -220,9 +236,8 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
     try {
       bool rotation = g_md->getGUI().Get<bool>("rotation");
       bool rotationSlient = g_md->getGUI().Get<bool>("rotationSlient");
-      float rotationPitch = g_md->getGUI().Get<float>("rotationPitch");
       bool rotationChangeYaw = g_md->getGUI().Get<bool>("rotationChangeYaw");
-      float TowerPitch = g_md->getGUI().Get<float>("TowerPitch");
+
       if (!rotation) {
         return true;
       }
@@ -246,7 +261,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
       glm::vec3 pos = player->getPosition();
       glm::vec3 BlockBelow = pos;
       BlockBelow.y -= 0.5f;
-      float pitch = InTower ? TowerPitch : rotationPitch;
+      float pitch = InTower ? g_md->getGUI().Get<float>("TowerPitchMax") : g_md->getGUI().Get<float>("rotationPitchMax");
       Helper::Rotation::Rotation rot = Helper::Rotation::toRotation(pos, targetBlock);
       float yaw = rotationChangeYaw ? rot.yaw : player->getYaw();
       if (packet->getName() == "MovePlayerPacket") {
