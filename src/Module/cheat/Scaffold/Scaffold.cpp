@@ -66,7 +66,7 @@ static bool Helper_Block_tryClutchScaffold_(LocalPlayer *player, BlockSource *re
   targetBlock = blockBelow;
   return ret;
 }
-cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::COMBAT_MENU, ConfigData) {
+cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigData) {
   setOnLoad([](Module *module) {
     g_md = module;
     Helper_Block_tryScaffold =

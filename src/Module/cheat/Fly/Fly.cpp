@@ -13,7 +13,7 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
 static const std::vector<std::string> ModeItems = {
     "SameY",
 };
-cheat::Fly::Fly() : Module("Fly", MenuType::COMBAT_MENU, ConfigData) {
+cheat::Fly::Fly() : Module("Fly", MenuType::MOVEMENT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) { module->getGUI().Selectable("Mode", "模式", ModeItems); });

@@ -13,7 +13,7 @@ std::unordered_map<std::string, std::any> ConfigData = {
     {"range", 10},
 };
 }
-cheat::Nuker::Nuker() : Module("Nuker", MenuType::COMBAT_MENU, ConfigData) {
+cheat::Nuker::Nuker() : Module("Nuker", MenuType::WORLD_MENU, ConfigData) {
   setOnDrawGUI([](Module *module) { module->getGUI().SliderInt("range", "范围", 1, 20); });
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});

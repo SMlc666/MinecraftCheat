@@ -16,7 +16,7 @@ const std::unordered_map<std::string, std::any> ConfigData = {
 };
 glm::vec3 savePos{};
 } // namespace
-cheat::AntiVoid::AntiVoid() : Module("AntiVoid", MenuType::COMBAT_MENU, ConfigData) {
+cheat::AntiVoid::AntiVoid() : Module("AntiVoid", MenuType::MOVEMENT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
