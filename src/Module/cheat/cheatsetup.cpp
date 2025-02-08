@@ -5,6 +5,7 @@
 #include "cheat/AntiVoid/AntiVoid.hpp"
 #include "cheat/ClickGUI/ClickGUI.hpp"
 #include "cheat/Fly/Fly.hpp"
+#include "cheat/Fucker/Fucker.hpp"
 #include "cheat/GodMode/GodMode.hpp"
 #include "cheat/Hud/Hud.hpp"
 #include "cheat/InfiniteAura/InfiniteAura.hpp"
@@ -41,4 +42,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Teams);
   ModuleManager::addModule(new cheat::AntiVoid);
   ModuleManager::addModule(new cheat::Nuker);
+  ModuleManager::addModule(new cheat::Fucker);
 }
