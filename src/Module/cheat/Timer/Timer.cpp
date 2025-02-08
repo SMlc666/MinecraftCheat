@@ -14,7 +14,7 @@ static std::unordered_map<std::string, std::any> ConfigData = {
     {"value", 20.0F},
 };
 //NOLINTEND
-static const float NormalValue = 20.0F;
+static float NormalValue{};
 cheat::Timer::Timer() : Module("Timer", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {
     try {
@@ -27,6 +27,7 @@ cheat::Timer::Timer() : Module("Timer", MenuType::COMBAT_MENU, ConfigData) {
       if (!minecraft) {
         return;
       }
+      NormalValue = minecraft->mRealTimer.getTimeScale();
       minecraft->mRealTimer.setTimeScale(value);
       minecraft->mSimTimer.setTimeScale(value);
     } catch (...) {
@@ -43,8 +44,10 @@ cheat::Timer::Timer() : Module("Timer", MenuType::COMBAT_MENU, ConfigData) {
       if (!minecraft) {
         return;
       }
-      minecraft->mRealTimer.setTimeScale(NormalValue);
-      minecraft->mSimTimer.setTimeScale(NormalValue);
+      if (NormalValue != 0) {
+        minecraft->mRealTimer.setTimeScale(NormalValue);
+        minecraft->mSimTimer.setTimeScale(NormalValue);
+      }
     } catch (...) {
       return;
     }
