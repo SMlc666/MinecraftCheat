@@ -11,7 +11,7 @@
 static std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},
     {"shortcut", false},
-    {"value", 1.0F},
+    {"value", 20.0F},
 };
 //NOLINTEND
 static const float NormalValue = 20.0F;
