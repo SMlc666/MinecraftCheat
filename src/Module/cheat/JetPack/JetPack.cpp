@@ -21,7 +21,7 @@ bool jetpackInitialized = false;
 
 cheat::JetPack::JetPack() : Module("JetPack", MenuType::MOVEMENT_MENU, ConfigData) {
   setOnDrawGUI([](Module *module) {
-    module->getGUI().SliderFloat("speed", "速度", 0.1F, 10.0F);
+    module->getGUI().SliderFloat("speed", "速度", 0.1F, 20.0F);
     module->getGUI().CheckBox("ChangeY", "Y轴方向");
     module->getGUI().Selectable("Mode", "模式", ModeItems);
   });
