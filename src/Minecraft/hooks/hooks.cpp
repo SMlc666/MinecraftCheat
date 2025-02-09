@@ -19,7 +19,6 @@ MemTool::Hook LoopbackPacketSender_send_;
 MemTool::Hook MoveInputHandler_tick_;
 class LoopbackPacketSender;
 class Packet;
-class MoveInputHandler;
 int64 ClientInstance_onStartJoinGame(ClientInstance *self, char a1, uint8 *a2, uint a3) {
   auto ret = ClientInstance_onStartJoinGame_.call<int64>(self, a1, a2, a3);
   runtimes::setClientInstance(self);
@@ -35,7 +34,9 @@ int64 MoveInputHandler_tick(MoveInputHandler *self, int64 a2, int64 a3, int64 a4
                             void *a19, int64 a20, int64 a21, int64 a22) {
   auto ret = MoveInputHandler_tick_.call<int64>(self, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,
                                                 a13, a14, a15, a16, a17, a18, a19, a20, a21, a22);
-  g_log_tool.message(LogLevel::INFO, "MoveInputHandler_tick", "Move");
+  if (self->isMove()) {
+    g_log_tool.message(LogLevel::INFO, "MoveInputHandler_tick", "Move");
+  }
   return ret;
 }
 void LocalPlayer_NormalTick(LocalPlayer *self) {
