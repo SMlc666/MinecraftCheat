@@ -3,6 +3,7 @@
 #include "ModuleManager.hpp"
 #include "base/mcint.hpp"
 #include "game/minecraft/actor/player/localplayer.hpp"
+#include "game/minecraft/input/MoveInputHandler.hpp"
 #include "game/minecraft/network/LoopbackPacketSender.hpp"
 #include "log.hpp"
 #include "runtimes/runtimes.hpp"
@@ -15,8 +16,10 @@ MemTool::Hook ClientInstance_onStartJoinGame_;
 MemTool::Hook LocalPlayer_NormalTick_;
 MemTool::Hook LevelRenderer_renderLevel_;
 MemTool::Hook LoopbackPacketSender_send_;
+MemTool::Hook MoveInputHandler_tick_;
 class LoopbackPacketSender;
 class Packet;
+class MoveInputHandler;
 int64 ClientInstance_onStartJoinGame(ClientInstance *self, char a1, uint8 *a2, uint a3) {
   auto ret = ClientInstance_onStartJoinGame_.call<int64>(self, a1, a2, a3);
   runtimes::setClientInstance(self);
@@ -24,6 +27,15 @@ int64 ClientInstance_onStartJoinGame(ClientInstance *self, char a1, uint8 *a2, u
                      std::format("ClientInstance::onStartJoinGame({:p},{}, {}, {})",
                                  reinterpret_cast<void *>(self), a1, reinterpret_cast<void *>(a2),
                                  a3));
+  return ret;
+}
+int64 MoveInputHandler_tick(MoveInputHandler *self, int64 a2, int64 a3, int64 a4, int64 a5,
+                            int64 a6, int64 a7, int64 a8, int64 a9, void *a10, int64 a11, int64 a12,
+                            void *a13, void *a14, void *a15, void *a16, void *a17, void *a18,
+                            void *a19, int64 a20, int64 a21, int64 a22) {
+  auto ret = MoveInputHandler_tick_.call<int64>(self, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,
+                                                a13, a14, a15, a16, a17, a18, a19, a20, a21, a22);
+  g_log_tool.message(LogLevel::INFO, "MoveInputHandler_tick", "Move");
   return ret;
 }
 void LocalPlayer_NormalTick(LocalPlayer *self) {
@@ -64,6 +76,11 @@ void hooksInit() {
     LoopbackPacketSender_send_ =
         MemTool::Hook(loopbackPacketSender,
                       reinterpret_cast<void *>(Network_LoopbackPacketSender_send), nullptr, false);
+  }
+  {
+    void *moveInputHandler = getSign<void *>("MoveInputHandler::tick");
+    MoveInputHandler_tick_ = MemTool::Hook(
+        moveInputHandler, reinterpret_cast<void *>(MoveInputHandler_tick), nullptr, false);
   }
   g_log_tool.message(LogLevel::INFO, "HooksInit", "Hooks inited");
 }
