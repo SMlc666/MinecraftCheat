@@ -44,6 +44,7 @@ public:
   void setMotion(glm::vec3 motion);
   bool isJumping() const;
   float getFallDistance() const;
+  float lerpMotion(glm::vec3 motion);
 }; // namespace class Actor
 static_assert(sizeof(EntityContext) == 24);
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);

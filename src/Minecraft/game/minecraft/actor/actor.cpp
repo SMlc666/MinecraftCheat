@@ -82,3 +82,8 @@ float Actor::getFallDistance() const {
   auto func = getSign<function>("Actor::getFallDistance");
   return func(this);
 }
+float Actor::lerpMotion(glm::vec3 motion) {
+  using function = float (*)(Actor *, glm::vec3);
+  auto func = getSign<function>("Actor::lerpMotion");
+  return func(this, motion);
+}
