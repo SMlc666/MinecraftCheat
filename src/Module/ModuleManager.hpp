@@ -14,5 +14,6 @@ void loadAllModules();
 void renderAllModules();
 void postRenderAllModules();
 bool sendPacketAllModules(Packet *packet);
+void moveAllModules(MoveInputHandler *inputHandler);
 } // namespace ModuleManager
 void moduleSetup();

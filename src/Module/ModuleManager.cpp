@@ -1,5 +1,6 @@
 #include "ModuleManager.hpp"
 #include "cheat/cheatsetup.hpp"
+#include "game/minecraft/input/MoveInputHandler.hpp"
 #include "log.hpp"
 #include <mutex>
 #include <string>
@@ -88,6 +89,14 @@ bool sendPacketAllModules(Packet *packet) {
     }
   }
   return result;
+}
+void moveAllModules(MoveInputHandler *inputHandler) {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  for (auto &pair : modules) {
+    if (pair.second != nullptr) {
+      pair.second->onMove(inputHandler);
+    }
+  }
 }
 std::unordered_map<std::string, Module *> &getModules() {
   return modules;

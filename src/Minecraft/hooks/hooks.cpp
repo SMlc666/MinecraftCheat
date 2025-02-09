@@ -34,9 +34,7 @@ int64 MoveInputHandler_tick(MoveInputHandler *self, int64 a2, int64 a3, int64 a4
                             void *a19, int64 a20, int64 a21, int64 a22) {
   auto ret = MoveInputHandler_tick_.call<int64>(self, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12,
                                                 a13, a14, a15, a16, a17, a18, a19, a20, a21, a22);
-  if (self->isMove()) {
-    g_log_tool.message(LogLevel::INFO, "MoveInputHandler_tick", "Move");
-  }
+  ModuleManager::moveAllModules(self);
   return ret;
 }
 void LocalPlayer_NormalTick(LocalPlayer *self) {
