@@ -5,6 +5,7 @@
 #include "cheat/AntiVoid/AntiVoid.hpp"
 #include "cheat/ChestAura/ChestAura.hpp"
 #include "cheat/ClickGUI/ClickGUI.hpp"
+#include "cheat/Criticals/Criticals.hpp"
 #include "cheat/Fly/Fly.hpp"
 #include "cheat/Fucker/Fucker.hpp"
 #include "cheat/GodMode/GodMode.hpp"
@@ -49,4 +50,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::JetPack);
   ModuleManager::addModule(new cheat::ChestAura);
   ModuleManager::addModule(new cheat::Teleport);
+  ModuleManager::addModule(new cheat::Criticals);
 }
