@@ -1,6 +1,7 @@
 #include "Criticals.hpp"
 #include "MemTool.hpp"
 #include "Module.hpp"
+#include "cheat/Seckill/Seckill.hpp"
 #include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/actor/provider/ActorCollision.hpp"
 #include "game/minecraft/client/instance/clientinstance.hpp"
@@ -19,7 +20,7 @@ const std::unordered_map<std::string, std::any> ConfigData = {
 const std::vector<std::string> ModeItems = {"BJD", "Jump"};
 MemTool::Hook GameMode_attack_;
 Module *g_md = nullptr;
-bool GameMode_attack(GameMode *self, Actor &entity) {
+bool GameMode___attack(GameMode *self, Actor &entity) {
   try {
     if (g_md != nullptr && g_md->getGUI().Get<bool>("enabled")) {
       int Mode = g_md->getGUI().Get<int>("Mode");
@@ -50,9 +51,8 @@ cheat::Criticals::Criticals() : Module("Criticals", MenuType::COMBAT_MENU, Confi
   setOnDrawGUI([](Module *module) { module->getGUI().Selectable("Mode", "模式", ModeItems); });
   setOnLoad([](Module *module) {
     g_md = module;
-    void *gamemode = getSign<void *>("GameMode::attack");
-    GameMode_attack_ =
-        MemTool::Hook(gamemode, reinterpret_cast<void *>(GameMode_attack), nullptr, false);
+    GameMode_attack_ = MemTool::Hook(&GameMode_attack, reinterpret_cast<void *>(GameMode___attack),
+                                     nullptr, false);
   });
   setOnSendPacket([](Module *module, Packet *packet) {
     try {
