@@ -32,7 +32,9 @@ const std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"MoveInputHandler::tick", 0x55FBE18},
     {"Player::canOpenContainerScreen", 0x6CF5A3C},
     {"ContainerScreenController::tick", 0x5C4CB5C},
-    {"ContainerScreenController::_getItemStack", 0x5C50B44}};
+    {"ContainerScreenController::_getItemStack", 0x5C50B44},
+    {"Mob::jumpFromGround", 0x6A96B04},
+};
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
 void signaturesInit() {
