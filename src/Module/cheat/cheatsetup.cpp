@@ -21,6 +21,7 @@
 #include "cheat/Speed/Speed.hpp"
 #include "cheat/Strafe/Strafe.hpp"
 #include "cheat/Teams/Teams.hpp"
+#include "cheat/Teleport/Teleport.hpp"
 #include "cheat/Timer/Timer.hpp"
 #include "cheat/Velocity/Velocity.hpp"
 void cheatSetup() {
@@ -47,4 +48,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Fucker);
   ModuleManager::addModule(new cheat::JetPack);
   ModuleManager::addModule(new cheat::ChestAura);
+  ModuleManager::addModule(new cheat::Teleport);
 }
