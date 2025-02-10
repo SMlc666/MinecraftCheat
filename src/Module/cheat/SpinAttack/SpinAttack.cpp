@@ -52,18 +52,22 @@ static void SpinAttackRestore() {
 }
 cheat::SpinAttack::SpinAttack() : Module("SpinAttack", MenuType::COMBAT_MENU, ConfigData) {
   setOnLoad([](Module *module) {
-    MemTool::read(modbase + velX_pattern, &vel_backup, sizeof(vel_backup));
-    MemTool::read(modbase + SpinAttack_pattern, &SpinAttack_backup, sizeof(SpinAttack_backup));
-    MemTool::read(modbase + rag1_pattern, &rag1_backup, sizeof(rag1_backup));
-    MemTool::read(modbase + rag2_pattern, &rag2_backup, sizeof(rag2_backup));
-    MemTool::read(modbase + rag3_pattern, &rag3_backup, sizeof(rag3_backup));
-    MemTool::read(modbase + rag4_pattern, &rag4_backup, sizeof(rag4_backup));
-    if (module->getGUI().Get<bool>("enabled")) {
-      SpinAttackPatch();
-      ragPatch(module->getGUI().Get<float>("range"));
-      if (module->getGUI().Get<bool>("velocity")) {
-        velPatch();
+    try {
+      MemTool::read(modbase + velX_pattern, &vel_backup, sizeof(vel_backup));
+      MemTool::read(modbase + SpinAttack_pattern, &SpinAttack_backup, sizeof(SpinAttack_backup));
+      MemTool::read(modbase + rag1_pattern, &rag1_backup, sizeof(rag1_backup));
+      MemTool::read(modbase + rag2_pattern, &rag2_backup, sizeof(rag2_backup));
+      MemTool::read(modbase + rag3_pattern, &rag3_backup, sizeof(rag3_backup));
+      MemTool::read(modbase + rag4_pattern, &rag4_backup, sizeof(rag4_backup));
+      if (module->getGUI().Get<bool>("enabled")) {
+        SpinAttackPatch();
+        ragPatch(module->getGUI().Get<float>("range"));
+        if (module->getGUI().Get<bool>("velocity")) {
+          velPatch();
+        }
       }
+    } catch (...) {
+      return;
     }
   });
   setOnEnable([](Module *module) {
