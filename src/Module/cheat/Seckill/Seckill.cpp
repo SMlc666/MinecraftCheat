@@ -11,8 +11,8 @@
 #include <unordered_map>
 static MemTool::Hook attack_;
 static Module *g_md;
-static int64 GameMode_attack(GameMode *self, Actor *entity) {
-  auto ret = attack_.call<int64>(self, entity);
+static bool GameMode_attack(GameMode *self, Actor *entity) {
+  auto ret = attack_.call<bool>(self, entity);
   bool enabled = g_md->getGUI().Get<bool>("enabled");
   if (enabled) {
     bool swing = g_md->getGUI().Get<bool>("swing");
