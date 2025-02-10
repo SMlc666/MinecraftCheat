@@ -17,12 +17,12 @@ const std::unordered_map<std::string, std::any> ConfigData = {
 };
 }
 cheat::Fucker::Fucker() : Module("Fucker", MenuType::WORLD_MENU, ConfigData) {
-  setOnDrawGUI([](Module *module) { module->getGUI().SliderFloat("range", "范围", 1.0F, 5.0F); });
+  setOnDrawGUI([](Module *module) { module->getGUI().SliderFloat("range", "范围", 1.0F, 10.0F); });
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
   setOnTick([](Module *module) {
     try {
-      int Range = module->getGUI().Get<int>("range");
+      int Range = module->getGUI().Get<float>("range");
       ClientInstance *client = runtimes::getClientInstance();
       if (!client)
         return;
