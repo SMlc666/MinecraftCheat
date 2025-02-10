@@ -101,9 +101,21 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   std::lock_guard<std::mutex> lock(imgui_input_mutex);
   eglQuerySurface(dpy, surface, EGL_WIDTH, &g_GlWidth);
   eglQuerySurface(dpy, surface, EGL_HEIGHT, &g_GlHeight);
-  if (!is_ImguiSetup) {
+  if (!is_ImguiSetup || g_GlWidth == 0 || g_GlHeight == 0) {
+    if (is_ImguiSetup) {
+      ImGui_ImplOpenGL3_Shutdown();
+      ImGui_ImplAndroid_Shutdown();
+      ImGui::DestroyContext();
+      is_ImguiSetup = false;
+    }
+
     imguiSetup();
     is_ImguiSetup = true;
+
+    eglQuerySurface(dpy, surface, EGL_WIDTH, &g_GlWidth);
+    eglQuerySurface(dpy, surface, EGL_HEIGHT, &g_GlHeight);
+    ImGuiIO &ioData = ImGui::GetIO();
+    ioData.DisplaySize = ImVec2((float)g_GlWidth, (float)g_GlHeight);
   }
   ImGuiIO &ioData = ImGui::GetIO();
   ImGui_ImplOpenGL3_NewFrame();
@@ -114,7 +126,6 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
   drawAllShortcuts();
   drawAllOnDraw();
   ImGui::EndFrame();
-  ImGui_ImplScript_NewFrame();
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   return old_eglSwapBuffers(dpy, surface);
