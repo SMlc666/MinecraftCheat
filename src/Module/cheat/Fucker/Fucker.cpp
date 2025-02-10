@@ -21,23 +21,34 @@ cheat::Fucker::Fucker() : Module("Fucker", MenuType::WORLD_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
   setOnTick([](Module *module) {
-    ClientInstance *instance = runtimes::getClientInstance();
-    if (!instance)
-      return;
-    LocalPlayer *player = instance->getLocalPlayer();
-    if (!player)
-      return;
-    float range = module->getGUI().Get<float>("range");
-    glm::vec3 pos = player->getPosition();
-    for (float x = -range; x <= range; x++) {
-      for (float z = -range; z <= range; z++) {
-        for (float y = pos.y; y <= range; y++) {
-          glm::vec3 blockPos = pos + glm::vec3(x, y, z);
-          if (Helper::Block::blockNameHas(pos, "bed")) {
-            player->getGameMode().destroyBlock(blockPos, 1);
+    try {
+      int Range = module->getGUI().Get<int>("range");
+      ClientInstance *client = runtimes::getClientInstance();
+      if (!client)
+        return;
+      LocalPlayer *player = client->getLocalPlayer();
+      if (!player)
+        return;
+      glm::ivec3 pos = player->getPosition();
+      int startX = pos.x - Range;
+      int startY = pos.y - Range;
+      int startZ = pos.z - Range;
+      int endX = pos.x + Range;
+      int endY = pos.y + Range;
+      int endZ = pos.z + Range;
+      for (int x = startX; x <= endX; ++x) {
+        for (int y = startY; y <= endY; ++y) {
+          for (int z = startZ; z <= endZ; ++z) {
+            glm::ivec3 targetPos(x, y, z);
+            if (!Helper::Block::isAirBlock(targetPos) &&
+                Helper::Block::blockNameHas(targetPos, "bed")) {
+              player->getGameMode().destroyBlock(targetPos, 1);
+            }
           }
         }
       }
+    } catch (...) {
+      return;
     }
   });
 }
