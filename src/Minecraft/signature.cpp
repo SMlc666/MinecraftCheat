@@ -31,7 +31,7 @@ const std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"Actor::getFallDistance", 0x724D788},
     {"MoveInputHandler::tick", 0x55FBE18},
     {"Player::canOpenContainerScreen", 0x6CF5A3C},
-};
+    {"ContainerScreenController::tick", 0x5C4CB5C}};
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
 void signaturesInit() {
