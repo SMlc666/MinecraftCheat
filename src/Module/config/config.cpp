@@ -70,6 +70,7 @@ void loadConfig() {
 } // namespace Config
 void configSetup() {
   std::filesystem::path configPath(NormalConfigPath);
+  Config::initConfig();
   if (!std::filesystem::exists(configPath)) {
     Config::saveConfig();
   } //初始化
