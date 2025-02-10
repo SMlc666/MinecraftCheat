@@ -15,3 +15,8 @@ bool Mob::isSprinting() const {
   auto func = getSign<function>("Mob::isSprinting");
   return func(this);
 }
+void Mob::jumpFromGround() {
+  using function = void (*)(Mob *);
+  auto func = getSign<function>("Mob::jumpFromGround");
+  return func(this);
+}

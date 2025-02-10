@@ -5,4 +5,5 @@ public:
   void swing();
   void setSpeed(float speed);
   bool isSprinting() const;
+  void jumpFromGround();
 };
