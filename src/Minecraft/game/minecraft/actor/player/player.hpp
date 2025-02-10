@@ -10,4 +10,5 @@ public:
   [[nodiscard]] std::string &getName() const;
   [[nodiscard]] ItemStack *getSelectedItem() const;
   glm::vec3 getEyesPos() const;
+  bool canOpenContainerScreen() const;
 };

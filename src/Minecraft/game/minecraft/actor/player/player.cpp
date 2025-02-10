@@ -20,3 +20,8 @@ glm::vec3 Player::getEyesPos() const {
   glm::vec3 pos = getPosition();
   return {pos.x, pos.y + 1.8F, pos.z};
 }
+bool Player::canOpenContainerScreen() const {
+  using function = bool (*)(const Player *);
+  auto func = getSign<function>("Player::canOpenContainerScreen");
+  return func(this);
+}
