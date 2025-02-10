@@ -17,6 +17,8 @@ const std::unordered_map<std::string, std::any> ConfigData = {
 std::vector<glm::ivec3> chestPositions;
 } // namespace
 cheat::ChestAura::ChestAura() : Module("ChestAura", MenuType::COMBAT_MENU, ConfigData) {
+  setOnEnable([](Module *module) {});
+  setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
     try {
       module->getGUI().SliderFloat("range", "范围", 1.0F, 10.0F);
