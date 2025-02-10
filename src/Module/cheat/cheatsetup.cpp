@@ -3,6 +3,7 @@
 #include "SpinAttack/SpinAttack.hpp"
 #include "Blink/Blink.hpp"
 #include "cheat/AntiVoid/AntiVoid.hpp"
+#include "cheat/ChestAura/ChestAura.hpp"
 #include "cheat/ClickGUI/ClickGUI.hpp"
 #include "cheat/Fly/Fly.hpp"
 #include "cheat/Fucker/Fucker.hpp"
@@ -45,4 +46,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Nuker);
   ModuleManager::addModule(new cheat::Fucker);
   ModuleManager::addModule(new cheat::JetPack);
+  ModuleManager::addModule(new cheat::ChestAura);
 }
