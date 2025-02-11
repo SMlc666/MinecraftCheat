@@ -55,31 +55,36 @@ void Network_LoopbackPacketSender_send(LoopbackPacketSender *self, Packet *packe
   LoopbackPacketSender_send_.call<void>(self, packet);
 }
 void hooksInit() {
-  {
-    void *clientInstance = getSign<void *>("ClientInstance::onStartJoinGame");
-    ClientInstance_onStartJoinGame_ = MemTool::Hook(
-        clientInstance, reinterpret_cast<void *>(ClientInstance_onStartJoinGame), nullptr, false);
-  }
-  {
-    void *localPlayer = getSign<void *>("LocalPlayer::NormalTick");
-    LocalPlayer_NormalTick_ = MemTool::Hook(
-        localPlayer, reinterpret_cast<void *>(LocalPlayer_NormalTick), nullptr, false);
-  }
-  {
-    void *levelRenderer = getSign<void *>("LevelRenderer::renderLevel");
-    LevelRenderer_renderLevel_ = MemTool::Hook(
-        levelRenderer, reinterpret_cast<void *>(LevelRenderer_renderLevel), nullptr, false);
-  }
-  {
-    void *loopbackPacketSender = getSign<void *>("LoopbackPacketSender::send");
-    LoopbackPacketSender_send_ =
-        MemTool::Hook(loopbackPacketSender,
-                      reinterpret_cast<void *>(Network_LoopbackPacketSender_send), nullptr, false);
-  }
-  {
-    void *moveInputHandler = getSign<void *>("MoveInputHandler::tick");
-    MoveInputHandler_tick_ = MemTool::Hook(
-        moveInputHandler, reinterpret_cast<void *>(MoveInputHandler_tick), nullptr, false);
+  try {
+    {
+      void *clientInstance = getSign<void *>("ClientInstance::onStartJoinGame");
+      ClientInstance_onStartJoinGame_ = MemTool::Hook(
+          clientInstance, reinterpret_cast<void *>(ClientInstance_onStartJoinGame), nullptr, false);
+    }
+    {
+      void *localPlayer = getSign<void *>("LocalPlayer::NormalTick");
+      LocalPlayer_NormalTick_ = MemTool::Hook(
+          localPlayer, reinterpret_cast<void *>(LocalPlayer_NormalTick), nullptr, false);
+    }
+    {
+      void *levelRenderer = getSign<void *>("LevelRenderer::renderLevel");
+      LevelRenderer_renderLevel_ = MemTool::Hook(
+          levelRenderer, reinterpret_cast<void *>(LevelRenderer_renderLevel), nullptr, false);
+    }
+    {
+      void *loopbackPacketSender = getSign<void *>("LoopbackPacketSender::send");
+      LoopbackPacketSender_send_ = MemTool::Hook(
+          loopbackPacketSender, reinterpret_cast<void *>(Network_LoopbackPacketSender_send),
+          nullptr, false);
+    }
+    {
+      void *moveInputHandler = getSign<void *>("MoveInputHandler::tick");
+      MoveInputHandler_tick_ = MemTool::Hook(
+          moveInputHandler, reinterpret_cast<void *>(MoveInputHandler_tick), nullptr, false);
+    }
+  } catch (const std::exception &e) {
+    g_log_tool.message(LogLevel::FATAL, "HooksInit", "Failed to init hooks:{} ", e.what());
+    std::terminate();
   }
   g_log_tool.message(LogLevel::INFO, "HooksInit", "Hooks inited");
 }
