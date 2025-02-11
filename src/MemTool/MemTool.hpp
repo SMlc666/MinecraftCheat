@@ -94,7 +94,9 @@ public:
 
     void *buf_ptr = nullptr;
     if (shadowhook_hook_func_addr(addr, func, &buf_ptr) == NULL) {
-      throw std::runtime_error("Failed to hook function");
+      int error_num = shadowhook_get_errno();
+      throw std::runtime_error(
+          std::format("error num: {} error msg: {}", error_num, shadowhook_to_errmsg(error_num)));
     }
 
     if (m_orig_func != nullptr) {
