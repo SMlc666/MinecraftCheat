@@ -10,8 +10,8 @@
 #include <unordered_map>
 namespace {
 const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false}, {"shortcut", false}, {"Range", 6.0F},
-    {"AntiBot", true},  {"Scale", 1.1F},     {"Fov", 360.0F},
+    {"enabled", false}, {"shortcut", false}, {"Range", 6.0F}, {"AntiBot", true},
+    {"Height", 2.0F},   {"Width", 2.0F},     {"Fov", 360.0F},
 };
 std::unordered_map<Player *, AABB> originalAABBs;
 } // namespace
@@ -20,14 +20,15 @@ cheat::HitBox::HitBox() : Module("HitBox", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {
     for (auto &[player, originalAABB] : originalAABBs) {
-      if (player && player->mAABB) { 
-        *player->mAABB = originalAABB; 
+      if (player && player->mAABB) {
+        *player->mAABB = originalAABB;
       }
     }
     originalAABBs.clear();
   });
   setOnDrawGUI([](Module *module) {
-    module->getGUI().SliderFloat("Scale", "缩放", 0.1F, 3.0F);
+    module->getGUI().SliderFloat("Height", "高度", 0.5F, 5.0F);
+    module->getGUI().SliderFloat("Width", "宽度", 0.5F, 5.0F);
     module->getGUI().CheckBox("AntiBot", "反机器人");
     module->getGUI().SliderFloat("Range", "范围", 1.0F, 10.0F);
     module->getGUI().SliderFloat("Fov", "视角", 0.0F, 360.0F);
@@ -37,7 +38,8 @@ cheat::HitBox::HitBox() : Module("HitBox", MenuType::COMBAT_MENU, ConfigData) {
       bool AntiBot = module->getGUI().Get<bool>("AntiBot");
       float Range = module->getGUI().Get<float>("Range");
       float Fov = module->getGUI().Get<float>("Fov");
-      float Scale = module->getGUI().Get<float>("Scale");
+      float Height = module->getGUI().Get<float>("Height");
+      float Width = module->getGUI().Get<float>("Width");
       ClientInstance *instance = runtimes::getClientInstance();
       if (!instance)
         return;
@@ -56,7 +58,7 @@ cheat::HitBox::HitBox() : Module("HitBox", MenuType::COMBAT_MENU, ConfigData) {
           originalAABBs[player] = *player->mAABB;
         }
         *player->mAABB = originalAABBs[player];
-        player->mAABB->Scale(Scale);
+        player->mAABB->size = glm::vec2(Width, Height);
       }
       for (auto it = originalAABBs.begin(); it != originalAABBs.end();) {
         if (std::find(players.begin(), players.end(), it->first) == players.end()) {
