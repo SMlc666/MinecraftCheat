@@ -1,6 +1,6 @@
 #include "MemTool.hpp"
-#include "Dobby/dobby.h"
 #include "KittyMemory/KittyMemory.hpp"
+#include "ShadowHook/include/shadowhook.h"
 #include "log.hpp"
 #include <string>
 //NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
@@ -34,7 +34,16 @@ void *MemTool::findSymbol(const char *moduleName, const char *symbolName) {
   if (symbolName == nullptr) {
     throw std::invalid_argument("symbolName is null");
   }
-  return DobbySymbolResolver(moduleName, symbolName);
+  void *handle = shadowhook_dlopen(moduleName);
+  if (handle == nullptr) {
+    throw std::runtime_error("dlopen failed");
+  }
+  void *symbol = shadowhook_dlsym(handle, symbolName);
+  if (symbol == nullptr) {
+    throw std::runtime_error("dlsym failed");
+  }
+  shadowhook_dlclose(handle);
+  return symbol;
 }
 /**
  * Hook类的析构函数，自动销毁钩子（如果启用）。

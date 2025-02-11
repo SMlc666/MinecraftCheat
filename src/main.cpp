@@ -24,11 +24,11 @@ void setup() {
   if (!std::filesystem::exists(path)) {
     std::filesystem::create_directory(path);
   } //初始化目录
-  #ifdef DEBUG
-  shadowhook_init(SHADOWHOOK_MODE_SHARED,true);
-  #else
-  shadowhook_init(SHADOWHOOK_MODE_SHARED,false);
-  #endif
+#ifdef _DEBUG_
+  shadowhook_init(SHADOWHOOK_MODE_SHARED, true);
+#else
+  shadowhook_init(SHADOWHOOK_MODE_SHARED, false);
+#endif
   sighandleInit();
   signaturesInit();
   hooksInit();

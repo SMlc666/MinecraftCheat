@@ -1,8 +1,8 @@
 #pragma once
-#include "Dobby/dobby.h"
 #include "KittyMemory/KittyMemory.hpp"
 #include "KittyMemory/KittyScanner.hpp"
 #include "KittyMemory/MemoryPatch.hpp"
+#include "ShadowHook/include/shadowhook.h"
 #include "log.hpp"
 #include <cstddef>
 #include <cstdint>
@@ -75,7 +75,7 @@ void *findSymbol(const char *moduleName, const char *symbolName);
 std::string getProcessName();
 // 销毁指定地址的 Hook
 template <typename T> inline void destoryHookByAddress(T address) {
-  DobbyDestroy(reinterpret_cast<void *>(address));
+  shadowhook_unhook(reinterpret_cast<void *>(address));
 }
 // Hook 类用于实现函数钩子
 class Hook {
@@ -93,7 +93,7 @@ public:
                                    func, m_auto_destroy));
 
     void *buf_ptr = nullptr;
-    if (DobbyHook(addr, func, &buf_ptr) != 0) {
+    if (shadowhook_hook_func_addr(addr, func, &buf_ptr) == NULL) {
       throw std::runtime_error("Failed to hook function");
     }
 
