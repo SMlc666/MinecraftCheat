@@ -27,7 +27,8 @@ void touchSetup() {
   } catch (const std::exception &e) {
     g_log_tool.message(LogLevel::ERROR, "Touch",
                        "Failed to hook InputConsumer::initializeMotionEvent: " +
-                           std::string(e.what()))
+                           std::string(e.what()));
+    return;
   }
   //NOLINTEND
 }
