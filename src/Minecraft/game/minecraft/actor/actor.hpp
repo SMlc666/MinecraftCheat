@@ -1,5 +1,6 @@
 #pragma once
 #include "game/common/gamerefs/WeakRef.hpp"
+#include "game/minecraft/actor/AABB.hpp"
 #include "game/minecraft/world/entity/EntityContext.hpp"
 #include "game/minecraft/world/level/BlockSourceListener.hpp"
 #include <cstddef>
@@ -24,7 +25,7 @@ public:
   std::byte padding2E8[0x2C];
   std::byte padding314[0x4];
   PosMotion *mPosMotion;
-  std::byte padding324[0x4];
+  AABB *mAABB;
   glm::vec2 *mRot;
 
 public:
@@ -53,3 +54,4 @@ static_assert(offsetof(Actor, mRot) == 808);
 static_assert(sizeof(glm::vec3) == 0xC);
 static_assert(sizeof(glm::vec2) == 0x8);
 static_assert(sizeof(WeakRef<Dimension>) == 16);
+static_assert(offsetof(Actor, mAABB) == 0x320);
