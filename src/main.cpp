@@ -4,6 +4,7 @@
 #include <jni.h>
 #include <filesystem>
 #include "main.hpp"
+#include "ShadowHook/include/shadowhook.h"
 #include "Touch/touch.hpp"
 #include "draw.hpp"
 #include "ModuleManager.hpp"
@@ -23,6 +24,11 @@ void setup() {
   if (!std::filesystem::exists(path)) {
     std::filesystem::create_directory(path);
   } //初始化目录
+  #ifdef DEBUG
+  shadowhook_init(SHADOWHOOK_MODE_SHARED,true);
+  #else
+  shadowhook_init(SHADOWHOOK_MODE_SHARED,false);
+  #endif
   sighandleInit();
   signaturesInit();
   hooksInit();
