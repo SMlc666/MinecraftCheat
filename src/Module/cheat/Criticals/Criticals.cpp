@@ -18,30 +18,6 @@ const std::unordered_map<std::string, std::any> ConfigData = {
     {"Mode", 0},
 };
 const std::vector<std::string> ModeItems = {"BJD", "Jump"};
-MemTool::Hook GameMode_attack_;
-Module *g_md = nullptr;
-bool GameMode___attack(GameMode *self, Actor &entity) {
-  try {
-    if (g_md != nullptr && g_md->getGUI().Get<bool>("enabled")) {
-      int Mode = g_md->getGUI().Get<int>("Mode");
-      if (Mode == 1) {
-        ClientInstance *instance = runtimes::getClientInstance();
-        if (instance != nullptr) {
-          auto *player = instance->getLocalPlayer();
-          if (player != nullptr) {
-            if (&player->getGameMode() == self &&
-                ActorCollision::isOnGround(player->mEntityContext)) {
-              player->jumpFromGround();
-            }
-          }
-        }
-      }
-    }
-  } catch (...) {
-  }
-  auto ret = GameMode_attack_.call<bool>(self, entity);
-  return ret;
-}
 float height = 1.2f;
 }; // namespace
 
@@ -49,14 +25,10 @@ cheat::Criticals::Criticals() : Module("Criticals", MenuType::COMBAT_MENU, Confi
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) { module->getGUI().Selectable("Mode", "模式", ModeItems); });
-  setOnLoad([](Module *module) {
-    g_md = module;
-    GameMode_attack_ = MemTool::Hook(&GameMode_attack, reinterpret_cast<void *>(GameMode___attack),
-                                     nullptr, false);
-  });
+
   setOnSendPacket([](Module *module, Packet *packet) {
     try {
-      int mode = g_md->getGUI().Get<int>("Mode");
+      int mode = module->getGUI().Get<int>("Mode");
       if (mode == 0) {
         if (packet->getName() == "MovePlayerPacket") {
           auto *move = reinterpret_cast<MovePlayerPacket *>(packet);
@@ -72,5 +44,25 @@ cheat::Criticals::Criticals() : Module("Criticals", MenuType::COMBAT_MENU, Confi
       return true;
     }
     return true;
+  });
+  setOnAttack([](Module *module, MemTool::Hook *mem, Actor *target) {
+    try {
+      int mode = module->getGUI().Get<int>("Mode");
+      if (mode == 1) {
+        ClientInstance *instance = runtimes::getClientInstance();
+        if (!instance) {
+          return;
+        }
+        auto *player = instance->getLocalPlayer();
+        if (!player) {
+          return;
+        }
+        if (ActorCollision::isOnGround(player->mEntityContext)) {
+          player->jumpFromGround();
+        }
+      }
+    } catch (...) {
+      return;
+    }
   });
 }
