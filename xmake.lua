@@ -54,7 +54,6 @@ target("cheat")
     add_links("keystone")
     add_linkdirs(ShadowHookDir.. "/arm64-v8a")
     add_links("shadowhook")
-    add_links("shadowhook_nothing")
     add_includedirs(
         "src",
         ModuleDir,
