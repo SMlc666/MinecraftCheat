@@ -19,24 +19,29 @@ JNIEnv *g_env = nullptr;
 JavaVM *g_jvm = nullptr;
 
 void setup() {
+  int code;
   std::this_thread::sleep_for(std::chrono::seconds(3)); //for debug
   std::filesystem::path path(CheatDir);
   if (!std::filesystem::exists(path)) {
     std::filesystem::create_directory(path);
   } //初始化目录
 #ifdef _DEBUG_
-  shadowhook_init(SHADOWHOOK_MODE_SHARED, true);
+  code = shadowhook_init(SHADOWHOOK_MODE_SHARED, true);
 #else
-  shadowhook_init(SHADOWHOOK_MODE_SHARED, false);
+  code = shadowhook_init(SHADOWHOOK_MODE_SHARED, false);
 #endif
-  sighandleInit();
-  signaturesInit();
-  hooksInit();
-  configSetup();
-  drawSetup();
-  touchSetup();
-  moduleSetup();
-  ScriptSetup();
+  if (code != SHADOWHOOK_ERRNO_OK) {
+    g_log_tool.message(LogLevel::FATAL, "setup", "ShadowHook init failed");
+  } else {
+    sighandleInit();
+    signaturesInit();
+    hooksInit();
+    configSetup();
+    drawSetup();
+    touchSetup();
+    moduleSetup();
+    ScriptSetup();
+  }
   g_log_tool.SaveToFile();
 }
 
