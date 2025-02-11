@@ -2,6 +2,7 @@
 #include "MemTool.hpp"
 #include "ModuleManager.hpp"
 #include "base/mcint.hpp"
+#include "game/minecraft/actor/player/gamemode/gamemode.hpp"
 #include "game/minecraft/actor/player/localplayer.hpp"
 #include "game/minecraft/input/MoveInputHandler.hpp"
 #include "game/minecraft/network/LoopbackPacketSender.hpp"
@@ -17,6 +18,7 @@ MemTool::Hook LocalPlayer_NormalTick_;
 MemTool::Hook LevelRenderer_renderLevel_;
 MemTool::Hook LoopbackPacketSender_send_;
 MemTool::Hook MoveInputHandler_tick_;
+MemTool::Hook GameMode_attack_;
 class LoopbackPacketSender;
 class Packet;
 int64 ClientInstance_onStartJoinGame(ClientInstance *self, char a1, uint8 *a2, uint a3) {
@@ -54,6 +56,21 @@ void Network_LoopbackPacketSender_send(LoopbackPacketSender *self, Packet *packe
   }
   LoopbackPacketSender_send_.call<void>(self, packet);
 }
+bool GameMode_attack(GameMode *self, Actor *entity) {
+  auto ret = GameMode_attack_.call<bool>(self, entity);
+  ClientInstance *clientInstance = runtimes::getClientInstance();
+  if (clientInstance == nullptr) {
+    return ret;
+  }
+  LocalPlayer *localPlayer = clientInstance->getLocalPlayer();
+  if (localPlayer == nullptr) {
+    return ret;
+  }
+  if (&localPlayer->getGameMode() == self) {
+    ModuleManager::attackAllModules(&GameMode_attack_, entity);
+  }
+  return ret;
+}
 void hooksInit() {
   try {
     {
@@ -81,6 +98,11 @@ void hooksInit() {
       void *moveInputHandler = getSign<void *>("MoveInputHandler::tick");
       MoveInputHandler_tick_ = MemTool::Hook(
           moveInputHandler, reinterpret_cast<void *>(MoveInputHandler_tick), nullptr, false);
+    }
+    {
+      void *gamemode = getSign<void *>("GameMode::attack");
+      GameMode_attack_ =
+          MemTool::Hook(gamemode, reinterpret_cast<void *>(GameMode_attack), nullptr, false);
     }
   } catch (const std::exception &e) {
     g_log_tool.message(LogLevel::FATAL, "HooksInit", "Failed to init hooks:{} ", e.what());
