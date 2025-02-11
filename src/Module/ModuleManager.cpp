@@ -98,6 +98,14 @@ void moveAllModules(MoveInputHandler *inputHandler) {
     }
   }
 }
+void attackAllModules(MemTool::Hook *mem, Actor *target) {
+  std::lock_guard<std::mutex> lockGuard(moduleMutex);
+  for (auto &pair : modules) {
+    if (pair.second != nullptr) {
+      pair.second->onAttack(mem, target);
+    }
+  }
+}
 std::unordered_map<std::string, Module *> &getModules() {
   return modules;
 }

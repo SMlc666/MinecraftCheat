@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "MemTool.hpp"
 #include "Module.hpp"
 
 namespace ModuleManager {
@@ -15,5 +16,6 @@ void renderAllModules();
 void postRenderAllModules();
 bool sendPacketAllModules(Packet *packet);
 void moveAllModules(MoveInputHandler *inputHandler);
+void attackAllModules(MemTool::Hook *mem, Actor *target);
 } // namespace ModuleManager
 void moduleSetup();
