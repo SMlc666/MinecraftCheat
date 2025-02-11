@@ -21,7 +21,7 @@ cheat::AntiVoid::AntiVoid() : Module("AntiVoid", MenuType::MOVEMENT_MENU, Config
   setOnDisable([](Module *module) {});
   setOnDrawGUI([](Module *module) {
     module->getGUI().SliderFloat("distance", "距离", 1.0F, 10.0F);
-    module->getGUI().SliderFloat("Predict", "预测高度", 0.0F, 20.0F);
+    module->getGUI().SliderInt("Predict", "预测高度", 0, 20);
     if (ImGui::TreeNode("偏移")) {
       module->getGUI().SliderFloat("Xoffest", "X轴偏移", -10.0f, 10.0f);
       module->getGUI().SliderFloat("Yoffest", "Y轴偏移", -10.0f, 10.0f);
