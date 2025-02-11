@@ -45,7 +45,7 @@ cheat::Teleport::Teleport() : Module("Teleport", MenuType::MOVEMENT_MENU, Config
             std::vector<Player *> players;
             dimension->forEachPlayer([&players](Player &p) {
               players.push_back(&p);
-              return false;
+              return true;
             });
             for (auto *mplayer : players) {
               if (ImGui::Button(mplayer->getName().c_str())) {
