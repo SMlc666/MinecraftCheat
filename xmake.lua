@@ -23,6 +23,7 @@ if is_mode("debug") then
     set_warnings("all")
     set_optimize("none")
     set_symbols("debug")   -- 打开调试符号
+    add_defines("DEBUG")
 else
     set_optimize("fastest")  -- 设置快速优化
     set_symbols("hidden")
