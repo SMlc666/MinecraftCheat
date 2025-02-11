@@ -37,6 +37,7 @@ void setup() {
   touchSetup();
   moduleSetup();
   ScriptSetup();
+  g_log_tool.SaveToFile();
 }
 
 extern "C" auto JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) -> jint { //NOLINT
