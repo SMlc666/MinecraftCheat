@@ -18,6 +18,7 @@ local KittyMemoryDir = "src/include/KittyMemory/"
 local KeystoneDir = "src/include/Keystone"
 local ImguiDir = "src/include/imgui"
 local IncludeDir = "src/include"
+local ShadowHookDir = "src/include/ShadowHook"
 if is_mode("debug") then
     set_warnings("all")
     set_optimize("none")
@@ -53,6 +54,9 @@ target("cheat")
     add_links("keystone")
     add_linkdirs(DobbyDir.. "/android/arm64-v8a")
     add_links("dobby")
+    add_linkdirs(ShadowHookDir.. "/arm64-v8a")
+    add_links("shadowhook")
+    add_links("shadowhook_nothing")
     add_includedirs(
         "src",
         ModuleDir,
