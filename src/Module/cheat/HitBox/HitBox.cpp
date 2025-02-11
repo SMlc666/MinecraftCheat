@@ -17,7 +17,12 @@ const std::unordered_map<std::string, std::any> ConfigData = {
 cheat::HitBox::HitBox() : Module("HitBox", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {});
-  setOnDrawGUI([](Module *module) { module->getGUI().SliderFloat("Scale", "缩放", 0.1F, 3.0F); });
+  setOnDrawGUI([](Module *module) {
+    module->getGUI().SliderFloat("Scale", "缩放", 0.1F, 3.0F);
+    module->getGUI().CheckBox("AntiBot", "反机器人");
+    module->getGUI().SliderFloat("Range", "范围", 1.0F, 10.0F);
+    module->getGUI().SliderFloat("Fov", "视角", 0.0F, 360.0F);
+  });
   setOnTick([](Module *module) {
     try {
       bool AntiBot = module->getGUI().Get<bool>("AntiBot");
