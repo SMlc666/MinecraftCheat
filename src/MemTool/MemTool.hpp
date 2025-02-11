@@ -111,7 +111,23 @@ public:
       : Hook(reinterpret_cast<void *>(new_func), reinterpret_cast<void *>(new_func), m_orig_func,
              m_auto_destroy) {
   }
-
+  inline Hook(const char *lib_name, const char *sym_name, void *new_addr, void **orig_addr,
+              bool m_auto_destroy = true)
+      : auto_destroy(m_auto_destroy), is_destroyed(false) {
+    g_log_tool.message(LogLevel::INFO, "Hook",
+                       std::format("Hooking symbol {} in {} to {:p} with auto_destroy {}", sym_name,
+                                   lib_name, new_addr, m_auto_destroy));
+    void *buf_ptr = nullptr;
+    if (shadowhook_hook_sym_name(lib_name, sym_name, new_addr, &buf_ptr) == NULL) {
+      int error_num = shadowhook_get_errno();
+      throw std::runtime_error(
+          std::format("error num: {} error msg: {}", error_num, shadowhook_to_errmsg(error_num)));
+    }
+    if (orig_addr != nullptr) {
+      *orig_addr = buf_ptr;
+    }
+    orig_func = buf_ptr;
+  }
   template <typename T> [[nodiscard]] T original() const {
     if (orig_func == nullptr) {
       throw std::runtime_error("Original function not found");
