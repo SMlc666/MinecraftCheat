@@ -30,7 +30,6 @@
 //  2021-03-04: Initial version.
 
 #include "imgui/imgui.h"
-#include "iMsgCapture/iMsgEvent.h"
 #ifndef IMGUI_DISABLE
 #include "imgui_impl_android.h"
 #include <time.h>
@@ -358,90 +357,6 @@ int32_t ImGui_ImplAndroid_HandleInputEvent(const AInputEvent *input_event) {
     return 1;
   default:
     break;
-  }
-
-  return 0;
-}
-int32_t ImGui_ImplAndroid_HandleInputMsg(iMsgEvent *iMsg) {
-  ImGuiIO &io = ImGui::GetIO();
-  if (iMsg->isKeyEvent()) {
-    const iKeyEvent *keyEvent = iMsg->getKey();
-    int32_t event_key_code = keyEvent->getKeyCode();
-    int32_t event_scan_code = keyEvent->getScanCode();
-    int32_t event_action = keyEvent->getAction();
-    int32_t event_meta_state = keyEvent->getMetaState();
-
-    io.AddKeyEvent(ImGuiMod_Ctrl, (event_meta_state & AMETA_CTRL_ON) != 0);
-    io.AddKeyEvent(ImGuiMod_Shift, (event_meta_state & AMETA_SHIFT_ON) != 0);
-    io.AddKeyEvent(ImGuiMod_Alt, (event_meta_state & AMETA_ALT_ON) != 0);
-    io.AddKeyEvent(ImGuiMod_Super, (event_meta_state & AMETA_META_ON) != 0);
-
-    switch (event_action) {
-    case AKEY_EVENT_ACTION_DOWN:
-    case AKEY_EVENT_ACTION_UP: {
-      ImGuiKey key = ImGui_ImplAndroid_KeyCodeToImGuiKey(event_key_code);
-      if (key != ImGuiKey_None &&
-          (event_action == AKEY_EVENT_ACTION_DOWN || event_action == AKEY_EVENT_ACTION_UP)) {
-        io.AddKeyEvent(key, event_action == AKEY_EVENT_ACTION_DOWN);
-        io.SetKeyEventNativeData(key, event_key_code, event_scan_code);
-      }
-
-      break;
-    }
-    default:
-      break;
-    }
-  } else if (iMsg->isMotionEvent()) {
-    const iMotionEvent *motionEvent = iMsg->getMotion();
-    int32_t event_action = motionEvent->getActionMasked();
-    int32_t event_pointer_index = motionEvent->getActionIndex();
-    int32_t tool_type = motionEvent->getToolType(event_pointer_index);
-
-    switch (tool_type) {
-    case AMOTION_EVENT_TOOL_TYPE_MOUSE:
-      io.AddMouseSourceEvent(ImGuiMouseSource_Mouse);
-      break;
-    case AMOTION_EVENT_TOOL_TYPE_STYLUS:
-    case AMOTION_EVENT_TOOL_TYPE_ERASER:
-      io.AddMouseSourceEvent(ImGuiMouseSource_Pen);
-      break;
-    case AMOTION_EVENT_TOOL_TYPE_FINGER:
-    default:
-      io.AddMouseSourceEvent(ImGuiMouseSource_TouchScreen);
-      break;
-    }
-
-    switch (event_action) {
-    case AMOTION_EVENT_ACTION_DOWN:
-    case AMOTION_EVENT_ACTION_UP:
-      if (tool_type == AMOTION_EVENT_TOOL_TYPE_FINGER ||
-          tool_type == AMOTION_EVENT_TOOL_TYPE_UNKNOWN) {
-        io.AddMousePosEvent(motionEvent->getX(event_pointer_index),
-                            motionEvent->getY(event_pointer_index));
-        io.AddMouseButtonEvent(0, event_action == AMOTION_EVENT_ACTION_DOWN);
-      }
-      break;
-    case AMOTION_EVENT_ACTION_BUTTON_PRESS:
-    case AMOTION_EVENT_ACTION_BUTTON_RELEASE: {
-      int32_t button_state = motionEvent->getButtonState();
-      io.AddMouseButtonEvent(0, (button_state & AMOTION_EVENT_BUTTON_PRIMARY) != 0);
-      io.AddMouseButtonEvent(1, (button_state & AMOTION_EVENT_BUTTON_SECONDARY) != 0);
-      io.AddMouseButtonEvent(2, (button_state & AMOTION_EVENT_BUTTON_TERTIARY) != 0);
-    } break;
-    case AMOTION_EVENT_ACTION_HOVER_MOVE:
-    case AMOTION_EVENT_ACTION_MOVE:
-      io.AddMousePosEvent(motionEvent->getX(event_pointer_index),
-                          motionEvent->getY(event_pointer_index));
-      break;
-    case AMOTION_EVENT_ACTION_SCROLL:
-      io.AddMouseWheelEvent(
-          motionEvent->getAxisValue(event_pointer_index, AMOTION_EVENT_AXIS_HSCROLL),
-          motionEvent->getAxisValue(event_pointer_index, AMOTION_EVENT_AXIS_VSCROLL));
-      break;
-    default:
-      break;
-    }
-    return 1;
   }
 
   return 0;
