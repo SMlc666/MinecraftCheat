@@ -26,9 +26,9 @@ void setup() {
     std::filesystem::create_directory(path);
   } //初始化目录
 #ifdef _DEBUG_
-  code = shadowhook_init(SHADOWHOOK_MODE_SHARED, true);
+  code = shadowhook_init(SHADOWHOOK_MODE_UNIQUE, true);
 #else
-  code = shadowhook_init(SHADOWHOOK_MODE_SHARED, false);
+  code = shadowhook_init(SHADOWHOOK_MODE_UNIQUE, false);
 #endif
   if (code != SHADOWHOOK_ERRNO_OK) {
     g_log_tool.message(LogLevel::FATAL, "setup", "ShadowHook init failed");
