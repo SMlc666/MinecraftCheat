@@ -117,7 +117,6 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
     ImGuiIO &ioData = ImGui::GetIO();
     ioData.DisplaySize = ImVec2((float)g_GlWidth, (float)g_GlHeight);
   }
-  ImGuiIO &ioData = ImGui::GetIO();
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplAndroid_NewFrame(g_GlWidth, g_GlHeight);
   ImGui::NewFrame();
@@ -132,15 +131,12 @@ EGLBoolean my_eglSwapBuffers(EGLDisplay dpy, EGLSurface surface) {
 }
 
 void drawSetup() {
-  void *eglSwapBuffers = MemTool::findSymbol("libEGL.so", "eglSwapBuffers");
-  if (eglSwapBuffers == nullptr) {
-    g_log_tool.message(LogLevel::ERROR, "drawSetup", "eglSwapBuffers is null");
-    return;
-  }
-  g_log_tool.message(LogLevel::INFO, "drawSetup",
-                     std::format("eglSwapBuffers: {:p}", eglSwapBuffers));
   //NOLINTBEGIN
-  MemTool::Hook(eglSwapBuffers, reinterpret_cast<void *>(my_eglSwapBuffers),
-                reinterpret_cast<void **>(&old_eglSwapBuffers), false);
+  try {
+    MemTool::Hook("libEGL.so", "eglSwapBuffers", reinterpret_cast<void *>(my_eglSwapBuffers),
+                  reinterpret_cast<void **>(&old_eglSwapBuffers), false);
+  } catch (const std::exception &e) {
+    g_log_tool.message(LogLevel::ERROR, "drawSetup", e.what());
+  }
   //NOLINTEND
 }
