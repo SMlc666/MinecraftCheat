@@ -9,6 +9,7 @@
 #include "cheat/Fly/Fly.hpp"
 #include "cheat/Fucker/Fucker.hpp"
 #include "cheat/GodMode/GodMode.hpp"
+#include "cheat/HitBox/HitBox.hpp"
 #include "cheat/Hud/Hud.hpp"
 #include "cheat/InfiniteAura/InfiniteAura.hpp"
 #include "cheat/JetPack/JetPack.hpp"
@@ -51,4 +52,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::ChestAura);
   ModuleManager::addModule(new cheat::Teleport);
   ModuleManager::addModule(new cheat::Criticals);
+  ModuleManager::addModule(new cheat::HitBox);
 }
