@@ -9,7 +9,6 @@ local ModuleDir = "src/Module"
 local MinecraftDir = "src/Minecraft"
 local ScriptDir = "src/Script"
 local MemToolDir = "src/MemTool"
-local iMsgCaptureDir= "src/include/iMsgCapture"
 local LuaDir = "src/include/Lua"
 local LuaSocketDir = "src/include/LuaSocket"
 local EnttDir = "src/include/entt"
@@ -40,7 +39,6 @@ target("cheat")
     add_files(DrawDir.."/Module/shortcut.cpp")
     add_files(LogDir.. "/*.cpp")
     add_files(LogDir.."/sighandle/*.cpp")
-    add_files(iMsgCaptureDir.. "/**.cpp")
     add_files(LuaSocketDir.."/*.c")
     add_files(ModuleDir.. "/**.cpp|examples/example.cpp")
     add_files(MinecraftDir.. "/**.cpp")
