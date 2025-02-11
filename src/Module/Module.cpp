@@ -1,4 +1,6 @@
 #include "Module.hpp"
+#include "MemTool.hpp"
+#include "game/minecraft/actor/actor.hpp"
 #include "game/minecraft/input/MoveInputHandler.hpp"
 #include "gui/gui.hpp"
 #include "imgui/imgui.h"
@@ -53,7 +55,9 @@ void Module::setOnSendPacket(std::function<bool(Module *, Packet *)> func) {
 void Module::setOnMove(std::function<void(Module *, MoveInputHandler *)> func) {
   m_onMove = std::move(func);
 }
-
+void Module::setOnAttack(std::function<void(Module *, MemTool::Hook *, Actor *)> func) {
+  m_onAttack = std::move(func);
+}
 void Module::onTick() {
   if (!m_onTick) {
     return;
@@ -167,6 +171,19 @@ void Module::onMove(MoveInputHandler *inputHandler) {
     bool isEnabled = m_gui.Get<bool>("enabled");
     if (isEnabled) {
       m_onMove(this, inputHandler);
+    }
+  } catch (...) {
+    return;
+  }
+}
+void Module::onAttack(MemTool::Hook *mem, Actor *target) {
+  if (!m_onAttack) {
+    return;
+  }
+  try {
+    bool isEnabled = m_gui.Get<bool>("enabled");
+    if (isEnabled) {
+      m_onAttack(this, mem, target);
     }
   } catch (...) {
     return;

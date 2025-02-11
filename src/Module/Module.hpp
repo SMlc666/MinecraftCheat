@@ -1,7 +1,9 @@
 #pragma once
+#include "game/minecraft/actor/actor.hpp"
 #include "game/minecraft/input/MoveInputHandler.hpp"
 #include "game/minecraft/network/Packet/Packet.hpp"
 #include "menu/menu.hpp"
+#include "MemTool.hpp"
 #include <any>
 #include <functional>
 #include <unordered_map>
@@ -28,6 +30,7 @@ public:
   void setOnPostRender(std::function<void(Module *)> func);
   void setOnSendPacket(std::function<bool(Module *, Packet *)> func);
   void setOnMove(std::function<void(Module *, MoveInputHandler *)> func);
+  void setOnAttack(std::function<void(Module *, MemTool::Hook *mem, Actor *target)> func);
   void onTick();
   void onEnable();
   void onDisable();
@@ -38,6 +41,7 @@ public:
   void onPostRender();
   bool onSendPacket(Packet *packet);
   void onMove(MoveInputHandler *inputHandler);
+  void onAttack(MemTool::Hook *mem, Actor *target);
   GUI &getGUI();
 
 private:
@@ -54,5 +58,6 @@ private:
   std::function<void(Module *)> m_onPostRender;
   std::function<bool(Module *, Packet *)> m_onSendPacket;
   std::function<void(Module *, MoveInputHandler *)> m_onMove;
+  std::function<void(Module *, MemTool::Hook *mem, Actor *target)> m_onAttack;
   GUI m_gui;
 };
