@@ -10,7 +10,6 @@ local MinecraftDir = "src/Minecraft"
 local ScriptDir = "src/Script"
 local MemToolDir = "src/MemTool"
 local iMsgCaptureDir= "src/include/iMsgCapture"
-local DobbyDir = "src/include/Dobby"
 local LuaDir = "src/include/Lua"
 local LuaSocketDir = "src/include/LuaSocket"
 local EnttDir = "src/include/entt"
@@ -53,8 +52,6 @@ target("cheat")
     add_files(ImguiDir.."/backends/imgui_impl_opengl3.cpp")
     add_linkdirs(KeystoneDir.. "/android/arm64-v8a")
     add_links("keystone")
-    add_linkdirs(DobbyDir.. "/android/arm64-v8a")
-    add_links("dobby")
     add_linkdirs(ShadowHookDir.. "/arm64-v8a")
     add_links("shadowhook")
     add_links("shadowhook_nothing")
