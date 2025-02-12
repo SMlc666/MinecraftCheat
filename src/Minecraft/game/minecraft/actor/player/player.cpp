@@ -1,4 +1,5 @@
 #include "player.hpp"
+#include "game/minecraft/actor/player/LayeredAbilities.hpp"
 #include "glm/fwd.hpp"
 #include "signature.hpp"
 GameMode &Player::getGameMode() const {
@@ -23,5 +24,10 @@ glm::vec3 Player::getEyesPos() const {
 bool Player::canOpenContainerScreen() const {
   using function = bool (*)(const Player *);
   auto func = getSign<function>("Player::canOpenContainerScreen");
+  return func(this);
+}
+LayeredAbilities *Player::getAbilities() const {
+  using function = LayeredAbilities *(*)(const Player *);
+  auto func = getSign<function>("Player::getAbilities");
   return func(this);
 }
