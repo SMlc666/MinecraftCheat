@@ -31,20 +31,16 @@ Helper::Rotation::Rotation Helper::Rotation::interpolateRotation(
     return target;
   }
 
-  float rotationDiff = getRotationDifference(current, target);
+  float yawDiff = getAngleDifference(target.yaw, current.yaw);
+  float pitchDiff = target.pitch - current.pitch;
+  float rotationDiff = std::hypot(yawDiff, pitchDiff);
 
-  // 如果角度差小于等于0,直接返回目标角度
-  if (rotationDiff <= 0.0f) {
-    return target;
-  }
-
-  // 修改步长计算公式
-  float step = stepFactor * deltaTime * (rotationDiff + 1.0f);
+  // 调整步长计算公式
+  float step = stepFactor * deltaTime * std::max(rotationDiff, 0.1f);
   step = std::clamp(step, minStep, maxStep);
 
-  // 使用加权平均计算插值后的角度
-  float weight = step / rotationDiff;
-    float yawDiff = getAngleDifference(target.yaw, current.yaw);
+  // 修正权重计算并限制最大值
+  float weight = std::min(step / rotationDiff, 1.0f);
   float newPitch = current.pitch + (target.pitch - current.pitch) * weight;
   float newYaw = current.yaw + yawDiff * weight;
 
