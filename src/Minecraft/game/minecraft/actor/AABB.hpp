@@ -107,4 +107,19 @@ public:
         min.x = max.x - width;
         size.x = width;
     }
+
+    // 策略b: 保持中心点不变
+    void setHeightKeepCenter(float height) {
+        glm::vec3 center = GetCenter();
+        float halfHeight = height * 0.5f;
+        min.y = center.y - halfHeight;
+        max.y = center.y + halfHeight;
+        size.y = height;
+    }
+
+    // 策略c: 保持max不变
+    void setHeightKeepMax(float height) {
+        min.y = max.y - height;
+        size.y = height;
+    }
 };
