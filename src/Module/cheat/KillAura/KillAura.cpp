@@ -286,6 +286,11 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       bool antibot = gui.Get<bool>("antibot");
       float fov = gui.Get<float>("fov");
       float Range = gui.Get<float>("range");
+      bool rotationSmooth = gui.Get<bool>("rotationSmooth");
+      float rotationSmoothFactor = gui.Get<float>("rotationSmoothFactor");
+      float rotationSmoothMinStep = gui.Get<float>("rotationSmoothMinStep");
+      float rotationSmoothMaxStep = gui.Get<float>("rotationSmoothMaxStep");
+      float rotationSmoothDeltaTime = gui.Get<float>("rotationSmoothDeltaTime");
       if (!rotation || !rotationSlient) {
         return true;
       }
@@ -304,6 +309,11 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       glm::vec3 localPos = mLocalPlayer->getPosition();
       glm::vec3 targetPos = g_Target->getPosition();
       Helper::Rotation::Rotation aimTarget = Helper::Rotation::toRotation(localPos, targetPos);
+      if (rotationSmooth) {
+        aimTarget = Helper::Rotation::interpolateRotation(
+            last, aimTarget, rotationSmoothDeltaTime, rotationSmoothMinStep, rotationSmoothMaxStep,
+            rotationSmoothFactor);
+      }
       switch (rotationMode) {
       case 0:
         if (packet->getName() == "MovePlayerPacket") {
