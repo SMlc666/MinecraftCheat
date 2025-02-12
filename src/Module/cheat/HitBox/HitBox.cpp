@@ -58,7 +58,8 @@ cheat::HitBox::HitBox() : Module("HitBox", MenuType::COMBAT_MENU, ConfigData) {
           originalAABBs[player] = *player->mAABB;
         }
         *player->mAABB = originalAABBs[player];
-        player->mAABB->size = glm::vec2(Width, Height);
+        player->mAABB->setWidth(Width);
+        player->mAABB->setHeight(Height);
       }
       for (auto it = originalAABBs.begin(); it != originalAABBs.end();) {
         if (std::find(players.begin(), players.end(), it->first) == players.end()) {
