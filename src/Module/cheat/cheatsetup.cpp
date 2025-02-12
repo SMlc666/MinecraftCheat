@@ -27,6 +27,7 @@
 #include "cheat/Teleport/Teleport.hpp"
 #include "cheat/Timer/Timer.hpp"
 #include "cheat/Velocity/Velocity.hpp"
+#include "cheat/NoClip/NoClip.hpp"
 void cheatSetup() {
   ModuleManager::addModule(new cheat::SpinAttack);
   ModuleManager::addModule(new cheat::Blink);
@@ -55,4 +56,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Criticals);
   ModuleManager::addModule(new cheat::HitBox);
   ModuleManager::addModule(new cheat::GameMode);
+  ModuleManager::addModule(new cheat::NoClip);
 }
