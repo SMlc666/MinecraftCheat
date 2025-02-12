@@ -80,4 +80,31 @@ public:
     glm::vec3 dimensions = GetDimensions();
     return dimensions.x * dimensions.y * dimensions.z;
   }
+
+    // Setter for width (strategy a: keep min unchanged, adjust max)
+    void setWidth(float width) {
+        max.x = min.x + width;
+        size.x = width;
+    }
+
+        // Setter for height (strategy a: keep min unchanged, adjust max)
+    void setHeight(float height) {
+        max.y = min.y + height;
+        size.y = height;
+    }
+
+    // 策略b: 保持中心点不变
+    void setWidthKeepCenter(float width) {
+        glm::vec3 center = GetCenter();
+        float halfWidth = width * 0.5f;
+        min.x = center.x - halfWidth;
+        max.x = center.x + halfWidth;
+        size.x = width;
+    }
+
+    // 策略c: 保持max不变
+    void setWidthKeepMax(float width) {
+        min.x = max.x - width;
+        size.x = width;
+    }
 };
