@@ -31,3 +31,8 @@ LayeredAbilities *Player::getAbilities() const {
   auto func = getSign<function>("Player::getAbilities");
   return func(this);
 }
+void Player::setPlayerGameType(GameType gameType) {
+  using function = void (*)(Player *, GameType);
+  auto func = reinterpret_cast<function>(vtable[267]);
+  func(this, gameType);
+}
