@@ -8,6 +8,7 @@
 #include "cheat/Criticals/Criticals.hpp"
 #include "cheat/Fly/Fly.hpp"
 #include "cheat/Fucker/Fucker.hpp"
+#include "cheat/GameMode/GameMode.hpp"
 #include "cheat/GodMode/GodMode.hpp"
 #include "cheat/HitBox/HitBox.hpp"
 #include "cheat/Hud/Hud.hpp"
@@ -53,4 +54,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::Teleport);
   ModuleManager::addModule(new cheat::Criticals);
   ModuleManager::addModule(new cheat::HitBox);
+  ModuleManager::addModule(new cheat::GameMode);
 }
