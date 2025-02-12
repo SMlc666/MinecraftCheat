@@ -26,18 +26,32 @@ static const std::vector<std::string> PriorityItems = {"Health", "Distance", "Ra
 static const std::vector<std::string> RotationItems = {"Lock", "Approximate"};
 static const std::vector<std::string> SwingItems = {"Client", "Server", "Both"};
 static const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},  {"shortcut", false},      {"mincps", 10},
-    {"maxcps", 20},      {"range", 5.0F},          {"swing", 2},
-    {"attackNum", 1},    {"antibot", false},       {"fov", 180.0F},
-    {"failurerate", 0},  {"priority", 0},          {"rotation", false},
-    {"rotationMode", 0}, {"rotationSlient", false}};
+    {"enabled", false},
+    {"shortcut", false},
+    {"mincps", 10},
+    {"maxcps", 20},
+    {"range", 5.0F},
+    {"swing", 2},
+    {"attackNum", 1},
+    {"antibot", false},
+    {"fov", 180.0F},
+    {"failurerate", 0},
+    {"priority", 0},
+    {"rotation", false},
+    {"rotationSmooth", false},
+    {"rotationSmoothFactor", 0.1F},
+    {"rotationSmoothMinStep", 0.01F},
+    {"rotationSmoothMaxStep", 1.0F},
+    {"rotationSmoothDeltaTime", 0.016F},
+    {"rotationMode", 0},
+    {"rotationSlient", false}};
 static std::vector<Player *> PlayerList = {};
 static std::chrono::steady_clock::time_point LastAttackTime = std::chrono::steady_clock::now();
 static std::random_device g_rd;
 static std::uniform_int_distribution<> g_dist(0, 100);
 static std::mt19937 g_gen(g_rd());
 static Player *g_Target{};
-
+static Helper::Rotation::Rotation last = {0.0F, 0.0F};
 cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigData) {
   setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) { g_Target = nullptr; });
@@ -61,6 +75,23 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       gui.CheckBox("rotation", "转头");
       gui.Selectable("rotationMode", "转头模式", RotationItems);
       gui.CheckBox("rotationSlient", "无声转头");
+      if (ImGui::TreeNode("Rotation Smooth")) {
+        gui.CheckBox("rotationSmooth", "平滑转头");
+        gui.SliderFloat("rotationSmoothFactor", "平滑系数", 0.01f, 1.0F);
+        gui.SliderFloat("rotationSmoothMinStep", "最小步长", 0.01f, 1.0F, [&module](float value) {
+          try {
+            float rotationSmoothMaxStep = module->getGUI().Get<float>("rotationSmoothMaxStep");
+            if (value > rotationSmoothMaxStep) {
+              module->getGUI().Set<float>("rotationSmoothMaxStep", value);
+            }
+          } catch (...) {
+            return;
+          }
+        });
+        gui.SliderFloat("rotationSmoothMaxStep", "最大步长", 0.01f, 1.0F);
+        gui.SliderFloat("rotationSmoothDeltaTime", "平滑时间", 0.001f, 1.0F);
+        ImGui::TreePop();
+      }
       ImGui::TreePop();
     }
   });
@@ -162,6 +193,12 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     using namespace Helper;
     bool rotation = false;
     bool antibot = false;
+    bool rotationSmooth = false;
+    float rotationSmoothFactor;
+    float rotationSmoothMinStep;
+    float rotationSmoothMaxStep;
+    float rotationSmoothDeltaTime;
+
     float fov = NAN;
     float Range = NAN;
     int rotationMode = 0;
@@ -173,10 +210,15 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       fov = module->getGUI().Get<float>("fov");
       Range = module->getGUI().Get<float>("range");
       rotationSlient = module->getGUI().Get<bool>("rotationSlient");
+      rotationSmooth = module->getGUI().Get<bool>("rotationSmooth");
+      rotationSmoothFactor = module->getGUI().Get<float>("rotationSmoothFactor");
+      rotationSmoothMinStep = module->getGUI().Get<float>("rotationSmoothMinStep");
+      rotationSmoothMaxStep = module->getGUI().Get<float>("rotationSmoothMaxStep");
+      rotationSmoothDeltaTime = module->getGUI().Get<float>("rotationSmoothDeltaTime");
     } catch (const std::exception &e) {
       return;
     }
-    if (rotationSlient) {
+    if (rotationSlient && rotation) {
       return;
     }
     if (g_Target == nullptr) {
@@ -197,7 +239,12 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     glm::vec3 localPos = mLocalPlayer->getPosition();
     glm::vec3 targetPos = g_Target->getPosition();
     Rotation::Rotation aimTarget = Rotation::toRotation(localPos, targetPos);
-    Rotation::Rotation last = {mLocalPlayer->getPitch(), mLocalPlayer->getYaw()};
+    last = {mLocalPlayer->getPitch(), mLocalPlayer->getYaw()};
+    if (rotationSmooth) {
+      aimTarget = Rotation::interpolateRotation(last, aimTarget, rotationSmoothDeltaTime,
+                                                rotationSmoothMinStep, rotationSmoothMaxStep,
+                                                rotationSmoothFactor);
+    }
     switch (rotationMode) {
     case 0:
       mLocalPlayer->setPitch(aimTarget.pitch);
@@ -214,6 +261,17 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
     }
   });
   setOnSendPacket([](Module *module, Packet *packet) {
+    if (packet->getName() == "PlayerAuthInputPacket") {
+      auto *authPacket = static_cast<PlayerAuthInputPacket *>(packet);
+      last.pitch = authPacket->mRot->x;
+      last.yaw = authPacket->mRot->y;
+    } else if (packet->getName() == "MovePlayerPacket") {
+      auto *movePacket = static_cast<MovePlayerPacket *>(packet);
+      last.pitch = movePacket->mRot.x;
+      last.yaw = movePacket->mRot.y;
+    } else {
+      return true;
+    }
     try {
       if (g_Target == nullptr) {
         return true;
@@ -246,7 +304,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
       glm::vec3 localPos = mLocalPlayer->getPosition();
       glm::vec3 targetPos = g_Target->getPosition();
       Helper::Rotation::Rotation aimTarget = Helper::Rotation::toRotation(localPos, targetPos);
-      Helper::Rotation::Rotation last = {mLocalPlayer->getPitch(), mLocalPlayer->getYaw()};
       switch (rotationMode) {
       case 0:
         if (packet->getName() == "MovePlayerPacket") {
@@ -263,8 +320,6 @@ cheat::KillAura::KillAura() : Module("KillAura", MenuType::COMBAT_MENU, ConfigDa
         aimTarget.pitch /= 2.0F;
         float diff = Helper::Rotation::getRotationDifference(last, aimTarget);
         if (diff >= 50.0F) {
-          mLocalPlayer->setPitch((aimTarget.pitch - last.pitch) / 0.8F + last.pitch);
-          mLocalPlayer->setYaw((aimTarget.yaw - last.yaw) / 0.8F + last.yaw);
           if (packet->getName() == "MovePlayerPacket") {
             auto *movePacket = static_cast<MovePlayerPacket *>(packet);
             movePacket->mYHeadRot = (aimTarget.yaw - last.yaw) / 0.8F + last.yaw;
