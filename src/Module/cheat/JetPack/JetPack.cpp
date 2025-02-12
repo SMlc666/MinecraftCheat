@@ -26,7 +26,7 @@ cheat::JetPack::JetPack() : Module("JetPack", MenuType::MOVEMENT_MENU, ConfigDat
     module->getGUI().Selectable("Mode", "模式", ModeItems);
   });
   setOnEnable([](Module *module) {});
-  setOnDisable([](Module *module) {});
+  setOnDisable([](Module *module) { jetpackInitialized = false; });
   setOnTick([](Module *module) {
     try {
       float speed = module->getGUI().Get<float>("speed");
