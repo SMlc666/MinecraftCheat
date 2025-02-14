@@ -11,7 +11,8 @@ const std::unordered_map<std::string, std::any> ConfigData = {
 };
 }
 cheat::NoClip::NoClip() : Module("NoClip", MenuType::MOVEMENT_MENU, ConfigData) {
-  setOnEnable([](Module *module) {
+  setOnEnable([](Module *module) {});
+  setOnTick([](Module *module) {
     ClientInstance *instance = runtimes::getClientInstance();
     if (!instance) {
       return;
