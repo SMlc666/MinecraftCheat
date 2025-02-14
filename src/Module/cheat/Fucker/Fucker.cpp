@@ -59,6 +59,9 @@ cheat::Fucker::Fucker() : Module("Fucker", MenuType::WORLD_MENU, ConfigData) {
           SafeTargetPos = glm::ivec3(0, 0, 0);
           SafeHasDestroyedBlock = false;
         }
+      } else {
+        SafeTargetPos = glm::ivec3(0, 0, 0);
+        SafeHasDestroyedBlock = false;
       }
       for (int x = startX; x <= endX; ++x) {
         for (int y = startY; y <= endY; ++y) {
