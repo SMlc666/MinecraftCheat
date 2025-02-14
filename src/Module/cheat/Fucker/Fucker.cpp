@@ -50,7 +50,8 @@ cheat::Fucker::Fucker() : Module("Fucker", MenuType::WORLD_MENU, ConfigData) {
       }
       if (Safe && SafeTargetPos != glm::ivec3(0, 0, 0) &&
           player->getDistance(SafeTargetPos) <= Range &&
-          Helper::Block::blockNameHas(SafeTargetPos, "bed")) {
+          Helper::Block::blockNameHas(SafeTargetPos, "bed") &&
+          (ThroughWalls || Helper::Block::hasAdjacentAirBlocks(SafeTargetPos))) {
         player->getGameMode().startDestroyBlock(SafeTargetPos, 1, SafeHasDestroyedBlock);
         if (SafeHasDestroyedBlock) {
           player->getGameMode().destroyBlock(SafeTargetPos, 1);
@@ -65,7 +66,7 @@ cheat::Fucker::Fucker() : Module("Fucker", MenuType::WORLD_MENU, ConfigData) {
             glm::ivec3 targetPos(x, y, z);
             if (!Helper::Block::isAirBlock(targetPos) &&
                 Helper::Block::blockNameHas(targetPos, "bed")) {
-              if (!ThroughWalls && Helper::Block::hasAdjacentAirBlocks(targetPos)) {
+              if (ThroughWalls || Helper::Block::hasAdjacentAirBlocks(targetPos)) {
                 if (Safe && SafeTargetPos == glm::ivec3(0, 0, 0)) {
                   SafeTargetPos = targetPos;
                 } else {
