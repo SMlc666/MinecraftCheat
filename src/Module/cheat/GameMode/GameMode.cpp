@@ -21,36 +21,33 @@ const std::vector<std::string> ModeItems = {
 };
 } // namespace
 cheat::GameMode::GameMode() : Module("GameMode", MenuType::WORLD_MENU, ConfigData) {
-  setOnEnable([](Module *module) {
-    try {
-      int Mode = module->getGUI().Get<int>("mode");
-      ClientInstance *instance = runtimes::getClientInstance();
-      if (!instance) {
-        return;
-      }
-      auto player = instance->getLocalPlayer();
-      if (!player) {
-        return;
-      }
-      switch (Mode) {
-      case 0:
-        player->setPlayerGameType(GameType::Creative);
-        break;
-      case 1:
-        player->setPlayerGameType(GameType::Survival);
-        break;
-      case 2:
-        player->setPlayerGameType(GameType::Adventure);
-        break;
-      case 3:
-        player->setPlayerGameType(GameType::Spectator);
-        break;
-      default:
-        g_log_tool.message(LogLevel::WARN, "GameMode", "Invalid game mode: {}", Mode);
-        break;
-      }
-    } catch (...) {
+  setOnEnable([](Module *module) {});
+  setOnTick([](Module *module) {
+    int Mode = module->getGUI().Get<int>("mode");
+    ClientInstance *instance = runtimes::getClientInstance();
+    if (!instance) {
       return;
+    }
+    auto player = instance->getLocalPlayer();
+    if (!player) {
+      return;
+    }
+    switch (Mode) {
+    case 0:
+      player->setPlayerGameType(GameType::Creative);
+      break;
+    case 1:
+      player->setPlayerGameType(GameType::Survival);
+      break;
+    case 2:
+      player->setPlayerGameType(GameType::Adventure);
+      break;
+    case 3:
+      player->setPlayerGameType(GameType::Spectator);
+      break;
+    default:
+      g_log_tool.message(LogLevel::WARN, "GameMode", "Invalid game mode: {}", Mode);
+      break;
     }
   });
   setOnDisable([](Module *module) {
