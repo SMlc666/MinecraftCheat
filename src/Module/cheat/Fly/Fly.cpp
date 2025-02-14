@@ -17,25 +17,7 @@ static const std::vector<std::string> ModeItems = {
 };
 static bool inVanillaMode = false;
 cheat::Fly::Fly() : Module("Fly", MenuType::MOVEMENT_MENU, ConfigData) {
-  setOnEnable([](Module *module) {
-    try {
-      ClientInstance *instance = runtimes::getClientInstance();
-      if (instance == nullptr) {
-        return;
-      }
-      auto *player = instance->getLocalPlayer();
-      if (player == nullptr) {
-        return;
-      }
-      int Mode = module->getGUI().Get<int>("Mode");
-      if (Mode == 1) {
-        inVanillaMode = true;
-        player->getAbilities()->setAbility(AbilitiesIndex::MayFly, true);
-      }
-    } catch (...) {
-      return;
-    }
-  });
+  setOnEnable([](Module *module) {});
   setOnDisable([](Module *module) {
     try {
       ClientInstance *instance = runtimes::getClientInstance();
@@ -74,6 +56,9 @@ cheat::Fly::Fly() : Module("Fly", MenuType::MOVEMENT_MENU, ConfigData) {
       glm::vec3 motion = player->getMotion();
       motion.y = 0;
       player->setMotion(motion);
+    } else if (Mode == 1) {
+      inVanillaMode = true;
+      player->getAbilities()->setAbility(AbilitiesIndex::MayFly, true);
     }
   });
 }
