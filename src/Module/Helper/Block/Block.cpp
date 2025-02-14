@@ -155,3 +155,12 @@ bool Helper::Block::blockNameHas(glm::ivec3 pos, const std::string &name) {
   }
   return legacy->getName().find(name) != std::string::npos;
 }
+
+bool Helper::Block::hasAdjacentAirBlocks(glm::ivec3 pos) {
+    for (const auto& offset : checklist) {
+        if (isAirBlock(pos + offset)) {
+            return true;
+        }
+    }
+    return false;
+}

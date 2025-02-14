@@ -12,4 +12,5 @@ glm::vec3 getNextBlock(Player *player, const glm::vec3 &velocity, const glm::vec
 bool tryClutchScaffold(LocalPlayer *player, BlockSource *region, glm::vec3 blockBelow,
                        bool strict = false);
 bool blockNameHas(glm::ivec3 pos, const std::string &name);
+bool hasAdjacentAirBlocks(glm::ivec3 pos);
 } // namespace Helper::Block
