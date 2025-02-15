@@ -37,6 +37,9 @@ const std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"Player::getAbilities", 0x6CEC410},
     {"LayeredAbilities::setAbility", 0x6D219C4},
     {"Player::setPlayerGameType", 0x6CFF8DC},
+    {"PlayerInventory::getItem", 0x6D25738},
+    {"PlayerInventory::getSelectedSlot", 0x6D25968},
+    {"PlayerInventory::selectSlot", 0x6D2597C},
 };
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
