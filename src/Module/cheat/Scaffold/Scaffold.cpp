@@ -73,12 +73,20 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
     glm::vec3 playerPos = player->getPosition();
     float yaw = player->getYaw();
     float yawRad = glm::radians(yaw);
-
     // 计算移动方向
     glm::vec3 moveDir = glm::vec3(sin(yawRad), 0.0f, cos(yawRad));
 
+    // 获取玩家的motion向量
+    glm::vec3 motion = player->getMotion();
+    glm::vec3 horizontalMotion = glm::normalize(glm::vec3(motion.x, 0.0f, motion.z));
+
+    // 如果motion向量的长度小于0.1，则使用原来的基于yaw的moveDir作为备用
+    if (glm::length(horizontalMotion) < 0.1f) {
+      horizontalMotion = moveDir;
+    }
+
     // 计算前方延伸位置
-    glm::vec3 frontPos = playerPos + moveDir * extendDistance;
+    glm::vec3 frontPos = playerPos + horizontalMotion * extendDistance;
     glm::vec3 frontBlockBelow = frontPos;
     frontBlockBelow.y -= 1.5f; // 假设 getBlockBelow 只需要玩家和 Y 偏移
     if (AirPlace)
