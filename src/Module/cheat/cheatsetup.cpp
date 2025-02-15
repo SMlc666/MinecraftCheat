@@ -57,4 +57,5 @@ void cheatSetup() {
   ModuleManager::addModule(new cheat::HitBox);
   ModuleManager::addModule(new cheat::GameMode);
   ModuleManager::addModule(new cheat::NoClip);
+  ModuleManager::addModule(new cheat::Gapple);
 }
