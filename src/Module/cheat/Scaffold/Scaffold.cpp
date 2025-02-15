@@ -81,7 +81,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
     glm::vec3 horizontalMotion = glm::normalize(glm::vec3(motion.x, 0.0f, motion.z));
 
     // 如果motion向量的长度小于0.1，则使用原来的基于yaw的moveDir作为备用
-    if (glm::length(horizontalMotion) < 0.1f) {
+    if (glm::length(glm::vec2(horizontalMotion.x, horizontalMotion.z)) < 0.1f) {
       horizontalMotion = moveDir;
     }
 
