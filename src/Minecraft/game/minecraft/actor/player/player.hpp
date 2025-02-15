@@ -1,6 +1,7 @@
 #pragma once
 #include "game/minecraft/actor/mob/mob.hpp"
 #include "game/minecraft/actor/player/LayeredAbilities.hpp"
+#include "game/minecraft/actor/player/PlayerInventory.hpp"
 #include "game/minecraft/world/level/GameType.hpp"
 
 #include <string>
@@ -15,4 +16,5 @@ public:
   bool canOpenContainerScreen() const;
   LayeredAbilities *getAbilities() const;
   void setPlayerGameType(GameType gameType); //0x10B
+  PlayerInventory &getSupplies() const;
 };

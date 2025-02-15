@@ -1,5 +1,6 @@
 #include "player.hpp"
 #include "game/minecraft/actor/player/LayeredAbilities.hpp"
+#include "game/minecraft/actor/player/PlayerInventory.hpp"
 #include "glm/fwd.hpp"
 #include "signature.hpp"
 GameMode &Player::getGameMode() const {
@@ -35,4 +36,9 @@ void Player::setPlayerGameType(GameType gameType) {
   using function = void (*)(Player *, GameType);
   auto func = reinterpret_cast<function>(vtable[267]);
   func(this, gameType);
+}
+PlayerInventory &Player::getSupplies() const {
+  using function = PlayerInventory &(*)(const Player *);
+  auto func = getSign<function>("Player::getSupplies");
+  return func(this);
 }
