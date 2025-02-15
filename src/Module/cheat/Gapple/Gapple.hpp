@@ -2,4 +2,9 @@
 
 #include "Module.hpp"
 
-namespace cheat {}
+namespace cheat {
+class Gapple : public Module {
+public:
+  Gapple();
+};
+} // namespace cheat
