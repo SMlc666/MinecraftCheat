@@ -5,6 +5,10 @@
 #include <fstream>
 void Log::message(LogLevel Level, const std::string &tag, const std::string &message) {
   std::lock_guard<std::mutex> lock(mtx);
+#ifdef _DEBUG_
+  if (Level == LogLevel::DEBUG)
+    return;
+#endif
   tag_map.insert({tag, true});
   logs.push_back(LogEntry(Level, tag, message));
 }
