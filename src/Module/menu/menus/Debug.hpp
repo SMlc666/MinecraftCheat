@@ -187,6 +187,13 @@ inline void drawDebugMenu() {
                              std::format("Item isBlock: {}", item->isBlock()));
         }
       }
+      ImGui::SameLine();
+      if (ImGui::Button("get RawName")) {
+        if (item != nullptr) {
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("Item RawName: {}", item->getRawNameId()));
+        }
+      }
       ImGui::TreePop();
     }
     if (ImGui::TreeNode("ClientInstance")) {
