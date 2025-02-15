@@ -72,7 +72,7 @@ bool Helper::Block::tryScaffold(LocalPlayer *player, glm::vec3 blockBelow, bool 
     i++;
   }
   if (foundCandidate) {
-    player->getGameMode().buildBlock(block, i);
+    player->getGameMode().startBuildBlock(block, i);
     return true;
   }
   return false;
@@ -157,10 +157,10 @@ bool Helper::Block::blockNameHas(glm::ivec3 pos, const std::string &name) {
 }
 
 bool Helper::Block::hasAdjacentAirBlocks(glm::ivec3 pos) {
-    for (const auto& offset : checklist) {
-        if (isAirBlock(pos + offset)) {
-            return true;
-        }
+  for (const auto &offset : checklist) {
+    if (isAirBlock(pos + offset)) {
+      return true;
     }
-    return false;
+  }
+  return false;
 }

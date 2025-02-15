@@ -67,7 +67,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
     glm::vec3 originalBlockBelow = Helper::Block::getBlockBelow(player, 1.5f);
     if (AirPlace)
       originalBlockBelow.y -= 1.0f;
-    Helper_Block_tryScaffold_(player, originalBlockBelow, placeStrict);
+    Helper::Block::tryScaffold(player, originalBlockBelow, placeStrict);
 
     // 获取玩家位置和视角方向
     glm::vec3 playerPos = player->getPosition();
@@ -88,7 +88,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
       frontBlockBelow.y -= 1.5f; // 假设 getBlockBelow 只需要玩家和 Y 偏移
       if (AirPlace)
         frontBlockBelow.y -= 1.0f;
-      Helper_Block_tryScaffold_(player, frontBlockBelow, placeStrict);
+      Helper::Block::tryScaffold(player, frontBlockBelow, placeStrict);
     } else {
       horizontalMotion = glm::vec3(0.f);
     }
@@ -98,7 +98,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
       jumpBlockBelow.y -= 0.5f; // 更接近脚部
       if (AirPlace)
         jumpBlockBelow.y -= 1.0f;
-      Helper_Block_tryScaffold_(player, jumpBlockBelow, true); // 严格模式确保放置
+      Helper::Block::tryScaffold(player, jumpBlockBelow, true); // 严格模式确保放置
     }
   });
 }
