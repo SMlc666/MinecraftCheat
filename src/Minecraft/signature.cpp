@@ -40,6 +40,7 @@ const std::unordered_map<std::string, uintptr_t> IDApattern = {
     {"PlayerInventory::getItem", 0x6D25738},
     {"PlayerInventory::getSelectedSlot", 0x6D25968},
     {"PlayerInventory::selectSlot", 0x6D2597C},
+    {"ItemStackBase::getRawNameId", 0x8590F58},
 };
 //NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 std::unordered_map<std::string, void *> signatures{};
