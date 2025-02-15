@@ -9,6 +9,7 @@
 #include "cheat/Fly/Fly.hpp"
 #include "cheat/Fucker/Fucker.hpp"
 #include "cheat/GameMode/GameMode.hpp"
+#include "cheat/Gapple/Gapple.hpp"
 #include "cheat/GodMode/GodMode.hpp"
 #include "cheat/HitBox/HitBox.hpp"
 #include "cheat/Hud/Hud.hpp"
