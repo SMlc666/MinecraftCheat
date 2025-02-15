@@ -20,7 +20,7 @@ static const std::unordered_map<std::string, std::any> ConfigData = {
     {"placeStrict", false},
     {"AirPlace", true},
     {"debug", false},
-    {"Extend", 0.2f} // 新增扩展距离参数
+    {"Extend", 3} // 新增扩展距离参数
 };
 
 static bool Helper_Block_tryScaffold_(LocalPlayer *player, glm::vec3 blockBelow, bool strict) {
@@ -44,7 +44,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
   setOnDrawGUI([](Module *module) {
     module->getGUI().CheckBox("AirPlace", "空气放置");
     module->getGUI().CheckBox("placeStrict", "严格放置");
-    module->getGUI().SliderFloat("Extend", "延伸距离", 0.2f, 3.0f); // 新增滑动条控制延伸距离
+    module->getGUI().SliderInt("Extend", "延伸距离", 1, 10); // 新增滑动条控制延伸距离
     module->getGUI().CheckBox("debug", "调试模式");
   });
 
@@ -61,7 +61,7 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
 
     bool AirPlace = module->getGUI().Get<bool>("AirPlace");
     bool placeStrict = module->getGUI().Get<bool>("placeStrict");
-    float extendDistance = module->getGUI().Get<float>("Extend"); // 获取延伸距离
+    int extendDistance = module->getGUI().Get<int>("Extend"); // 获取延伸距离
 
     // 处理脚下位置
     glm::vec3 originalBlockBelow = Helper::Block::getBlockBelow(player, 1.5f);
@@ -71,27 +71,27 @@ cheat::Scaffold::Scaffold() : Module("Scaffold", MenuType::WORLD_MENU, ConfigDat
 
     // 获取玩家位置和视角方向
     glm::vec3 playerPos = player->getPosition();
-    float yaw = player->getYaw();
-    float yawRad = glm::radians(yaw);
-    // 计算移动方向
-    glm::vec3 moveDir = glm::vec3(sin(yawRad), 0.0f, cos(yawRad));
 
     // 获取玩家的motion向量
     glm::vec3 motion = player->getMotion();
-    glm::vec3 horizontalMotion = glm::normalize(glm::vec3(motion.x, 0.0f, motion.z));
+    glm::vec3 horizontalMotion = glm::vec3(motion.x, 0.0f, motion.z);
 
-    // 如果motion向量的长度小于0.1，则使用原来的基于yaw的moveDir作为备用
-    if (glm::length(glm::vec2(horizontalMotion.x, horizontalMotion.z)) < 0.1f) {
-      horizontalMotion = moveDir;
+    // 运动方向处理（保留两位小数精度）
+    float motionLength = glm::length(horizontalMotion);
+
+    // 前方延伸放置（仅当有运动时）
+    if (motionLength > 0.1f) {
+      horizontalMotion = glm::normalize(horizontalMotion);
+      // 计算前方延伸位置
+      glm::vec3 frontPos = playerPos + horizontalMotion * (float)extendDistance;
+      glm::vec3 frontBlockBelow = frontPos;
+      frontBlockBelow.y -= 1.5f; // 假设 getBlockBelow 只需要玩家和 Y 偏移
+      if (AirPlace)
+        frontBlockBelow.y -= 1.0f;
+      Helper_Block_tryScaffold_(player, frontBlockBelow, placeStrict);
+    } else {
+      horizontalMotion = glm::vec3(0.f);
     }
-
-    // 计算前方延伸位置
-    glm::vec3 frontPos = playerPos + horizontalMotion * extendDistance;
-    glm::vec3 frontBlockBelow = frontPos;
-    frontBlockBelow.y -= 1.5f; // 假设 getBlockBelow 只需要玩家和 Y 偏移
-    if (AirPlace)
-      frontBlockBelow.y -= 1.0f;
-    Helper_Block_tryScaffold_(player, frontBlockBelow, placeStrict);
 
     if (player->isJumping()) { // 如果玩家在跳跃
       glm::vec3 jumpBlockBelow = playerPos;
