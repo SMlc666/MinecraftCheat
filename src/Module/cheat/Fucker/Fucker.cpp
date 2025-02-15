@@ -15,9 +15,8 @@
 #include <chrono>
 namespace {
 const std::unordered_map<std::string, std::any> ConfigData = {
-    {"enabled", false},       {"shortcut", false},     {"range", 5.0F},
-    {"SpoofCreative", false}, {"ThroughWalls", false}, {"Safe", false}, {"cooldown", 500}
-};
+    {"enabled", false},      {"shortcut", false}, {"range", 5.0F},  {"SpoofCreative", false},
+    {"ThroughWalls", false}, {"Safe", false},     {"cooldown", 500}};
 glm::ivec3 SafeTargetPos = glm::ivec3(0, 0, 0);
 bool SafeHasDestroyedBlock = false;
 std::queue<glm::ivec3> targetQueue;
@@ -35,7 +34,8 @@ cheat::Fucker::Fucker() : Module("Fucker", MenuType::WORLD_MENU, ConfigData) {
   setOnTick([](Module *module) {
     try {
       auto now = std::chrono::steady_clock::now();
-      if (std::chrono::duration_cast<std::chrono::milliseconds>(now - lastDestroyTime).count() < module->getGUI().Get<int>("cooldown")) {
+      if (std::chrono::duration_cast<std::chrono::milliseconds>(now - lastDestroyTime).count() <
+          module->getGUI().Get<int>("cooldown")) {
         return;
       }
       float Range = module->getGUI().Get<float>("range");
