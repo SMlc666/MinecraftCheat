@@ -199,7 +199,7 @@ inline void drawDebugMenu() {
     if (ImGui::TreeNode("Supplies")) {
       PlayerInventory *inventory{};
       if (localPlayer != nullptr) {
-        inventory = &localPlayer->getSupplies();
+        inventory = localPlayer->getSupplies();
       }
       if (ImGui::Button("get supplies")) {
         if (inventory != nullptr) {
