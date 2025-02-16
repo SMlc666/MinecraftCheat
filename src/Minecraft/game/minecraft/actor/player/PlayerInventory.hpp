@@ -5,6 +5,6 @@
 class PlayerInventory {
 public:
   ItemStack *getItem(int slot, ContainerID containerId) const;
-  int getSelectedSlot() const;
+  uint64 getSelectedSlot() const;
   bool selectSlot(int slot, ContainerID containerId);
 };

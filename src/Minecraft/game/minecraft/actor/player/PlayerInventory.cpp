@@ -12,8 +12,8 @@ bool PlayerInventory::selectSlot(int slot, ContainerID containerId) {
   auto func = getSign<function>("PlayerInventory::selectSlot");
   return func(this, slot, containerId);
 }
-int PlayerInventory::getSelectedSlot() const {
-  using function = int (*)(const PlayerInventory *);
+uint64 PlayerInventory::getSelectedSlot() const {
+  using function = uint64 (*)(const PlayerInventory *);
   auto func = getSign<function>("PlayerInventory::getSelectedSlot");
   return func(this);
 }
