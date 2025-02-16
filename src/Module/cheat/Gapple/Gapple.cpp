@@ -35,7 +35,7 @@ cheat::Gapple::Gapple() : Module("Gapple", MenuType::COMBAT_MENU, ConfigData) {
         ItemStack *items = inv->getItem(i, ContainerID::Inventory);
         if (items->getRawNameId().find("golden_apple") != std::string::npos) {
           GameMode *gamemode = &player->getGameMode();
-          int idx = inv->getSelectedSlot();
+          uint64 idx = inv->getSelectedSlot();
           inv->selectSlot(i, ContainerID::Inventory);
           gamemode->useItem(*items);
           inv->selectSlot(idx, ContainerID::Inventory);
