@@ -14,6 +14,7 @@ struct PosMotion {
   glm::vec3 motion;
 };
 static_assert(offsetof(PosMotion, motion) == 24);
+#pragma pack(push, 1)
 #include <cstdint>
 class Actor {
 public:
@@ -27,6 +28,7 @@ public:
   PosMotion *mPosMotion;
   AABB *mAABB;
   glm::vec2 *mRot;
+  std::byte padding330[1028];
 
 public:
   [[nodiscard]] glm::vec3 getPosition() const;
@@ -47,6 +49,7 @@ public:
   float getFallDistance() const;
   float lerpMotion(glm::vec3 motion);
 }; // namespace class Actor
+#pragma pack(pop)
 static_assert(sizeof(EntityContext) == 24);
 static_assert(offsetof(Actor, WeakRef_mDimension) == 0x2D8);
 static_assert(offsetof(Actor, mPosMotion) == 0x318);
@@ -55,3 +58,4 @@ static_assert(sizeof(glm::vec3) == 0xC);
 static_assert(sizeof(glm::vec2) == 0x8);
 static_assert(sizeof(WeakRef<Dimension>) == 16);
 static_assert(offsetof(Actor, mAABB) == 0x320);
+static_assert(sizeof(Actor) == 0x734);
