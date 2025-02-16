@@ -37,8 +37,8 @@ void Player::setPlayerGameType(GameType gameType) {
   auto func = reinterpret_cast<function>(vtable[267]);
   func(this, gameType);
 }
-PlayerInventory &Player::getSupplies() const {
-  using function = PlayerInventory &(*)(const Player *);
+PlayerInventory *Player::getSupplies() const {
+  using function = PlayerInventory *(*)(const Player *);
   auto func = getSign<function>("Player::getSupplies");
   return func(this);
 }

@@ -19,6 +19,6 @@ public:
   bool canOpenContainerScreen() const;
   LayeredAbilities *getAbilities() const;
   void setPlayerGameType(GameType gameType); //0x10B
-  PlayerInventory &getSupplies() const;
+  PlayerInventory *getSupplies() const;
 };
 static_assert(sizeof(Player) == 0x3B70);
