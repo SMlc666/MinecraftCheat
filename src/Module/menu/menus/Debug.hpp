@@ -196,6 +196,36 @@ inline void drawDebugMenu() {
       }
       ImGui::TreePop();
     }
+    if (ImGui::TreeNode("Supplies")) {
+      PlayerInventory *inventory{};
+      if (localPlayer != nullptr) {
+        inventory = &localPlayer->getSupplies();
+      }
+      if (ImGui::Button("get supplies")) {
+        if (inventory != nullptr) {
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("Supplies: {:p}", reinterpret_cast<void *>(inventory)));
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("get SelectedSlot")) {
+        if (inventory != nullptr) {
+          g_log_tool.message(LogLevel::DEBUG, "DEBUG",
+                             std::format("SelectedSlot: {}", inventory->getSelectedSlot()));
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("getCurrentItem")) {
+        if (inventory != nullptr) {
+          g_log_tool.message(
+              LogLevel::DEBUG, "DEBUG",
+              std::format("CurrentItem: {}",
+                          inventory->getItem(inventory->getSelectedSlot(), ContainerID::Inventory)
+                              ->getRawNameId()));
+        }
+      }
+      ImGui::TreePop();
+    }
     if (ImGui::TreeNode("ClientInstance")) {
       if (ImGui::Button("get client instance")) {
         if (instance != nullptr) {
