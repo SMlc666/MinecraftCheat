@@ -8,12 +8,13 @@
 #include "gui/gui.hpp"
 #include "imgui/imgui.h"
 #include "menu/menu.hpp"
+
 namespace {
 const std::unordered_map<std::string, std::any> ConfigData = {
     {"enabled", false},  {"shortcut", false},     {"arraylist", false},
     {"fontSize", 28.0f}, {"lineSpacing", 3.0f},   {"padding", GUI::Vec2(20.0f, 20.0f)},
     {"bgAlpha", 0.85f},  {"gradientSpeed", 1.5f}, {"shadowIntensity", 0.7f},
-    {"decoLines", true}, {"sortByLength", true},  {"onlyActive", true},
+    {"sortByLength", true}, {"onlyActive", true},
 };
 
 namespace Arraylist {
@@ -23,10 +24,10 @@ ImVec2 padding(20.0f, 20.0f);
 float bgAlpha = 0.85f;
 float gradientSpeed = 1.5f;
 float shadowIntensity = 0.7f;
-bool decoLines = false;
 bool sortByLength = true;
 bool onlyActive = true;
 } // namespace Arraylist
+
 namespace Notifications {
 float duration = 3.0f;          // 总显示时间
 float fadeTime = 0.5f;          // 渐入/渐出时间
@@ -139,14 +140,6 @@ void DrawModuleList(ImDrawList *drawList, const std::vector<ModuleDisplayInfo> &
     // 绘制文本
     drawList->AddText(ImGui::GetFont(), scaledFontSize, ImVec2(startX, currentY), textColor,
                       m.name.c_str());
-
-    // 装饰线
-    if (Arraylist::decoLines) {
-      const float lineLength = m.textSize.x * 0.4f + 10.0f * sinf(ImGui::GetTime() * 2 + i);
-      drawList->AddLine(ImVec2(startX - 15.0f, currentY + m.textSize.y / 2),
-                        ImVec2(startX - 15.0f + lineLength, currentY + m.textSize.y / 2), textColor,
-                        3.0f); // 使用渐变颜色
-    }
 
     currentY += m.textSize.y + Arraylist::lineSpacing;
   }
@@ -335,6 +328,7 @@ private:
   }
 };
 } // namespace
+
 // HUD模块实现
 cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
   setOnDrawGUI([](Module *module) {
@@ -357,7 +351,6 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
                       [](float value) { Arraylist::bgAlpha = value; });
       gui.SliderFloat("shadowIntensity", "阴影强度", 0.0f, 1.0f,
                       [](float value) { Arraylist::shadowIntensity = value; });
-      gui.CheckBox("decoLines", "装饰线", [](bool value) { Arraylist::decoLines = value; });
 
       ImGui::SeparatorText("排序设置");
       gui.CheckBox("sortByLength", "按长度排序",
@@ -378,7 +371,6 @@ cheat::Hud::Hud() : Module("Hud", MenuType::RENDER_MENU, ConfigData) {
       Arraylist::bgAlpha = gui.Get<float>("bgAlpha");
       Arraylist::gradientSpeed = gui.Get<float>("gradientSpeed");
       Arraylist::shadowIntensity = gui.Get<float>("shadowIntensity");
-      Arraylist::decoLines = gui.Get<bool>("decoLines");
       Arraylist::sortByLength = gui.Get<bool>("sortByLength");
       Arraylist::onlyActive = gui.Get<bool>("onlyActive");
     } catch (...) {
