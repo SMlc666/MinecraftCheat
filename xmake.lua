@@ -19,6 +19,8 @@ local AuthDir = "src/Auth"
 local IncludeDir = "src/include"
 local ShadowHookDir = "src/include/ShadowHook"
 local httpLibDir = "src/include/httplib"
+local Md5Dir = "src/include/md5"
+local RC4Dir = "src/include/RC4"
 if is_mode("debug") then
     set_warnings("all")
     set_optimize("none")
@@ -52,6 +54,8 @@ target("cheat")
     add_files(ImguiDir.."/backends/imgui_impl_android.cpp")
     add_files(ImguiDir.."/backends/imgui_impl_opengl3.cpp")
     add_files(httpLibDir.."/*.c")
+    add_files(Md5Dir.."/*.cpp")
+    add_files(RC4Dir.."/*.cpp")
     add_linkdirs(KeystoneDir.. "/android/arm64-v8a")
     add_links("keystone")
     add_linkdirs(ShadowHookDir.. "/arm64-v8a")
