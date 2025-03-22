@@ -35,7 +35,7 @@ void setup() {
     g_log_tool.message(LogLevel::FATAL, "setup", "ShadowHook init failed");
   } else {
     sighandleInit();
-    AuthSetup();
+    std::thread(AuthSetup).detach();
     signaturesInit();
     hooksInit();
     configSetup();

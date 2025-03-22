@@ -1,3 +1,4 @@
+#include <format>
 #include <fstream>
 #include <string>
 #include "Auth.hpp"
@@ -30,18 +31,23 @@ void AuthSetup() {
                            .apitoken = "ce8f2069c9c62e00eecef5bf009a864f",
                            .rc4key = "c4131f17d8f502a4caa8a809ba3f05410d1"};
   APIClient client(config);
-  try {
-    std::string result = client.executeRequest(auth, imei_str);
-    rapidjson::Document result_doc;
-    result_doc.Parse(result.c_str());
-    if (result_doc.HasParseError()) {
-      throw std::runtime_error(rapidjson::GetParseError_En(result_doc.GetParseError()));
+  while (true) {
+    try {
+      std::string result = client.executeRequest(auth, imei_str);
+      rapidjson::Document result_doc;
+      result_doc.Parse(result.c_str());
+      if (result_doc.HasParseError()) {
+        throw std::runtime_error(rapidjson::GetParseError_En(result_doc.GetParseError()));
+      }
+      int code = result_doc["code"].GetInt();
+      if (code == SUCCESS_CODE) {
+        return;
+      } else {
+        throw std::runtime_error(std::format("Auth failed: {}", code));
+      }
+    } catch (const std::exception &e) {
+      throw std::runtime_error(std::format("Auth failed: {}", e.what()));
     }
-    int code = result_doc["code"].GetInt();
-    if (code == SUCCESS_CODE) {
-      return;
-    }
-  } catch (const std::exception &e) {
-    throw std::runtime_error("Auth failed: " + std::string(e.what()));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
