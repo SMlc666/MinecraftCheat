@@ -15,6 +15,7 @@ local EnttDir = "src/include/entt"
 local KittyMemoryDir = "src/include/KittyMemory/"
 local KeystoneDir = "src/include/Keystone"
 local ImguiDir = "src/include/imgui"
+local AuthDir = "src/Auth"
 local IncludeDir = "src/include"
 local ShadowHookDir = "src/include/ShadowHook"
 local httpLibDir = "src/include/httplib"
@@ -46,6 +47,7 @@ target("cheat")
     add_files(MemToolDir.. "/**.cpp")
     add_files(LuaDir.. "/*.c")
     add_files(KittyMemoryDir.."/*.cpp")
+    add_files(AuthDir.."/*.cpp")
     add_files(ImguiDir.."/*.cpp")--imgui source files
     add_files(ImguiDir.."/backends/imgui_impl_android.cpp")
     add_files(ImguiDir.."/backends/imgui_impl_opengl3.cpp")
