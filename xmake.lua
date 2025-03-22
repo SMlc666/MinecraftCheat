@@ -17,6 +17,7 @@ local KeystoneDir = "src/include/Keystone"
 local ImguiDir = "src/include/imgui"
 local IncludeDir = "src/include"
 local ShadowHookDir = "src/include/ShadowHook"
+local httpLibDir = "src/include/httplib"
 if is_mode("debug") then
     set_warnings("all")
     set_optimize("none")
@@ -29,7 +30,6 @@ else
 end
 target("cheat")
     set_default(true)
-
     set_languages("c17", "cxx20")
     set_kind("shared")
     add_files("src/main.cpp")--main src file
@@ -49,6 +49,7 @@ target("cheat")
     add_files(ImguiDir.."/*.cpp")--imgui source files
     add_files(ImguiDir.."/backends/imgui_impl_android.cpp")
     add_files(ImguiDir.."/backends/imgui_impl_opengl3.cpp")
+    add_files(httpLibDir.."/*.c")
     add_linkdirs(KeystoneDir.. "/android/arm64-v8a")
     add_links("keystone")
     add_linkdirs(ShadowHookDir.. "/arm64-v8a")

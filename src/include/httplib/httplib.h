@@ -200,7 +200,7 @@ using socklen_t = int;
 
 #include <arpa/inet.h>
 #if !defined(_AIX) && !defined(__MVS__)
-#include <ifaddrs.h>
+#include "ifaddrs.h"
 #endif
 #ifdef __MVS__
 #include <strings.h>
