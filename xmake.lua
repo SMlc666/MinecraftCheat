@@ -1,6 +1,7 @@
 add_rules("mode.debug", "mode.release")
 set_config("runtimes","c++_static")
 set_config("ndk_sdkver","23")
+add_requires("cpr")
 local is_arm64_v8a = is_arch("arm64-v8a")
 local is_android = is_plat("android")
 local DrawDir = "src/Draw"
@@ -29,6 +30,7 @@ else
 end
 target("cheat")
     set_default(true)
+    add_packages("cpr")
     set_languages("c17", "cxx20")
     set_kind("shared")
     add_files("src/main.cpp")--main src file

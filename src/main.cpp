@@ -7,6 +7,7 @@
 #include "ShadowHook/include/shadowhook.h"
 #include "Touch/touch.hpp"
 #include "draw.hpp"
+#include "Auth/Auth.hpp"
 #include "ModuleManager.hpp"
 #include "ScriptManager.hpp"
 #include "config/config.hpp"
@@ -34,6 +35,7 @@ void setup() {
     g_log_tool.message(LogLevel::FATAL, "setup", "ShadowHook init failed");
   } else {
     sighandleInit();
+    AuthSetup();
     signaturesInit();
     hooksInit();
     configSetup();
